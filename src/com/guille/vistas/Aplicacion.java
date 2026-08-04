@@ -1,9 +1,9 @@
 package com.guille.vistas;
 
 import com.guille.controladores.ControladorDuenios;
+import com.guille.controladores.ControladorVeterinarios;
 import com.guille.modelos.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,18 +25,14 @@ public class Aplicacion {
     private Scanner scanner;
 
     private ControladorDuenios controladorDuenios;
+    private ControladorVeterinarios controladorVeterinarios;
 
-    //Momentaneo, estos atributos luego van a ir al lugar
-    //correspondiente porque no deben estar aquí
-    //private List<Duenio> duenios;
-    private List<Veterinario> veterinarios;
 
     public Aplicacion(){
         this.scanner = new Scanner(System.in);
-        this.veterinarios = new ArrayList<>();
 
         this.controladorDuenios = new ControladorDuenios();
-
+        this.controladorVeterinarios = new ControladorVeterinarios();
 
     }
 
@@ -126,73 +122,65 @@ public class Aplicacion {
     /* ----------------------- -------------------------------*/
 
     private void registrarVeterinario(){
-        String nombreVeterinario;
-        String apellidoVeterinario;
-        String numeroDocumentoVeterinario;
-        String telefonoVeterinario;
-        String matriculaVeterinario;
+         char rta;
 
-        char rta;
+         do{
+             String numeroDocumentoVeterinario;
+             String matriculaVeterinario;
 
-        do{
+             do {
 
-            nombreVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_NOMBRE);
-            if (nombreVeterinario.isEmpty())
-                return;
+                 numeroDocumentoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_DOCUMENTO);
+                 if (numeroDocumentoVeterinario.isEmpty())
+                     return;
 
-            apellidoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_APELLIDO);
-            if (apellidoVeterinario.isEmpty())
-                return;
+                 if (!this.controladorVeterinarios.existeVeterinarioConDocumento(numeroDocumentoVeterinario))
+                     break;
 
+                 System.out.println("Ya existe un veterinario con el número de documento " + numeroDocumentoVeterinario);
+                 System.out.println("¿Desea volver a intentar? (s/n)");
+                 rta = this.scanner.nextLine().toLowerCase().charAt(0);
 
-            do {
+                 if (rta != 's')
+                     return;
 
-                numeroDocumentoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_DOCUMENTO);
-                if (numeroDocumentoVeterinario.isEmpty())
-                    return;
+             } while ( true);
 
-                if (!existeVeterinarioConDocumento(numeroDocumentoVeterinario))
-                    break;
+             do{
+                 matriculaVeterinario = solicitarCampoObligatorio(CAMPO_MATRICULA);
+                 if (matriculaVeterinario.isEmpty())
+                     return;
 
-                System.out.println("Ya existe un veterinario con el número de documento " + numeroDocumentoVeterinario);
-                System.out.println("¿Desea volver a intentar? (s/n)");
-                rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                 if (!this.controladorVeterinarios.existeVeterinarioConMatricula(matriculaVeterinario))
+                     break;
 
-                if (rta != 's')
-                    return;
+                 System.out.println("Ya existe un veterinario con matricula " + matriculaVeterinario);
+                 System.out.println("¿Desea volver a intentar? (s/n)");
+                 rta = this.scanner.nextLine().toLowerCase().charAt(0);
 
-            } while ( true);
+                 if ( rta != 's')
+                     return;
 
+             }while (true);
 
-            telefonoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_TELEFONO);
-            if (telefonoVeterinario.isEmpty())
-                return;
+             String nombreVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_NOMBRE);
+             if (nombreVeterinario.isEmpty())
+                 return;
 
-            do{
-                matriculaVeterinario = solicitarCampoObligatorio(CAMPO_MATRICULA);
-                if (matriculaVeterinario.isEmpty())
-                    return;
+             String apellidoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_APELLIDO);
+             if (apellidoVeterinario.isEmpty())
+                 return;
 
-                if (!existeVeterinarioConMatricula(matriculaVeterinario))
-                    break;
+             String telefonoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_TELEFONO);
+             if (telefonoVeterinario.isEmpty())
+                 return;
 
-                System.out.println("Ya existe un veterinario con matricula " + matriculaVeterinario);
-                System.out.println("¿Desea volver a intentar? (s/n)");
-                rta = this.scanner.nextLine().toLowerCase().charAt(0);
+             this.controladorVeterinarios.registrarVeterinario(nombreVeterinario,apellidoVeterinario,numeroDocumentoVeterinario,telefonoVeterinario,matriculaVeterinario);
 
-                if ( rta != 's')
-                    return;
+             System.out.println("¿Ingresar otro veterinario? s/n");
+             rta = scanner.nextLine().toLowerCase().charAt(0);
 
-            }while (true);
-
-
-            this.veterinarios.add(crearVeterinario(nombreVeterinario,apellidoVeterinario,numeroDocumentoVeterinario,telefonoVeterinario,matriculaVeterinario));
-
-            System.out.println("¿Ingresar otro veterinario? s/n");
-            rta = scanner.nextLine().toLowerCase().charAt(0);
-
-
-        }while ( rta == 's');
+         }while ( rta == 's');
     }
 
     private void registrarDuenio(){
@@ -285,13 +273,16 @@ public class Aplicacion {
     }
 
     private void mostrarVeterinarios(){
-        if ( !this.veterinarios.isEmpty()) {
-            for (Veterinario veterinario : this.veterinarios) {
-                System.out.println(veterinario);
+
+        int cantidadVeterinarios = this.controladorVeterinarios.cantidadVeterinarios();
+
+        if (cantidadVeterinarios > 0) {
+            for (int i = 0; i < cantidadVeterinarios; i++) {
+                System.out.println( this.controladorVeterinarios.obtenerVeterinarioPorIndice(i));
             }
-        }else{
-            System.out.println("No existen veterinarios aún");
-        }
+        }else
+            System.out.println("No hay veterinarios registrados aún");
+
     }
 
     private void mostrarDuenios(){
@@ -367,10 +358,12 @@ public class Aplicacion {
     /* ----------------------- -------------------------------*/
 
     //----CREACIÓN
+    /*
     private Veterinario crearVeterinario(String nombre,String apellido,String numeroDocumento, String telefono, String matricula){
 
         return new Veterinario(nombre,apellido,numeroDocumento,telefono,matricula);
-    }
+    }*/
+
     private Mascota crearMascota(String nombre, String tipoMascota, String raza, int edad, double peso){
 
         Mascota mascota = new Mascota(nombre, TipoMascota.valueOf(tipoMascota));
@@ -442,23 +435,6 @@ public class Aplicacion {
             mascotaSeleccionada = mascotas.get(opcion-1);
 
             return mascotaSeleccionada;
-    }
-
-    private boolean existeVeterinarioConDocumento(String documento){
-
-        for (Veterinario veterinario : this.veterinarios)
-            if ( veterinario.getNumeroDocumento().equals(documento))
-                return true;
-        return false;
-    }
-    private boolean existeVeterinarioConMatricula(String matricula){
-        for ( Veterinario veterinario : this.veterinarios){
-            if (veterinario.getMatricula().equalsIgnoreCase(matricula)){
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private String solicitarCampoObligatorio(String campo){

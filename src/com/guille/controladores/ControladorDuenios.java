@@ -53,10 +53,7 @@ public class ControladorDuenios {
     }
 
     public boolean existeDuenioConDocumento(String documento){
-        for (Duenio duenio : this.duenios)
-            if (duenio.getNumeroDocumento().equals(documento))
-                return true;
-        return false;
+        return obtenerDuenioPorDocumento(documento) != null;
     }
 
     public int cantidadDuenios(){

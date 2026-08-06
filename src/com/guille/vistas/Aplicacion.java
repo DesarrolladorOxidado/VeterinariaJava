@@ -1,6 +1,7 @@
 package com.guille.vistas;
 
 import com.guille.controladores.ControladorDuenios;
+import com.guille.controladores.ControladorMascotas;
 import com.guille.controladores.ControladorVeterinarios;
 import com.guille.modelos.*;
 
@@ -26,14 +27,14 @@ public class Aplicacion {
 
     private ControladorDuenios controladorDuenios;
     private ControladorVeterinarios controladorVeterinarios;
-
+    private ControladorMascotas controladorMascotas;
 
     public Aplicacion(){
         this.scanner = new Scanner(System.in);
 
         this.controladorDuenios = new ControladorDuenios();
         this.controladorVeterinarios = new ControladorVeterinarios();
-
+        this.controladorMascotas = new ControladorMascotas();
     }
 
     public void ejecutar(){
@@ -356,23 +357,6 @@ public class Aplicacion {
     /* ----------------------- ------------------------------*/
     //              MÉTODOS AUXILIARES
     /* ----------------------- -------------------------------*/
-
-    //----CREACIÓN
-    /*
-    private Veterinario crearVeterinario(String nombre,String apellido,String numeroDocumento, String telefono, String matricula){
-
-        return new Veterinario(nombre,apellido,numeroDocumento,telefono,matricula);
-    }*/
-
-    private Mascota crearMascota(String nombre, String tipoMascota, String raza, int edad, double peso){
-
-        Mascota mascota = new Mascota(nombre, TipoMascota.valueOf(tipoMascota));
-        mascota.setRaza(raza);
-        mascota.setEdad(edad);
-        mascota.setPeso(peso);
-
-        return mascota;
-    }
     private Consulta crearConsulta(String motivo){
         return new Consulta(motivo);
     }
@@ -494,7 +478,7 @@ public class Aplicacion {
         if ( peso.isEmpty())
             return false;
 
-        this.controladorDuenios.agregarMascota(duenio,crearMascota(nombre, tipo, raza, Integer.parseInt(edad), Double.parseDouble(peso)));
+        this.controladorDuenios.agregarMascota(duenio,this.controladorMascotas.crearMascota(nombre, tipo, raza, Integer.parseInt(edad), Double.parseDouble(peso)));
 
         return true;
     }

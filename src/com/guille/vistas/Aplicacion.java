@@ -1,8 +1,6 @@
 package com.guille.vistas;
 
-import com.guille.controladores.ControladorDuenios;
-import com.guille.controladores.ControladorMascotas;
-import com.guille.controladores.ControladorVeterinarios;
+import com.guille.controladores.*;
 import com.guille.modelos.*;
 
 import java.util.List;
@@ -28,6 +26,8 @@ public class Aplicacion {
     private ControladorDuenios controladorDuenios;
     private ControladorVeterinarios controladorVeterinarios;
     private ControladorMascotas controladorMascotas;
+    private ControladorConsultas controladorConsultas;
+    private ControladorHistoriasClinicas controladorHistoriasClinicas;
 
     public Aplicacion(){
         this.scanner = new Scanner(System.in);
@@ -35,6 +35,8 @@ public class Aplicacion {
         this.controladorDuenios = new ControladorDuenios();
         this.controladorVeterinarios = new ControladorVeterinarios();
         this.controladorMascotas = new ControladorMascotas();
+        this.controladorConsultas = new ControladorConsultas();
+        this.controladorHistoriasClinicas = new ControladorHistoriasClinicas();
     }
 
     public void ejecutar(){
@@ -348,7 +350,7 @@ public class Aplicacion {
             Mascota mascota = seleccionarMascota(duenio);
 
             if (mascota!=null) {
-                registrarConsulta(mascota.getHistoriaClinica());
+                registrarConsulta(mascota);
                 continuar();
             }
         }
@@ -357,10 +359,6 @@ public class Aplicacion {
     /* ----------------------- ------------------------------*/
     //              MÉTODOS AUXILIARES
     /* ----------------------- -------------------------------*/
-    private Consulta crearConsulta(String motivo){
-        return new Consulta(motivo);
-    }
-
     //---BUSQUEDA Y DEVOLUCIÓN
     private Duenio obtenerDuenioParaMascota(){
         char rta;
@@ -435,7 +433,7 @@ public class Aplicacion {
                 return "";
 
             System.out.println("Ingrese " + campo + ": ");
-            valor = this.scanner.nextLine();
+            valor = this.scanner.nextLine().trim();
         }
 
         return valor;
@@ -483,22 +481,22 @@ public class Aplicacion {
         return true;
     }
 
-    private void registrarConsulta(HistoriaClinica historiaClinica){
-        String motivo;
+    private void registrarConsulta(Mascota mascota){
         char rta;
-        
-        System.out.println("Ingrese el motivo de la consulta: ");
-        motivo = this.scanner.nextLine();
+        String diagnostico = "";
+        String tratamiento = "";
+        String observaciones = "";
 
-        Consulta consulta = crearConsulta(motivo);
-        
+        String motivo = solicitarCampoObligatorio("motivo de la consulta");
+        if (motivo.isEmpty())
+            return;
+
         System.out.println("¿Ingresa diagnóstico? (s/n)");
         rta = this.scanner.nextLine().toLowerCase().charAt(0);
         
         if (rta=='s'){
             System.out.println("Ingrese diagnóstico: ");
-            String diagnostico = this.scanner.nextLine();
-            consulta.setDiagnostico(diagnostico);
+            diagnostico = this.scanner.nextLine().trim();
         }
             
         
@@ -506,8 +504,7 @@ public class Aplicacion {
         rta = this.scanner.nextLine().toLowerCase().charAt(0);
         if (rta=='s'){
             System.out.println("Ingrese tratamiento: ");
-            String tratamiento = this.scanner.nextLine();
-            consulta.setTratamiento(tratamiento);
+            tratamiento = this.scanner.nextLine().trim();
         }
 
 
@@ -515,11 +512,10 @@ public class Aplicacion {
         rta = this.scanner.nextLine().toLowerCase().charAt(0);
         if (rta=='s'){
             System.out.println("Ingrese observaciones: ");
-            String observaciones = this.scanner.nextLine();
-            consulta.setObservaciones(observaciones);
+            observaciones = this.scanner.nextLine().trim();
         }
 
-        historiaClinica.registrarConsulta(consulta);
+        this.controladorHistoriasClinicas.agregarConsultaHistoriaClinica(mascota,this.controladorConsultas.crearConsulta(motivo,diagnostico,tratamiento,observaciones));
 
     }
 

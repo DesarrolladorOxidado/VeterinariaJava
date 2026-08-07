@@ -4,7 +4,9 @@ import java.util.Date;
 
 public class Consulta {
 
-    private final String CAMPO_INCOMPLETO = "Pendiente";
+    private static final String CAMPO_DIAGNOSTICO_INCOMPLETO = "Sin diagnóstico";
+    private static final String CAMPO_TRATAMIENTO_INCOMPLETO = "Sin tratamiento";
+    private static final String CAMPO_OBSERVACIONES_INCOMPLETO = "Sin observaciones";
 
     //La fecha no se modifica, se establece únicamente al crear la consulta
     private Date fecha;
@@ -19,18 +21,9 @@ public class Consulta {
         this.fecha = new Date();
         this.motivo = motivo;
 
-        this.diagnostico = CAMPO_INCOMPLETO;
-        this.tratamiento = CAMPO_INCOMPLETO;
-        this.observaciones = CAMPO_INCOMPLETO;
-    }
-
-    public Consulta(String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario) {
-        this.fecha = new Date();
-        this.motivo = motivo;
-        this.diagnostico = diagnostico;
-        this.tratamiento = tratamiento;
-        this.observaciones = observaciones;
-        this.veterinario = veterinario;
+        this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
+        this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;
+        this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
     }
 
     public Date getFecha() {
@@ -46,7 +39,7 @@ public class Consulta {
     }
 
     public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
+        this.diagnostico = diagnostico.isEmpty() ? CAMPO_DIAGNOSTICO_INCOMPLETO : diagnostico;
     }
 
     public String getTratamiento() {
@@ -54,7 +47,7 @@ public class Consulta {
     }
 
     public void setTratamiento(String tratamiento) {
-        this.tratamiento = tratamiento;
+        this.tratamiento = tratamiento.isEmpty() ? CAMPO_TRATAMIENTO_INCOMPLETO : tratamiento;
     }
 
     public String getObservaciones() {
@@ -62,7 +55,7 @@ public class Consulta {
     }
 
     public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
+        this.observaciones = observaciones.isEmpty() ? CAMPO_OBSERVACIONES_INCOMPLETO : observaciones;
     }
 
     public Veterinario getVeterinario() {

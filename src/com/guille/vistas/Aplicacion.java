@@ -46,7 +46,7 @@ public class Aplicacion {
     }
 
     private void mostrarOpcionesMenu(){
-        int opcion;
+        int opcion = -1;
 
         do{
 
@@ -60,8 +60,12 @@ public class Aplicacion {
             System.out.println("7 - Nueva consulta");
             System.out.println("0 - Salir");
 
-            opcion = Integer.valueOf(scanner.nextLine());
-
+            try {
+                opcion = Integer.valueOf(scanner.nextLine().trim());
+            }catch (NumberFormatException e){
+                System.out.println("Debe ingresar una opción numérica");
+                continue;
+            }
             switch (opcion) {
                 case 1 -> {
                     System.out.println("*** Registrar veterinario***");
@@ -93,7 +97,6 @@ public class Aplicacion {
                 case 6 -> {
                     System.out.println("*** Mascotas ***");
                     mostrarMascotas();
-                    //continuar();
 
                 }
                 case 7 -> {
@@ -142,7 +145,7 @@ public class Aplicacion {
 
                  System.out.println("Ya existe un veterinario con el número de documento " + numeroDocumentoVeterinario);
                  System.out.println("¿Desea volver a intentar? (s/n)");
-                 rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                 rta = solicitarRespuestaSiNo();
 
                  if (rta != 's')
                      return;
@@ -159,7 +162,7 @@ public class Aplicacion {
 
                  System.out.println("Ya existe un veterinario con matricula " + matriculaVeterinario);
                  System.out.println("¿Desea volver a intentar? (s/n)");
-                 rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                 rta = solicitarRespuestaSiNo();
 
                  if ( rta != 's')
                      return;
@@ -181,7 +184,7 @@ public class Aplicacion {
              this.controladorVeterinarios.registrarVeterinario(nombreVeterinario,apellidoVeterinario,numeroDocumentoVeterinario,telefonoVeterinario,matriculaVeterinario);
 
              System.out.println("¿Ingresar otro veterinario? s/n");
-             rta = scanner.nextLine().toLowerCase().charAt(0);
+             rta = solicitarRespuestaSiNo();
 
          }while ( rta == 's');
     }
@@ -203,7 +206,7 @@ public class Aplicacion {
 
                 System.out.println("Ya existe un duenio con ese documento.");
                 System.out.println("¿Desea volver a intentar? (s/n)");
-                rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                rta = solicitarRespuestaSiNo();
 
                 if ( rta != 's')
                     return;
@@ -228,7 +231,7 @@ public class Aplicacion {
            this.controladorDuenios.registrarDuenio(nombreDuenio,apellidoDuenio,numeroDocumentoDuenio,telefonoDuenio);
 
             System.out.println("¿Ingresar otro duenio? s/n");
-            rta = scanner.nextLine().toLowerCase().charAt(0);
+            rta = solicitarRespuestaSiNo();
 
         }while (rta == 's');
 
@@ -269,7 +272,7 @@ public class Aplicacion {
                 return;
 
             System.out.println("¿Ingresar otra mascota? s/n");
-            rta = scanner.nextLine().toLowerCase().charAt(0);
+            rta = solicitarRespuestaSiNo();
 
         }while ( rta == 's');
 
@@ -315,7 +318,7 @@ public class Aplicacion {
                 System.out.println("No hay mascotas registradas para este dueño.");
                 System.out.println("¿Desea dar de alta mascotas? (s/n)");
 
-                char rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                char rta = solicitarRespuestaSiNo();
 
                 if (rta != 's')
                     return;
@@ -339,7 +342,7 @@ public class Aplicacion {
             if ( !duenio.tieneMascotas()){
                 System.out.println(duenio.getNombre() + " " + duenio.getApellido() + " no tiene mascotas registradas");
                 System.out.println("¿Desea registrar mascotas? (s/n)");
-                char rta = this.scanner.nextLine().toLowerCase().charAt(0);
+                char rta = solicitarRespuestaSiNo();
 
                 if (rta != 's')
                     return;
@@ -375,7 +378,7 @@ public class Aplicacion {
         System.out.println("No se ha encontrado el dueño con número de documento: " +  documentoDuenio);
         System.out.println("¿Desea darlo de alta? s/n");
 
-        rta = scanner.nextLine().toLowerCase().charAt(0);
+        rta = solicitarRespuestaSiNo();
 
         if (rta != 's')
             return null;
@@ -385,50 +388,51 @@ public class Aplicacion {
 
     private Mascota seleccionarMascota(Duenio duenio){
 
-            Mascota mascotaSeleccionada;
-            List<Mascota> mascotas = duenio.obtenerMascotas();
-            int i = 1;
-            int opcion;
-            int totalMascotas = duenio.cantidadMascotas();
+        List<Mascota> mascotas = duenio.obtenerMascotas();
+        int totalMascotas = duenio.cantidadMascotas();
 
-            for (Mascota mascota : mascotas){
-                System.out.println( i + " - " + mascota.getNombre() + " - " + mascota.getTipo());
-                i++;
-            }
+        int i = 1;
+        for (Mascota mascota : mascotas){
+            System.out.println(i + " - " + mascota.getNombre() + " - " + mascota.getTipo());
+            i++;
+        }
 
+        int opcion;
+        boolean opcionInvalida;
+
+        do {
             System.out.println("Seleccione una opción por favor: ");
-            opcion = Integer.valueOf(this.scanner.nextLine());
 
-            boolean opcionInvalida = (opcion < 1) || (opcion > totalMascotas);
-
-            while (opcionInvalida){
-                System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
-                char rta = this.scanner.nextLine().toLowerCase().charAt(0);
-
-                if (rta != 's')
-                    return null;
-
-                System.out.println("Seleccione una opción por favor: ");
-                opcion = Integer.valueOf(this.scanner.nextLine());
-
-                opcionInvalida = (opcion < 1) || (opcion > totalMascotas);
+            try {
+                opcion = Integer.valueOf(this.scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                opcion = 0;
             }
 
-            mascotaSeleccionada = mascotas.get(opcion-1);
+            opcionInvalida = opcion < 1 || opcion > totalMascotas;
 
-            return mascotaSeleccionada;
+            if (opcionInvalida) {
+                System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
+
+                if (solicitarRespuestaSiNo() != 's')
+                    return null;
+            }
+
+        } while (opcionInvalida);
+
+        return mascotas.get(opcion - 1);
     }
 
     private String solicitarCampoObligatorio(String campo){
 
         char rta;
         System.out.println("Ingrese " + campo + ": ");
-        String valor = this.scanner.nextLine();
+        String valor = this.scanner.nextLine().trim();
 
         while ( valor.isEmpty()){
             System.out.println("El campo " + campo  + " no puede quedar vacío.");
             System.out.println("¿Desea completarlo? (s/n)");
-            rta = this.scanner.nextLine().toLowerCase().charAt(0);
+            rta = solicitarRespuestaSiNo();
             if (rta != 's')
                 return "";
 
@@ -439,6 +443,15 @@ public class Aplicacion {
         return valor;
     }
 
+    private char solicitarRespuestaSiNo(){
+        String caracter = this.scanner.nextLine().toLowerCase().trim();
+
+        if (caracter.isEmpty())
+            return 'n';
+        else
+            return caracter.charAt(0);
+
+    }
 
     //---- INGRESO Y ASOCIACION
     private void registrarMascotasDelDuenio(Duenio duenio){
@@ -449,7 +462,7 @@ public class Aplicacion {
                 return;
 
             System.out.println("¿Ingresar otra mascota? s/n");
-            rta = scanner.nextLine().toLowerCase().charAt(0);
+            rta = solicitarRespuestaSiNo();
 
         }while ( rta == 's');
     }
@@ -460,23 +473,70 @@ public class Aplicacion {
         if (nombre.isEmpty())
             return false;
 
-        String tipo = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
-        if (tipo.isEmpty())
-            return false;
+
+        TipoMascota tipo = null;
+        do {
+            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
+            if (tipoSt.isEmpty())
+                return false;
+
+            try {
+                tipo = TipoMascota.valueOf(tipoSt.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Tipo de mascota incorrecto");
+                tipo = null;
+            }
+        }while ( tipo == null);
+
+
+
+
+
+
 
         String raza = solicitarCampoObligatorio(CAMPO_RAZA);
         if ( raza.isEmpty())
             return false;
 
-        String edad = solicitarCampoObligatorio(CAMPO_EDAD);
-        if (edad.isEmpty())
-            return false;
+        int edad = -1;
+        do {
+            String edadSt = solicitarCampoObligatorio(CAMPO_EDAD);
 
-        String peso = solicitarCampoObligatorio(CAMPO_PESO);
-        if ( peso.isEmpty())
-            return false;
+            if ( edadSt.isEmpty())
+                return false;
 
-        this.controladorDuenios.agregarMascota(duenio,this.controladorMascotas.crearMascota(nombre, tipo, raza, Integer.parseInt(edad), Double.parseDouble(peso)));
+            try{
+
+                edad = Integer.valueOf(edadSt);
+
+            }catch (NumberFormatException e){
+                System.out.println("Edad incorrecta");
+                edad = -1;
+            }
+
+        }while(edad < 0 || edad > 30);
+
+
+        double peso = 0;
+        do{
+            String pesoSt = solicitarCampoObligatorio(CAMPO_PESO);
+            if ( pesoSt.isEmpty())
+                return false;
+
+            try{
+
+                peso = Double.valueOf(pesoSt);
+
+            }catch (NumberFormatException e){
+                System.out.println("Peso incorrecto");
+                peso = 0;
+            }
+
+        }while ( peso <= 0);
+
+
+        this.controladorDuenios.agregarMascota(duenio,this.controladorMascotas.crearMascota(nombre, tipo, raza, edad, peso));
 
         return true;
     }
@@ -492,7 +552,7 @@ public class Aplicacion {
             return;
 
         System.out.println("¿Ingresa diagnóstico? (s/n)");
-        rta = this.scanner.nextLine().toLowerCase().charAt(0);
+        rta = solicitarRespuestaSiNo();
         
         if (rta=='s'){
             System.out.println("Ingrese diagnóstico: ");
@@ -501,7 +561,7 @@ public class Aplicacion {
             
         
         System.out.println("¿Indica tratamiento? (s/n)");
-        rta = this.scanner.nextLine().toLowerCase().charAt(0);
+        rta = solicitarRespuestaSiNo();
         if (rta=='s'){
             System.out.println("Ingrese tratamiento: ");
             tratamiento = this.scanner.nextLine().trim();
@@ -509,7 +569,7 @@ public class Aplicacion {
 
 
         System.out.println("¿Ingresa observaciones? (s/n)");
-        rta = this.scanner.nextLine().toLowerCase().charAt(0);
+        rta = solicitarRespuestaSiNo();
         if (rta=='s'){
             System.out.println("Ingrese observaciones: ");
             observaciones = this.scanner.nextLine().trim();

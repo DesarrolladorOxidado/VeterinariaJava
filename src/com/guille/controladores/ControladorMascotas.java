@@ -9,9 +9,9 @@ public class ControladorMascotas {
 
     }
 
-    public Mascota crearMascota(String nombre, String tipoMascota, String raza, int edad, double peso){
+    public Mascota crearMascota(String nombre, TipoMascota tipoMascota, String raza, int edad, double peso){
 
-        Mascota mascota = new Mascota(nombre, TipoMascota.valueOf(tipoMascota));
+        Mascota mascota = new Mascota(nombre, tipoMascota);
         mascota.setRaza(raza);
         mascota.setEdad(edad);
         mascota.setPeso(peso);

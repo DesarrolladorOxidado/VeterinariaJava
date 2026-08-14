@@ -21,8 +21,10 @@ Actualmente el sistema permite:
 - Registrar veterinarios.
 - Registrar mascotas asociadas a un dueño.
 - Consultar las mascotas pertenecientes a un dueño.
-- Registrar consultas veterinarias.
+- Registrar consultas veterinarias asociadas a una mascota y a un veterinario.
 - Gestionar la historia clínica de cada mascota.
+- Consultar la historia clínica de una mascota y visualizar sus consultas.
+- Registrar la fecha de nacimiento de las mascotas y calcular su edad automáticamente.
 - Mostrar dueños, veterinarios y mascotas registradas.
 - Validar entradas de usuario y controlar entradas inválidas en los principales flujos de la aplicación.
 
@@ -39,14 +41,13 @@ Entre las principales relaciones del modelo se encuentran:
 Duenio → Mascotas  
 Mascota → HistoriaClinica  
 HistoriaClinica → Consultas
+Consulta → Veterinario
 
-La migración inicial hacia MVC se encuentra finalizada. Actualmente el proyecto se encuentra en una etapa de estabilización del modelo y de los flujos existentes antes de incorporar persistencia.
+La migración inicial hacia MVC se encuentra finalizada. Los principales flujos de la aplicación cuentan actualmente con validaciones y manejo de entradas inválidas. El proyecto continúa evolucionando de forma incremental antes de incorporar persistencia.
 
 ## Próximos pasos
 
-- Reemplazar la edad de la mascota por su fecha de nacimiento.
-- Revisar el manejo de fechas utilizando `java.time`.
-- Completar la asociación del veterinario con las consultas.
+- Mejorar la presentación de la información de las consultas.
 - Incorporar pruebas automatizadas.
 - Preparar el modelo para incorporar persistencia de datos.
 

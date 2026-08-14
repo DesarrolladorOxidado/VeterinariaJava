@@ -43,8 +43,9 @@ public class Aplicacion {
         this.controladorMascotas = new ControladorMascotas();
         this.controladorConsultas = new ControladorConsultas();
         this.controladorHistoriasClinicas = new ControladorHistoriasClinicas();
-
+        
     }
+
 
     public void ejecutar(){
 
@@ -425,6 +426,13 @@ public class Aplicacion {
         System.out.println("Fecha creación: " + formatearFechaHora(historiaClinica.getFechaCreacion()));
         System.out.println("Ultima actualización: " + formatearFechaHora(historiaClinica.getFechaActualizacion()));
 
+        consultarConsultasDeHistoriaClinica(historiaClinica);
+
+        continuar();
+
+    }
+
+    private void consultarConsultasDeHistoriaClinica(HistoriaClinica historiaClinica){
         List<Consulta> consultas = historiaClinica.obtenerConsultas();
         int cantidadConsultas = consultas.size();
         int i = 1;
@@ -461,9 +469,6 @@ public class Aplicacion {
             rta = solicitarRespuestaSiNo();
 
         }while (rta == 's');
-
-        continuar();
-
 
     }
 

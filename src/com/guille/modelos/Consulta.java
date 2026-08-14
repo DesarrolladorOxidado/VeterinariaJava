@@ -1,6 +1,6 @@
 package com.guille.modelos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Consulta {
 
@@ -9,7 +9,7 @@ public class Consulta {
     private static final String CAMPO_OBSERVACIONES_INCOMPLETO = "Sin observaciones";
 
     //La fecha no se modifica, se establece únicamente al crear la consulta
-    private Date fecha;
+    private final LocalDateTime fecha;
     private String motivo;
     private String diagnostico;
     private String tratamiento;
@@ -18,7 +18,7 @@ public class Consulta {
     private Veterinario veterinario;
 
     public Consulta( String motivo) {
-        this.fecha = new Date();
+        this.fecha = LocalDateTime.now();
         this.motivo = motivo;
 
         this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
@@ -26,7 +26,7 @@ public class Consulta {
         this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
     }
 
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 

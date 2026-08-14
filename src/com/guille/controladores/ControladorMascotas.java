@@ -3,17 +3,19 @@ package com.guille.controladores;
 import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoMascota;
 
+import java.time.LocalDate;
+
 public class ControladorMascotas {
 
     public ControladorMascotas(){
 
     }
 
-    public Mascota crearMascota(String nombre, TipoMascota tipoMascota, String raza, int edad, double peso){
+    public Mascota crearMascota(String nombre, TipoMascota tipoMascota, String raza, LocalDate fechaNacimiento, double peso){
 
         Mascota mascota = new Mascota(nombre, tipoMascota);
         mascota.setRaza(raza);
-        mascota.setEdad(edad);
+        mascota.setFechaNacimiento(fechaNacimiento);
         mascota.setPeso(peso);
 
         return mascota;

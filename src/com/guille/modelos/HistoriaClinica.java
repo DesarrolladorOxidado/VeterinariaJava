@@ -1,26 +1,26 @@
 package com.guille.modelos;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class HistoriaClinica {
 
-    private Date fechaCreacion;
-    private Date fechaActualizacion;
-    private List<Consulta> consultas;
+    private final LocalDateTime fechaCreacion;
+    private LocalDateTime fechaActualizacion;
+    private final List<Consulta> consultas;
 
     public HistoriaClinica() {
-        this.fechaCreacion = new Date();
+        this.fechaCreacion = LocalDateTime.now();
         this.fechaActualizacion = this.fechaCreacion;
         this.consultas = new ArrayList<>();
     }
 
-    public Date getFechaActualizacion() {
+    public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public Date getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Duenio extends Persona {
 
-    private List<Mascota> mascotas;
+    private final List<Mascota> mascotas;
 
     public Duenio(String nombre, String apellido, String numero_documento, String telefono) {
         super(nombre, apellido, numero_documento, telefono);

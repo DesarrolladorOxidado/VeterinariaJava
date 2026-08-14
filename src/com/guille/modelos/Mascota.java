@@ -1,12 +1,14 @@
 package com.guille.modelos;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 public class Mascota {
 
     private String nombre;
     private TipoMascota tipo;
     private String raza;
-    //TODO: la edad es un campo calculado, debo reemplazar por fechaNacimiento y calcular la edad
-    private int edad;
+    private LocalDate fechaNacimiento;
     private double peso;
     private HistoriaClinica historiaClinica;
 
@@ -46,13 +48,17 @@ public class Mascota {
         this.raza = raza;
     }
 
-    public int getEdad() {
-        return edad;
+    public LocalDate getFechaNacimiento(){
+        return this.fechaNacimiento;
+    }
+    public void setFechaNacimiento(LocalDate fechaNacimiento){
+        this.fechaNacimiento = fechaNacimiento;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public int getEdad() {
+        return Period.between(this.fechaNacimiento,LocalDate.now()).getYears();
     }
+
 
     public double getPeso() {
         return peso;
@@ -70,7 +76,8 @@ public class Mascota {
                 "nombre='" + nombre + '\'' +
                 ", tipo=" + tipo +
                 ", raza='" + raza + '\'' +
-                ", edad=" + edad +
+                ", fecha nacimiento = " + fechaNacimiento +
+                ", edad=" + getEdad() +
                 ", peso=" + peso +
                 ", historiaClinica=" + historiaClinica +
                 '}';

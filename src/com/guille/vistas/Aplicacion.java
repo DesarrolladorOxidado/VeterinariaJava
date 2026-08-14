@@ -3,6 +3,11 @@ package com.guille.vistas;
 import com.guille.controladores.*;
 import com.guille.modelos.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,9 +22,10 @@ public class Aplicacion {
     private static final String CAMPO_NOMBRE_MASCOTA = "nombre de la mascota";
     private static final String CAMPO_TIPO_MASCOTA = "tipo mascota";
     private static final String CAMPO_RAZA = "raza";
-    private static final String CAMPO_EDAD = "edad";
     private static final String CAMPO_PESO = "peso";
+    private static final String CAMPO_FECHA_NACIMIENTO = "fecha de nacimiento (día/mes/año)";
 
+    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private Scanner scanner;
 
@@ -489,34 +495,33 @@ public class Aplicacion {
             }
         }while ( tipo == null);
 
-
-
-
-
-
-
         String raza = solicitarCampoObligatorio(CAMPO_RAZA);
         if ( raza.isEmpty())
             return false;
 
-        int edad = -1;
-        do {
-            String edadSt = solicitarCampoObligatorio(CAMPO_EDAD);
+        LocalDate fechaNacimiento = null;
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
+        do{
+            String fechaNacimientoSt = solicitarCampoObligatorio(CAMPO_FECHA_NACIMIENTO);
 
-            if ( edadSt.isEmpty())
+            if ( fechaNacimientoSt.isEmpty())
                 return false;
 
             try{
 
-                edad = Integer.valueOf(edadSt);
+                fechaNacimiento = LocalDate.parse(fechaNacimientoSt, formatoFecha);
 
-            }catch (NumberFormatException e){
-                System.out.println("Edad incorrecta");
-                edad = -1;
+                if ( fechaNacimiento.isAfter(LocalDate.now())){
+                    System.out.println("La fecha de nacimiento no puede ser posterior a la fecha actual");
+                    fechaNacimiento = null;
+                }
+
+            }catch ( DateTimeParseException e ){
+                System.out.println("El formato de fecha ingresado es inválido");
+                fechaNacimiento = null;
             }
 
-        }while(edad < 0 || edad > 30);
-
+        }while (fechaNacimiento == null );
 
         double peso = 0;
         do{
@@ -536,7 +541,7 @@ public class Aplicacion {
         }while ( peso <= 0);
 
 
-        this.controladorDuenios.agregarMascota(duenio,this.controladorMascotas.crearMascota(nombre, tipo, raza, edad, peso));
+        this.controladorDuenios.agregarMascota(duenio,this.controladorMascotas.crearMascota(nombre, tipo, raza, fechaNacimiento, peso));
 
         return true;
     }
@@ -588,7 +593,9 @@ public class Aplicacion {
         }
     }
 
-
+    private String formatearFechaHora(LocalDateTime fechaHora ){
+        return fechaHora.format(FORMATO_FECHA_HORA);
+    }
 }
 
 

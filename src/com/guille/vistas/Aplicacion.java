@@ -43,6 +43,7 @@ public class Aplicacion {
         this.controladorMascotas = new ControladorMascotas();
         this.controladorConsultas = new ControladorConsultas();
         this.controladorHistoriasClinicas = new ControladorHistoriasClinicas();
+
     }
 
     public void ejecutar(){
@@ -63,7 +64,11 @@ public class Aplicacion {
             System.out.println("4 - Mostrar veterinarios");
             System.out.println("5 - Mostrar dueños");
             System.out.println("6 - Mostrar mascotas de un dueño");
-            System.out.println("7 - Nueva consulta");
+
+            if ( this.controladorVeterinarios.cantidadVeterinarios() > 0 )
+                System.out.println("7 - Nueva consulta");
+
+            System.out.println("8 - Consultar historia clínica");
             System.out.println("0 - Salir");
 
             try {
@@ -106,9 +111,18 @@ public class Aplicacion {
 
                 }
                 case 7 -> {
-                    System.out.println("*** Nueva consulta ***");
 
-                    nuevaConsulta();
+                    if ( this.controladorVeterinarios.cantidadVeterinarios() > 0) {
+                        System.out.println("*** Nueva consulta ***");
+                        nuevaConsulta();
+                    }else{
+                        System.out.println("No se puede registrar una consulta porque no hay veterinarios registrados");
+                        continuar();
+                    }
+                }
+                case 8 -> {
+                    System.out.println("*** Consultar historia clínica ***");
+                    consultarHistoriaClinica();
                 }
                 case 0 -> {
 
@@ -341,6 +355,12 @@ public class Aplicacion {
 
     private void nuevaConsulta(){
 
+        Veterinario veterinario = seleccionarVeterinario();
+
+        if (veterinario == null)
+            return;
+
+
         Duenio duenio = obtenerDuenioParaMascota();
 
         if ( duenio != null ){
@@ -359,10 +379,92 @@ public class Aplicacion {
             Mascota mascota = seleccionarMascota(duenio);
 
             if (mascota!=null) {
-                registrarConsulta(mascota);
+                registrarConsulta(mascota,veterinario);
                 continuar();
             }
         }
+    }
+
+    private void consultarHistoriaClinica(){
+        String documento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
+
+        if ( documento.isEmpty()){
+            return;
+        }
+
+        Duenio duenio = this.controladorDuenios.obtenerDuenioPorDocumento(documento);
+
+        if ( duenio == null){
+            System.out.println("No se ha encontrado dueño con el documento especificado");
+            continuar();
+            return;
+        }
+
+        if ( !duenio.tieneMascotas()) {
+            System.out.println("No cuenta con mascotas registradas");
+            continuar();
+            return;
+        }
+
+        Mascota mascota = seleccionarMascota(duenio);
+
+        if (mascota == null) {
+            System.out.println("No se ha seleccionado ninguna mascota");
+            continuar();
+            return;
+        }
+
+        HistoriaClinica historiaClinica = mascota.getHistoriaClinica();
+        if ( historiaClinica.obtenerConsultas().isEmpty()){
+            System.out.println("No hay consultas");
+            continuar();
+            return;
+        }
+
+        System.out.println("Historia clínica de: " + mascota.getNombre());
+        System.out.println("Fecha creación: " + formatearFechaHora(historiaClinica.getFechaCreacion()));
+        System.out.println("Ultima actualización: " + formatearFechaHora(historiaClinica.getFechaActualizacion()));
+
+        List<Consulta> consultas = historiaClinica.obtenerConsultas();
+        int cantidadConsultas = consultas.size();
+        int i = 1;
+
+        for( Consulta consulta : consultas) {
+            System.out.println( i + " - " + consulta.getMotivo() + " - Fecha: " + formatearFechaHora(consulta.getFecha()));
+            i++;
+        }
+
+        int opcion = -1;
+        boolean opcionValida;
+        char rta;
+        do {
+            System.out.println("Seleccione una consulta para ver el detalle: ");
+
+            do {
+                try {
+                    opcion = Integer.valueOf(this.scanner.nextLine().trim());
+                } catch (NumberFormatException e) {
+                    opcion = -1;
+                }
+
+                opcionValida = (opcion > 0) && (opcion <= cantidadConsultas);
+
+                if (!opcionValida)
+                    System.out.println("Opción incorrecta, por favor vuelva a intentarlo");
+
+            }while (!opcionValida);
+
+            System.out.println("Detalle de la consulta:");
+            System.out.println(consultas.get(opcion-1));
+
+            System.out.println("¿Ver otra consulta? (s/n)");
+            rta = solicitarRespuestaSiNo();
+
+        }while (rta == 's');
+
+        continuar();
+
+
     }
 
     /* ----------------------- ------------------------------*/
@@ -427,6 +529,39 @@ public class Aplicacion {
         } while (opcionInvalida);
 
         return mascotas.get(opcion - 1);
+    }
+
+    private Veterinario seleccionarVeterinario(){
+
+        int totalVeterinarios = this.controladorVeterinarios.cantidadVeterinarios();
+
+        for ( int i = 0; i < totalVeterinarios; i++)
+            System.out.println( (i+1) + " - " + this.controladorVeterinarios.obtenerVeterinarioPorIndice(i));
+
+        int opcion = -1;
+        boolean opcionInvalida;
+
+        do{
+            System.out.println("Por favor, elija un veterinario: ");
+            try{
+                opcion = Integer.valueOf(this.scanner.nextLine().trim());
+            }catch ( NumberFormatException e ){
+                opcion  = -1;
+            }
+
+            opcionInvalida = opcion < 1 || opcion > totalVeterinarios;
+
+            if (opcionInvalida) {
+                System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
+
+                if (solicitarRespuestaSiNo() != 's')
+                    return null;
+            }
+
+        }while ( opcionInvalida);
+
+        return this.controladorVeterinarios.obtenerVeterinarioPorIndice(opcion-1);
+
     }
 
     private String solicitarCampoObligatorio(String campo){
@@ -546,7 +681,7 @@ public class Aplicacion {
         return true;
     }
 
-    private void registrarConsulta(Mascota mascota){
+    private void registrarConsulta(Mascota mascota, Veterinario veterinario){
         char rta;
         String diagnostico = "";
         String tratamiento = "";
@@ -580,7 +715,7 @@ public class Aplicacion {
             observaciones = this.scanner.nextLine().trim();
         }
 
-        this.controladorHistoriasClinicas.agregarConsultaHistoriaClinica(mascota,this.controladorConsultas.crearConsulta(motivo,diagnostico,tratamiento,observaciones));
+        this.controladorHistoriasClinicas.agregarConsultaHistoriaClinica(mascota,this.controladorConsultas.crearConsulta(motivo,diagnostico,tratamiento,observaciones,veterinario));
 
     }
 
@@ -596,6 +731,8 @@ public class Aplicacion {
     private String formatearFechaHora(LocalDateTime fechaHora ){
         return fechaHora.format(FORMATO_FECHA_HORA);
     }
+
 }
+
 
 

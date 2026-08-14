@@ -15,11 +15,12 @@ public class Consulta {
     private String tratamiento;
     private String observaciones;
     //El veterinario no puede modificarse, se establece al crear la consulta
-    private Veterinario veterinario;
+    private final Veterinario veterinario;
 
-    public Consulta( String motivo) {
+    public Consulta( String motivo, Veterinario veterinario) {
         this.fecha = LocalDateTime.now();
         this.motivo = motivo;
+        this.veterinario = veterinario;
 
         this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
         this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;

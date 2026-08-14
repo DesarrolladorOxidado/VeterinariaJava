@@ -12,7 +12,7 @@ public class ControladorDuenios {
 
     public ControladorDuenios(){
         this.duenios = new ArrayList<>();
-        cargarDueniosPrueba();
+        //cargarDueniosPrueba();
     }
 
     private void cargarDueniosPrueba() {

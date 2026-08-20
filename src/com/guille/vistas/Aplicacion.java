@@ -462,8 +462,8 @@ public class Aplicacion {
 
             }while (!opcionValida);
 
-            System.out.println("Detalle de la consulta:");
-            System.out.println(consultas.get(opcion-1));
+            System.out.println("** Detalle de la consulta:");
+            mostrarDetalleConsulta(consultas.get(opcion-1));
 
             System.out.println("¿Ver otra consulta? (s/n)");
             rta = solicitarRespuestaSiNo();
@@ -731,6 +731,18 @@ public class Aplicacion {
         for(Mascota mascota : mascotas){
             System.out.println(mascota);
         }
+    }
+
+    private void mostrarDetalleConsulta(Consulta consulta) {
+
+        System.out.println("* Fecha de la consulta: " + formatearFechaHora(consulta.getFecha()));
+        System.out.println("* Motivo: " + consulta.getMotivo());
+        System.out.println("* Diagnóstico: " + consulta.getDiagnostico());
+        System.out.println("* Tratamiento: " + consulta.getTratamiento());
+        System.out.println("* Observaciones: " + consulta.getObservaciones());
+        System.out.println("* Atendido por: " + consulta.getVeterinario().getNombre() + " " + consulta.getVeterinario().getApellido());
+
+
     }
 
     private String formatearFechaHora(LocalDateTime fechaHora ){

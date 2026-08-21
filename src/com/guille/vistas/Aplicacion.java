@@ -43,7 +43,7 @@ public class Aplicacion {
         this.controladorMascotas = new ControladorMascotas();
         this.controladorConsultas = new ControladorConsultas();
         this.controladorHistoriasClinicas = new ControladorHistoriasClinicas();
-        
+
     }
 
 

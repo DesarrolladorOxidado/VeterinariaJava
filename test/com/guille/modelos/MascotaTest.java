@@ -9,8 +9,6 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class MascotaTest {
 
     private Mascota mascota;

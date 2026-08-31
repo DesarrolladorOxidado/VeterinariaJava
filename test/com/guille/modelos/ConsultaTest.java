@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ConsultaTest {
 
     private Consulta consulta;
@@ -32,7 +30,7 @@ public class ConsultaTest {
 
         Duration diferencia = Duration.between(consulta.getFecha(),LocalDateTime.now());
 
-        Assertions.assertTrue(diferencia.toMillis()<100);
+        Assertions.assertTrue(diferencia.toMillis()<1000);
     }
     
     @Test

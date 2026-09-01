@@ -1,0 +1,9 @@
+CREATE TABLE TIPOS_DOCUMENTOS(
+id_tipo_documento VARCHAR(10) PRIMARY KEY,
+descripcion_documento VARCHAR(50) NOT NULL
+)
+
+CREATE TABLE TIPOS_MASCOTAS(
+id_tipo_mascota VARCHAR(10) PRIMARY KEY,
+descripcion_tipo_mascota VARCHAR(50) NOT NULL
+)

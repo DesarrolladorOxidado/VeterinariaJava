@@ -8,6 +8,8 @@ public class Consulta {
     private static final String CAMPO_TRATAMIENTO_INCOMPLETO = "Sin tratamiento";
     private static final String CAMPO_OBSERVACIONES_INCOMPLETO = "Sin observaciones";
 
+
+    private int id;
     //La fecha no se modifica, se establece únicamente al crear la consulta
     private final LocalDateTime fecha;
     private String motivo;
@@ -26,6 +28,20 @@ public class Consulta {
         this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;
         this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
     }
+
+    public Consulta( int id, String motivo, Veterinario veterinario) {
+        this.id = id;
+
+        this.fecha = LocalDateTime.now();
+        this.motivo = motivo;
+        this.veterinario = veterinario;
+
+        this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
+        this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;
+        this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
+    }
+
+    public int getId(){ return this.id; }
 
     public LocalDateTime getFecha() {
         return fecha;

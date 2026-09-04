@@ -5,6 +5,7 @@ import java.time.Period;
 
 public class Mascota {
 
+    private int id;
     private String nombre;
     private TipoMascota tipo;
     private String raza;
@@ -18,6 +19,14 @@ public class Mascota {
         this.historiaClinica = new HistoriaClinica();
     }
 
+    public Mascota(int id, String nombre, TipoMascota tipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.historiaClinica = new HistoriaClinica();
+    }
+
+    public int getId(){ return this.id; }
     public String getNombre() {
         return nombre;
     }

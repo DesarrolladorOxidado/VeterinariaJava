@@ -2,77 +2,40 @@ package com.guille.controladores;
 
 import com.guille.modelos.Duenio;
 import com.guille.modelos.Mascota;
+import com.guille.modelos.TipoDocumento;
+import com.guille.persistencia.dao.DuenioDAO;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ControladorDuenios {
 
-    private List<Duenio> duenios;
+    private DuenioDAO duenioDAO;
 
     public ControladorDuenios(){
-        this.duenios = new ArrayList<>();
-        //cargarDueniosPrueba();
+        this.duenioDAO = new DuenioDAO();
     }
 
-    private void cargarDueniosPrueba() {
-
-        this.duenios.add(new Duenio(
-                "Juan",
-                "Pérez",
-                "30111222",
-                "2234567890"));
-
-        this.duenios.add(new Duenio(
-                "María",
-                "Gómez",
-                "27888999",
-                "2234112233"));
-
-        this.duenios.add(new Duenio(
-                "Carlos",
-                "Rodríguez",
-                "32444555",
-                "2234998877"));
-
-        this.duenios.add(new Duenio(
-                "Laura",
-                "Fernández",
-                "35666777",
-                "2234556677"));
+    private Duenio crearDuenio( String nombre, String apellido, TipoDocumento tipoDocumento,String numeroDocumento, String telefono){
+        return new Duenio(nombre,apellido,tipoDocumento,numeroDocumento,telefono);
     }
 
-    private Duenio crearDuenio(String nombre, String apellido, String numeroDocumento, String telefono){
-        return new Duenio(nombre,apellido,numeroDocumento,telefono);
+    public Duenio registrarDuenio(String nombre, String apellido,TipoDocumento tipoDocumento, String numeroDocumento, String telefono) throws SQLException{
+        Duenio duenio = crearDuenio(nombre,apellido,tipoDocumento,numeroDocumento,telefono);
+        return this.duenioDAO.registrarDuenio(duenio);
+
     }
 
-    public Duenio registrarDuenio(String nombre, String apellido, String numeroDocumento, String telefono){
-        Duenio resultado = crearDuenio(nombre,apellido,numeroDocumento,telefono);
-        this.duenios.add(resultado);
-        return resultado;
+    public boolean existeDuenioConDocumento(TipoDocumento tipoDocumento, String documento) throws SQLException{
+        return obtenerDuenioPorDocumento(tipoDocumento,documento) != null;
     }
 
-    public boolean existeDuenioConDocumento(String documento){
-        return obtenerDuenioPorDocumento(documento) != null;
+    public List<Duenio> obtenerDuenios() throws SQLException {
+        return this.duenioDAO.obtenerDuenios();
     }
 
-    public int cantidadDuenios(){
-        return this.duenios.size();
-    }
-
-    public boolean existenDuenios(){
-        return !this.duenios.isEmpty();
-    }
-
-    public Duenio obtenerDuenioPorIndice(int indice){
-        return this.duenios.get(indice);
-    }
-
-    public Duenio obtenerDuenioPorDocumento(String documento){
-        for ( Duenio duenio : this.duenios)
-            if ( duenio.getNumeroDocumento().equals(documento))
-                return duenio;
-        return null;
+    public Duenio obtenerDuenioPorDocumento(TipoDocumento tipoDocumento, String numeroDocumento) throws SQLException{
+        return this.duenioDAO.obtenerDuenioPorDocumento(tipoDocumento,numeroDocumento);
     }
 
     public void agregarMascota(Duenio duenio, Mascota mascota){

@@ -3,6 +3,7 @@ package com.guille.vistas;
 import com.guille.controladores.*;
 import com.guille.modelos.*;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,7 @@ public class Aplicacion {
 
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_APELLIDO = "apellido";
+    private static final String CAMPO_TIPO_DOCUMENTO = "tipo documento";
     private static final String CAMPO_DOCUMENTO = "documento";
     private static final String CAMPO_TELEFONO = "teléfono";
     private static final String CAMPO_MATRICULA = "matrícula";
@@ -155,13 +157,29 @@ public class Aplicacion {
              String numeroDocumentoVeterinario;
              String matriculaVeterinario;
 
+             TipoDocumento tipoDocumentoVeterinario = null;
+             do {
+                 String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+                 if (tipoSt.isEmpty())
+                     return;
+
+                 try {
+                     tipoDocumentoVeterinario = TipoDocumento.valueOf(tipoSt.toUpperCase());
+
+                 } catch (IllegalArgumentException e) {
+                     System.out.println("Tipo de documento incorrecto");
+                     tipoDocumentoVeterinario = null;
+                 }
+             }while ( tipoDocumentoVeterinario == null);
+
+
              do {
 
                  numeroDocumentoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_DOCUMENTO);
                  if (numeroDocumentoVeterinario.isEmpty())
                      return;
 
-                 if (!this.controladorVeterinarios.existeVeterinarioConDocumento(numeroDocumentoVeterinario))
+                 if (!this.controladorVeterinarios.existeVeterinarioConDocumento(tipoDocumentoVeterinario,numeroDocumentoVeterinario))
                      break;
 
                  System.out.println("Ya existe un veterinario con el número de documento " + numeroDocumentoVeterinario);
@@ -202,7 +220,7 @@ public class Aplicacion {
              if (telefonoVeterinario.isEmpty())
                  return;
 
-             this.controladorVeterinarios.registrarVeterinario(nombreVeterinario,apellidoVeterinario,numeroDocumentoVeterinario,telefonoVeterinario,matriculaVeterinario);
+             this.controladorVeterinarios.registrarVeterinario(nombreVeterinario,apellidoVeterinario,tipoDocumentoVeterinario,numeroDocumentoVeterinario,telefonoVeterinario,matriculaVeterinario);
 
              System.out.println("¿Ingresar otro veterinario? s/n");
              rta = solicitarRespuestaSiNo();
@@ -216,15 +234,35 @@ public class Aplicacion {
         do{
 
             String numeroDocumentoDuenio;
-
+            TipoDocumento tipoDocumentoDuenio = null;
             do {
+
+                do {
+                    String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+                    if (tipoSt.isEmpty())
+                        return;
+
+                    try {
+                        tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Tipo de documento incorrecto");
+                        tipoDocumentoDuenio = null;
+                    }
+                }while ( tipoDocumentoDuenio == null);
+
+
                 numeroDocumentoDuenio = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
                 if (numeroDocumentoDuenio.isEmpty())
                     return;
 
-                if (!this.controladorDuenios.existeDuenioConDocumento(numeroDocumentoDuenio))
-                    break;
-
+                try {
+                    if (!this.controladorDuenios.existeDuenioConDocumento(tipoDocumentoDuenio, numeroDocumentoDuenio))
+                        break;
+                }catch (SQLException e ){
+                    System.out.println(e.getMessage());
+                    return;
+                }
                 System.out.println("Ya existe un duenio con ese documento.");
                 System.out.println("¿Desea volver a intentar? (s/n)");
                 rta = solicitarRespuestaSiNo();
@@ -249,7 +287,12 @@ public class Aplicacion {
                 return;
             }
 
-           this.controladorDuenios.registrarDuenio(nombreDuenio,apellidoDuenio,numeroDocumentoDuenio,telefonoDuenio);
+            try {
+                this.controladorDuenios.registrarDuenio(nombreDuenio, apellidoDuenio, tipoDocumentoDuenio, numeroDocumentoDuenio, telefonoDuenio);
+            }catch (SQLException e ){
+                System.out.println(e.getMessage());
+                return;
+            }
 
             System.out.println("¿Ingresar otro duenio? s/n");
             rta = solicitarRespuestaSiNo();
@@ -258,7 +301,7 @@ public class Aplicacion {
 
     }
 
-    private Duenio registrarDuenio(String numeroDocumentoDuenio){
+    private Duenio registrarDuenio(TipoDocumento tipoDocumentoDuenio,String numeroDocumentoDuenio){
 
         String nombreDuenio;
         String apellidoDuenio;
@@ -276,7 +319,12 @@ public class Aplicacion {
         if ( telefonoDuenio.isEmpty())
             return null;
 
-        return this.controladorDuenios.registrarDuenio(nombreDuenio,apellidoDuenio,numeroDocumentoDuenio,telefonoDuenio);
+        try {
+            return this.controladorDuenios.registrarDuenio(nombreDuenio, apellidoDuenio, tipoDocumentoDuenio, numeroDocumentoDuenio, telefonoDuenio);
+        }catch (SQLException e ){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     private void registrarMascotasDelDuenio() {
@@ -313,23 +361,62 @@ public class Aplicacion {
     }
 
     private void mostrarDuenios(){
-        int cantidadDuenios = this.controladorDuenios.cantidadDuenios();
+
+        try{
+            List<Duenio> duenios = this.controladorDuenios.obtenerDuenios();
+
+            if ( duenios.isEmpty() ){
+                System.out.println("No hay dueños registrados");
+                return;
+            }
+
+            for ( Duenio duenio : duenios ){
+                System.out.println(duenio);
+            }
+
+        }catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
+
+        /*int cantidadDuenios = this.controladorDuenios.cantidadDuenios();
         if (cantidadDuenios>0) {
             for (int i = 0; i < cantidadDuenios; i++) {
                 System.out.println(this.controladorDuenios.obtenerDuenioPorIndice(i));
             }
         }else {
             System.out.println("No existen dueños aún");
-        }
+        }*/
     }
 
     private void mostrarMascotas(){
+
+        TipoDocumento tipoDocumentoDuenio = null;
+        do {
+            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+            if (tipoSt.isEmpty())
+                return;
+
+            try {
+                tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Tipo de documento incorrecto");
+                tipoDocumentoDuenio = null;
+            }
+        }while ( tipoDocumentoDuenio == null);
+
 
         String numeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
         if (numeroDocumento.isEmpty())
             return;
 
-        Duenio duenio = this.controladorDuenios.obtenerDuenioPorDocumento(numeroDocumento);
+        Duenio duenio = null;
+        try {
+             duenio = this.controladorDuenios.obtenerDuenioPorDocumento(tipoDocumentoDuenio, numeroDocumento);
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+            return;
+        }
 
         if ( duenio != null ){
 
@@ -387,13 +474,34 @@ public class Aplicacion {
     }
 
     private void consultarHistoriaClinica(){
+        TipoDocumento tipoDocumento = null;
+        do {
+            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+            if (tipoSt.isEmpty())
+                return;
+
+            try {
+                tipoDocumento = TipoDocumento.valueOf(tipoSt.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Tipo de documento incorrecto");
+                tipoDocumento = null;
+            }
+        }while ( tipoDocumento == null);
+
         String documento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
 
         if ( documento.isEmpty()){
             return;
         }
 
-        Duenio duenio = this.controladorDuenios.obtenerDuenioPorDocumento(documento);
+        Duenio duenio = null;
+        try {
+             duenio = this.controladorDuenios.obtenerDuenioPorDocumento(tipoDocumento, documento);
+        }catch (SQLException e ){
+            System.out.println(e.getMessage());
+            return;
+        }
 
         if ( duenio == null){
             System.out.println("No se ha encontrado dueño con el documento especificado");
@@ -478,12 +586,35 @@ public class Aplicacion {
     //---BUSQUEDA Y DEVOLUCIÓN
     private Duenio obtenerDuenioParaMascota(){
         char rta;
+
+        TipoDocumento tipoDocumentoDuenio = null;
+        do {
+            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+            if (tipoSt.isEmpty())
+                return null;
+
+            try {
+                tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Tipo de documento incorrecto");
+                tipoDocumentoDuenio = null;
+            }
+        }while ( tipoDocumentoDuenio == null);
+
+
         String documentoDuenio = solicitarCampoObligatorio(Aplicacion.CAMPO_DOCUMENTO);
 
         if (documentoDuenio.isEmpty())
             return null;
 
-        Duenio duenio = this.controladorDuenios.obtenerDuenioPorDocumento(documentoDuenio);
+        Duenio duenio = null;
+        try {
+            duenio = this.controladorDuenios.obtenerDuenioPorDocumento(tipoDocumentoDuenio, documentoDuenio);
+        }catch (SQLException e ){
+            System.out.println(e.getMessage());
+            return null;
+        }
 
         if ( duenio != null)
             return duenio;
@@ -496,7 +627,7 @@ public class Aplicacion {
         if (rta != 's')
             return null;
 
-        return registrarDuenio(documentoDuenio);
+        return registrarDuenio(tipoDocumentoDuenio,documentoDuenio);
     }
 
     private Mascota seleccionarMascota(Duenio duenio){

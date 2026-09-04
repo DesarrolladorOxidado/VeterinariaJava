@@ -5,14 +5,22 @@ import java.util.List;
 
 public class Duenio extends Persona {
 
+    private int idDuenio;
+
     private final List<Mascota> mascotas;
 
-    public Duenio(String nombre, String apellido, String numero_documento, String telefono) {
-        super(nombre, apellido, numero_documento, telefono);
-
+    public Duenio(String nombre, String apellido,TipoDocumento tipoDocumento, String numero_documento, String telefono) {
+        super(nombre, apellido, tipoDocumento, numero_documento, telefono);
         this.mascotas = new ArrayList<>();
     }
 
+    public Duenio(int idDuenio, String nombre, String apellido,TipoDocumento tipoDocumento, String numero_documento, String telefono) {
+        super(nombre, apellido, tipoDocumento, numero_documento, telefono);
+        this.idDuenio = idDuenio;
+        this.mascotas = new ArrayList<>();
+    }
+
+    public int getIdDuenio(){ return this.idDuenio; }
     public void agregarMascota( Mascota mascota){
         this.mascotas.add(mascota);
     }
@@ -51,6 +59,6 @@ public class Duenio extends Persona {
 
     @Override
     public String toString() {
-        return "Duenio { " + super.toString() + "} ";
+        return "Duenio { idDuenio = " + this.idDuenio + ", " + super.toString() + "} ";
     }
 }

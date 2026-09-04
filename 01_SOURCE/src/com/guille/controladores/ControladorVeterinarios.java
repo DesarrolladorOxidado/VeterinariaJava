@@ -1,5 +1,6 @@
 package com.guille.controladores;
 
+import com.guille.modelos.TipoDocumento;
 import com.guille.modelos.Veterinario;
 
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ public class ControladorVeterinarios {
         this.veterinarios = new ArrayList<>();
     }
 
-    private Veterinario crearVeterinario(String nombre,String apellido,String numeroDocumento, String telefono, String matricula){
-        return new Veterinario(nombre,apellido,numeroDocumento,telefono,matricula);
+    private Veterinario crearVeterinario( String nombre, String apellido, TipoDocumento tipoDocumento,String numeroDocumento, String telefono, String matricula){
+        return new Veterinario(nombre,apellido,tipoDocumento,numeroDocumento,telefono,matricula);
     }
 
-    public Veterinario registrarVeterinario(String nombre,String apellido,String numeroDocumento, String telefono, String matricula){
-        Veterinario resultado = crearVeterinario(nombre,apellido,numeroDocumento,telefono,matricula);
+    public Veterinario registrarVeterinario(String nombre,String apellido,TipoDocumento tipoDocumento,String numeroDocumento, String telefono, String matricula){
+        Veterinario resultado = crearVeterinario(nombre,apellido,tipoDocumento,numeroDocumento,telefono,matricula);
         this.veterinarios.add(resultado);
         return resultado;
     }
@@ -31,9 +32,9 @@ public class ControladorVeterinarios {
         return null;
     }
 
-    public Veterinario obtenerVeterinarioConDocumento(String documento){
+    public Veterinario obtenerVeterinarioConDocumento(TipoDocumento tipoDocumento, String documento){
         for (Veterinario veterinario : this.veterinarios){
-            if ( veterinario.getNumeroDocumento().equals(documento))
+            if ( veterinario.getTipoDocumento() == tipoDocumento && veterinario.getNumeroDocumento().equals(documento))
                 return veterinario;
         }
         return null;
@@ -51,9 +52,8 @@ public class ControladorVeterinarios {
         return !this.veterinarios.isEmpty();
     }
 
-    public boolean existeVeterinarioConDocumento(String documento){
-
-        return obtenerVeterinarioConDocumento(documento) != null;
+    public boolean existeVeterinarioConDocumento(TipoDocumento tipoDocumento, String documento){
+        return obtenerVeterinarioConDocumento(tipoDocumento, documento) != null;
     }
 
     public boolean existeVeterinarioConMatricula(String matricula){

@@ -6,6 +6,7 @@ import java.util.List;
 
 public class HistoriaClinica {
 
+    private int id;
     private final LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
     private final List<Consulta> consultas;
@@ -15,6 +16,15 @@ public class HistoriaClinica {
         this.fechaActualizacion = this.fechaCreacion;
         this.consultas = new ArrayList<>();
     }
+
+    public HistoriaClinica(int id) {
+        this.id = id;
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaActualizacion = this.fechaCreacion;
+        this.consultas = new ArrayList<>();
+    }
+
+    public int getId(){ return this.id; }
 
     public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;

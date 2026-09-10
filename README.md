@@ -1,14 +1,16 @@
 # VeterinariaJava
 
-Proyecto de práctica desarrollado en Java con el objetivo de reforzar conceptos de Programación Orientada a Objetos, arquitectura MVC y buenas prácticas de desarrollo.
+Proyecto de práctica desarrollado en Java con el objetivo de reforzar conceptos de Programación Orientada a Objetos, persistencia de datos, arquitectura por capas y buenas prácticas de desarrollo.
 
-El proyecto consiste en un sistema de gestión para una veterinaria ejecutado mediante consola. Su desarrollo se realiza de forma incremental, incorporando nuevas funcionalidades y refactorizando el código a medida que aparecen nuevas necesidades.
+El proyecto consiste en un sistema de gestión para una veterinaria ejecutado mediante consola. Su desarrollo se realiza de forma incremental, incorporando nuevas funcionalidades, persistencia y refactorizaciones a medida que aparecen nuevas necesidades.
 
 ## Objetivos
 
 - Repasar y afianzar Java.
 - Aplicar Programación Orientada a Objetos.
-- Trabajar la separación de responsabilidades mediante una arquitectura MVC.
+- Trabajar la separación de responsabilidades entre modelos, controladores, persistencia y vista.
+- Implementar persistencia de datos utilizando PostgreSQL y JDBC.
+- Incorporar pruebas automatizadas.
 - Incorporar validaciones y manejo de errores.
 - Utilizar Git y GitHub durante todo el desarrollo.
 - Simular el desarrollo y evolución de un proyecto real mediante iteraciones.
@@ -21,39 +23,55 @@ Actualmente el sistema permite:
 - Registrar veterinarios.
 - Registrar mascotas asociadas a un dueño.
 - Consultar las mascotas pertenecientes a un dueño.
-- Registrar consultas veterinarias asociadas a una mascota y a un veterinario.
-- Gestionar la historia clínica de cada mascota.
-- Consultar la historia clínica de una mascota y visualizar sus consultas.
-- Registrar la fecha de nacimiento de las mascotas y calcular su edad automáticamente.
-- Mostrar dueños, veterinarios y mascotas registradas.
+- Registrar consultas veterinarias realizadas por un veterinario.
+- Crear automáticamente una historia clínica al registrar una mascota.
+- Consultar la historia clínica y las consultas de una mascota.
+- Mostrar dueños, veterinarios y mascotas registrados.
+- Persistir la información del sistema en PostgreSQL.
 - Validar entradas de usuario y controlar entradas inválidas en los principales flujos de la aplicación.
 
 ## Arquitectura
 
-El proyecto se encuentra organizado en tres paquetes principales:
+El proyecto separa las distintas responsabilidades del sistema mediante:
 
-- `modelos`: contiene las entidades del dominio.
+- `modelos`: contiene las entidades y reglas del dominio.
 - `vistas`: contiene la aplicación de consola y la interacción con el usuario.
-- `controladores`: gestiona la creación, búsqueda y asociación de las entidades del sistema.
+- `controladores`: coordina los casos de uso de la aplicación.
+- `persistencia`: contiene la conexión con PostgreSQL y los DAO encargados del acceso a datos.
+- `configuracion`: contiene la creación y configuración de las dependencias de la aplicación.
 
-Entre las principales relaciones del modelo se encuentran:
+Entre las principales relaciones del dominio se encuentran:
 
-Duenio → Mascotas  
-Mascota → HistoriaClinica  
+```text
+Duenio → Mascotas
+Mascota → HistoriaClinica
 HistoriaClinica → Consultas
 Consulta → Veterinario
+```
 
-La migración inicial hacia MVC se encuentra finalizada. Los principales flujos de la aplicación cuentan actualmente con validaciones y manejo de entradas inválidas. El proyecto continúa evolucionando de forma incremental antes de incorporar persistencia.
+La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema.
+
+El proyecto cuenta además con ambientes separados para desarrollo y pruebas, permitiendo ejecutar los tests de persistencia sobre una base de datos independiente.
+
+## Pruebas
+
+El proyecto utiliza JUnit para probar tanto reglas del dominio como flujos que involucran persistencia.
+
+Actualmente la suite cuenta con **22 tests automatizados**.
 
 ## Próximos pasos
 
-- Mejorar la presentación de la información de las consultas.
-- Incorporar pruebas automatizadas.
-- Preparar el modelo para incorporar persistencia de datos.
+- Incorporar transacciones para operaciones que requieren múltiples escrituras relacionadas.
+- Continuar mejorando el manejo de errores y validaciones.
+- Revisar y optimizar consultas a la base de datos a medida que aumente la complejidad del sistema.
+- Continuar evolucionando la capa de persistencia.
 
 ## Tecnologías
 
 - Java
+- PostgreSQL
+- JDBC
+- JUnit
 - IntelliJ IDEA
 - Git
 - GitHub

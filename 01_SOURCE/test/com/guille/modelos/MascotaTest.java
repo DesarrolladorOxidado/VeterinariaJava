@@ -16,7 +16,7 @@ public class MascotaTest {
 
     @BeforeEach
     public void setUp(){
-        mascota = new Mascota("Maestro Ruben", TipoMascota.GATO);
+        mascota = new Mascota("Maestro Ruben", TipoMascota.GATO,0);
         mascota.setRaza("Persa");
         fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
         mascota.setFechaNacimiento(fechaNacimiento);
@@ -27,13 +27,5 @@ public class MascotaTest {
     public void debeCalcularEdadAPartirDeFechaNacimiento(){
 
         Assertions.assertEquals(Period.between(fechaNacimiento,LocalDate.now()).getYears() , mascota.getEdad());
-    }
-
-    @Test
-    public void alCrearMascotaSuHistoriaClinicaNoDebeTenerConsultas(){
-
-        Assertions.assertNotNull(mascota.getHistoriaClinica());
-        Assertions.assertTrue(mascota.getHistoriaClinica().obtenerConsultas().isEmpty());
-
     }
 }

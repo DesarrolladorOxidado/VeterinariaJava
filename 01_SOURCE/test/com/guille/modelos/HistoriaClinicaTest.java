@@ -11,7 +11,7 @@ public class HistoriaClinicaTest {
 
     @BeforeEach
     public void setUp(){
-         historiaClinica = new HistoriaClinica();
+         historiaClinica = new HistoriaClinica(1);
     }
 
     @Test
@@ -26,7 +26,7 @@ public class HistoriaClinicaTest {
     @Test
     public void debeRegistrarConsulta(){
 
-        Consulta consulta = new Consulta("Control rutinario",null);
+        Consulta consulta = new Consulta("Control rutinario",null,1);
 
         historiaClinica.registrarConsulta(consulta);
 
@@ -44,7 +44,7 @@ public class HistoriaClinicaTest {
     @Test
     public void debeActualizarFechaHistoriaClinicaAlRegistrarNuevaConsulta(){
 
-        Consulta consulta = new Consulta("Control",null);
+        Consulta consulta = new Consulta("Control",null,1);
 
         historiaClinica.registrarConsulta(consulta);
 

@@ -38,6 +38,9 @@ public abstract class Persona {
 
     public void setTipoDocumento(TipoDocumento tipoDocumento ){ this.tipoDocumento = tipoDocumento;}
 
+    public void setNumeroDocumento(String numeroDocumento){
+        this.numeroDocumento = numeroDocumento;
+    }
     public String getNumeroDocumento() {
         return numeroDocumento;
     }

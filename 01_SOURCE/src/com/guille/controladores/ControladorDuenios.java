@@ -1,7 +1,6 @@
 package com.guille.controladores;
 
 import com.guille.modelos.Duenio;
-import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoDocumento;
 import com.guille.persistencia.dao.DuenioDAO;
 
@@ -10,10 +9,10 @@ import java.util.List;
 
 public class ControladorDuenios {
 
-    private DuenioDAO duenioDAO;
+    private final DuenioDAO duenioDAO;
 
-    public ControladorDuenios(){
-        this.duenioDAO = new DuenioDAO();
+    public ControladorDuenios(DuenioDAO duenioDAO){
+        this.duenioDAO = duenioDAO;
     }
 
     private Duenio crearDuenio( String nombre, String apellido, TipoDocumento tipoDocumento,String numeroDocumento, String telefono){
@@ -38,7 +37,8 @@ public class ControladorDuenios {
         return this.duenioDAO.obtenerDuenioPorDocumento(tipoDocumento,numeroDocumento);
     }
 
-    public void agregarMascota(Duenio duenio, Mascota mascota){
-            duenio.agregarMascota(mascota);
+    public boolean tieneMascotas(int idDuenio) throws SQLException{
+        return this.duenioDAO.tieneMascotas(idDuenio);
     }
+
 }

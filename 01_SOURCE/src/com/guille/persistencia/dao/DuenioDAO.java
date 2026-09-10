@@ -11,13 +11,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuenioDAO {
+public class DuenioDAO extends Dao {
+
+    public DuenioDAO(ConexionBD conexionBD){
+        super(conexionBD);
+    }
 
     public List<Duenio> obtenerDuenios() throws SQLException {
 
         List<Duenio> duenios = new ArrayList<>();
-        ConexionBD conexionBD = new ConexionBD();
-        try (Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios"); ResultSet resultado = statement.executeQuery()){
+
+        try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios ORDER BY apellido_duenio, nombre_duenio"); ResultSet resultado = statement.executeQuery()){
 
             while ( resultado.next()){
                 int id = resultado.getInt("id_duenio");
@@ -40,10 +44,9 @@ public class DuenioDAO {
 
     public Duenio obtenerDuenioPorDocumento(TipoDocumento tipoDocumento, String numeroDocumento) throws SQLException{
 
-        ConexionBD conexionBD = new ConexionBD();
         Duenio duenio = null;
 
-        try( Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios WHERE tipo_documento_duenio = ? AND  numero_documento_duenio = ?" )){
+        try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios WHERE tipo_documento_duenio = ? AND  numero_documento_duenio = ?" )){
 
             statement.setString(1, tipoDocumento.getCodigo());
             statement.setString(2,numeroDocumento);
@@ -78,9 +81,7 @@ public class DuenioDAO {
                 "VALUES(?,?,?,?,?) " +
                 "RETURNING id_duenio";
 
-        ConexionBD conexionBD = new ConexionBD();
-
-        try (Connection connection  = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+        try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,duenio.getNombre());
             statement.setString(2,duenio.getApellido());
             statement.setString(3,duenio.getTipoDocumento().getCodigo());
@@ -96,5 +97,21 @@ public class DuenioDAO {
         }
 
         return duenioBD;
+    }
+
+    public boolean tieneMascotas(int idDuenio) throws SQLException{
+
+        String sql = "SELECT EXISTS(SELECT 1 FROM mascotas WHERE id_duenio_mascota = ?)";
+
+        try( Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,idDuenio);
+
+            try( ResultSet resultSet = statement.executeQuery()){
+                if ( resultSet.next())
+                    return resultSet.getBoolean(1);
+            }
+        }
+
+        return false;
     }
 }

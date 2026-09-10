@@ -12,33 +12,34 @@ public class Consulta {
     private int id;
     //La fecha no se modifica, se establece únicamente al crear la consulta
     private final LocalDateTime fecha;
-    private String motivo;
+    final private String motivo;
     private String diagnostico;
     private String tratamiento;
     private String observaciones;
     //El veterinario no puede modificarse, se establece al crear la consulta
     private final Veterinario veterinario;
+    private final int idHistoriaClinica;
 
-    public Consulta( String motivo, Veterinario veterinario) {
+    public Consulta( String motivo, Veterinario veterinario, int idHistoriaClinica) {
         this.fecha = LocalDateTime.now();
         this.motivo = motivo;
         this.veterinario = veterinario;
+        this.idHistoriaClinica = idHistoriaClinica;
 
         this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
         this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;
         this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
     }
 
-    public Consulta( int id, String motivo, Veterinario veterinario) {
+    public Consulta(int id, LocalDateTime fecha, String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, int idHistoriaClinica) {
         this.id = id;
-
-        this.fecha = LocalDateTime.now();
+        this.fecha = fecha;
         this.motivo = motivo;
+        this.diagnostico = diagnostico;
+        this.tratamiento = tratamiento;
+        this.observaciones = observaciones;
         this.veterinario = veterinario;
-
-        this.diagnostico = CAMPO_DIAGNOSTICO_INCOMPLETO;
-        this.tratamiento = CAMPO_TRATAMIENTO_INCOMPLETO;
-        this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
+        this.idHistoriaClinica = idHistoriaClinica;
     }
 
     public int getId(){ return this.id; }
@@ -79,6 +80,8 @@ public class Consulta {
         return veterinario;
     }
 
+    public int getIdHistoriaClinica(){ return this.idHistoriaClinica;}
+
     @Override
     public String toString() {
         return "Consulta{" +
@@ -88,6 +91,7 @@ public class Consulta {
                 ", tratamiento='" + tratamiento + '\'' +
                 ", observaciones='" + observaciones + '\'' +
                 ", veterinario=" + veterinario +
+                ", historia clinica=" + idHistoriaClinica +
                 '}';
     }
 }

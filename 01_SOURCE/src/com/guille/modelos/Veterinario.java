@@ -3,6 +3,7 @@ package com.guille.modelos;
 public class Veterinario extends Persona {
 
     private int idVeterinario;
+
     private String matricula;
 
     public Veterinario( String nombre, String apellido,TipoDocumento tipoDocumento, String numero_documento, String telefono, String matricula) {
@@ -17,6 +18,10 @@ public class Veterinario extends Persona {
     }
 
     public int getIdVeterinario(){ return this.idVeterinario;}
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
 
     public String getMatricula() {
         return matricula;

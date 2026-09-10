@@ -11,19 +11,24 @@ public class Mascota {
     private String raza;
     private LocalDate fechaNacimiento;
     private double peso;
+    private int idDuenio;
     private HistoriaClinica historiaClinica;
 
-    public Mascota(String nombre, TipoMascota tipo) {
+    public Mascota(String nombre, TipoMascota tipo, int idDuenio) {
         this.nombre = nombre;
         this.tipo = tipo;
-        this.historiaClinica = new HistoriaClinica();
+        this.idDuenio = idDuenio;
     }
 
-    public Mascota(int id, String nombre, TipoMascota tipo) {
+    public Mascota(int id, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, Double peso, int idDuenio, HistoriaClinica historiaClinica) {
         this.id = id;
         this.nombre = nombre;
         this.tipo = tipo;
-        this.historiaClinica = new HistoriaClinica();
+        this.raza = raza;
+        this.fechaNacimiento = fechaNacimiento;
+        this.peso = peso;
+        this.idDuenio = idDuenio;
+        this.historiaClinica = historiaClinica;
     }
 
     public int getId(){ return this.id; }
@@ -77,6 +82,10 @@ public class Mascota {
         this.peso = peso;
     }
 
+    public int getIdDuenio(){ return this.idDuenio; }
+
+    public void setIdDuenio( int idDuenio ){ this.idDuenio = idDuenio; }
+
     public HistoriaClinica getHistoriaClinica(){ return this.historiaClinica; }
 
     @Override
@@ -88,6 +97,7 @@ public class Mascota {
                 ", fecha nacimiento = " + fechaNacimiento +
                 ", edad=" + getEdad() +
                 ", peso=" + peso +
+                ", idDuenio = " + idDuenio +
                 ", historiaClinica=" + historiaClinica +
                 '}';
     }

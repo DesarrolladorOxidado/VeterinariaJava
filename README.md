@@ -35,8 +35,9 @@ Actualmente el sistema permite:
 El proyecto separa las distintas responsabilidades del sistema mediante:
 
 - `modelos`: contiene las entidades y reglas del dominio.
-- `vistas`: contiene la aplicación de consola y la interacción con el usuario.
 - `controladores`: coordina los casos de uso de la aplicación.
+- `vistas`: contiene la aplicación de consola y la interacción con el usuario.
+- `servicios`: coordina casos de uso que requieren múltiples operaciones relacionadas, incluyendo el manejo transaccional.
 - `persistencia`: contiene la conexión con PostgreSQL y los DAO encargados del acceso a datos.
 - `configuracion`: contiene la creación y configuración de las dependencias de la aplicación.
 
@@ -49,7 +50,7 @@ HistoriaClinica → Consultas
 Consulta → Veterinario
 ```
 
-La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema.
+La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema. Las operaciones que requieren múltiples escrituras relacionadas se ejecutan mediante transacciones, garantizando que los cambios se confirmen o reviertan como una única unidad.
 
 El proyecto cuenta además con ambientes separados para desarrollo y pruebas, permitiendo ejecutar los tests de persistencia sobre una base de datos independiente.
 
@@ -61,7 +62,6 @@ Actualmente la suite cuenta con **22 tests automatizados**.
 
 ## Próximos pasos
 
-- Incorporar transacciones para operaciones que requieren múltiples escrituras relacionadas.
 - Continuar mejorando el manejo de errores y validaciones.
 - Revisar y optimizar consultas a la base de datos a medida que aumente la complejidad del sistema.
 - Continuar evolucionando la capa de persistencia.

@@ -6,8 +6,11 @@ import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoDocumento;
 import com.guille.modelos.TipoMascota;
 import com.guille.persistencia.ConexionBD;
+import com.guille.persistencia.GestorTransacciones;
 import com.guille.persistencia.dao.DuenioDAO;
+import com.guille.persistencia.dao.HistoriaClinicaDAO;
 import com.guille.persistencia.dao.MascotaDAO;
+import com.guille.servicios.RegistroMascotaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +29,7 @@ public class ControladorMascotasTest {
     public void setUp()throws SQLException {
         ConexionBD conexionBD = new ConexionBD(ConexionBD.Ambiente.TEST);
         BaseDatosTestDAO baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
+        GestorTransacciones gestorTransacciones = new GestorTransacciones(conexionBD);
 
         baseDatosTestDAO.borrarDatos();
 
@@ -34,8 +38,11 @@ public class ControladorMascotasTest {
 
         this.duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", TipoDocumento.DNI,"221232","232323");
 
+        HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
+
         MascotaDAO mascotaDAO = new MascotaDAO(conexionBD);
-        controladorMascotas = new ControladorMascotas(mascotaDAO);
+        RegistroMascotaService registroMascotaService = new RegistroMascotaService(mascotaDAO,historiaClinicaDAO,gestorTransacciones);
+        controladorMascotas = new ControladorMascotas(mascotaDAO,registroMascotaService);
     }
 
 

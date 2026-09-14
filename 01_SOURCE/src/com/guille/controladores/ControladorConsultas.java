@@ -5,17 +5,17 @@ import com.guille.modelos.HistoriaClinica;
 import com.guille.modelos.Veterinario;
 import com.guille.persistencia.dao.ConsultaDAO;
 import com.guille.persistencia.dao.HistoriaClinicaDAO;
+import com.guille.servicios.RegistrarConsultaService;
 
 import java.sql.SQLException;
 
 public class ControladorConsultas {
 
-    private final ConsultaDAO consultaDAO;
-    private final HistoriaClinicaDAO historiaClinicaDAO;
+    private final RegistrarConsultaService registrarConsultaService;
 
-    public ControladorConsultas(ConsultaDAO consultaDAO, HistoriaClinicaDAO historiaClinicaDAO){
-        this.consultaDAO = consultaDAO;
-        this.historiaClinicaDAO = historiaClinicaDAO;
+    public ControladorConsultas(RegistrarConsultaService registrarConsultaService){
+
+        this.registrarConsultaService = registrarConsultaService;
     }
 
     private Consulta crearConsulta(String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, int idHistoriaClinica){
@@ -29,13 +29,9 @@ public class ControladorConsultas {
     }
 
     public Consulta registrarConsulta(String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, HistoriaClinica historiaClinica) throws SQLException {
+
         Consulta consulta = crearConsulta(motivo,diagnostico,tratamiento,observaciones,veterinario,historiaClinica.getId());
-
-        Consulta consultaBD = consultaDAO.registrarConsulta(consulta);
-
-        historiaClinica.registrarConsulta(consultaBD);
-
-        historiaClinicaDAO.actualizarFecha(historiaClinica);
+        Consulta consultaBD = this.registrarConsultaService.registrarConsulta(consulta,historiaClinica);
 
         return consultaBD;
     }

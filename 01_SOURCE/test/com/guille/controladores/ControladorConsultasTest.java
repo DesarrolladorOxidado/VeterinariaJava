@@ -4,7 +4,10 @@ package com.guille.controladores;
 import com.guille.BaseDatosTestDAO;
 import com.guille.modelos.*;
 import com.guille.persistencia.ConexionBD;
+import com.guille.persistencia.GestorTransacciones;
 import com.guille.persistencia.dao.*;
+import com.guille.servicios.RegistrarConsultaService;
+import com.guille.servicios.RegistroMascotaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,28 +26,29 @@ public class ControladorConsultasTest {
 
         ConexionBD conexionBD = new ConexionBD(ConexionBD.Ambiente.TEST);
         BaseDatosTestDAO baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
+        GestorTransacciones gestorTransacciones = new GestorTransacciones(conexionBD);
 
         baseDatosTestDAO.borrarDatos();
 
-        VeterinarioDAO veterinarioDAO = new VeterinarioDAO(conexionBD);
-        ControladorVeterinarios controladorVeterinarios = new ControladorVeterinarios(veterinarioDAO);
-
-        veterinario = controladorVeterinarios.registrarVeterinario("Julius", "Hibbert", TipoDocumento.DNI, "123522", "15555", "52");
-
         DuenioDAO duenioDAO = new DuenioDAO(conexionBD);
-        ControladorDuenios controladorDuenios = new ControladorDuenios(duenioDAO);
-
-        Duenio duenio = controladorDuenios.registrarDuenio("Cosme", "Fulanito", TipoDocumento.DNI, "221232", "232323");
-
         MascotaDAO mascotaDAO = new MascotaDAO(conexionBD);
-        ControladorMascotas controladorMascotas = new ControladorMascotas(mascotaDAO);
-
-        mascota = controladorMascotas.registrarMascota("Mateo", TipoMascota.PERRO, "Border Collie", LocalDate.of(2022, 7, 13), 24.3, duenio.getIdDuenio());
-
         ConsultaDAO consultaDAO = new ConsultaDAO(conexionBD);
         HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
+        VeterinarioDAO veterinarioDAO = new VeterinarioDAO(conexionBD);
 
-        controladorConsultas = new ControladorConsultas(consultaDAO, historiaClinicaDAO);
+        RegistroMascotaService registroMascotaService = new RegistroMascotaService(mascotaDAO,historiaClinicaDAO,gestorTransacciones);
+        RegistrarConsultaService registrarConsultaService = new RegistrarConsultaService(consultaDAO,historiaClinicaDAO,gestorTransacciones);
+
+
+        ControladorVeterinarios controladorVeterinarios = new ControladorVeterinarios(veterinarioDAO);
+        ControladorDuenios controladorDuenios = new ControladorDuenios(duenioDAO);
+        ControladorMascotas controladorMascotas = new ControladorMascotas(mascotaDAO, registroMascotaService);
+
+        Duenio duenio = controladorDuenios.registrarDuenio("Cosme", "Fulanito", TipoDocumento.DNI, "221232", "232323");
+        mascota = controladorMascotas.registrarMascota("Mateo", TipoMascota.PERRO, "Border Collie", LocalDate.of(2022, 7, 13), 24.3, duenio.getIdDuenio());
+        veterinario = controladorVeterinarios.registrarVeterinario("Julius", "Hibbert", TipoDocumento.DNI, "123522", "15555", "52");
+
+        controladorConsultas = new ControladorConsultas(registrarConsultaService);
     }
 
     @Test

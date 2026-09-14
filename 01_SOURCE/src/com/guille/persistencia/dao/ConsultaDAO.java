@@ -15,7 +15,7 @@ public class ConsultaDAO extends Dao{
         super(conexionBD);
     }
 
-    public Consulta registrarConsulta(Consulta consulta) throws SQLException {
+    public Consulta registrarConsulta(Consulta consulta, Connection connection) throws SQLException {
         Consulta consultaBD = null;
         VeterinarioDAO veterinarioDAO = new VeterinarioDAO(conexionBD);
 
@@ -29,7 +29,7 @@ public class ConsultaDAO extends Dao{
                 "VALUES(?,?,?,?,?,?,?)" +
                 "RETURNING id_consulta";
 
-        try(Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+        try( PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setObject(1,consulta.getFecha());
             statement.setString(2,consulta.getMotivo());
             statement.setString(3,consulta.getDiagnostico());

@@ -855,9 +855,9 @@ public class Aplicacion {
 
         try {
             Mascota mascotaBD = this.controladores.getControladorMascotas().registrarMascota(nombre, tipo, raza, fechaNacimiento, peso, duenio.getIdDuenio());
-            //this.controladores.getControladorHistoriasClinicas().registrarHistoriaClinica(mascotaBD.getHistoriaClinica());
         }catch (SQLException e){
             System.out.println(e.getMessage());
+            continuar();
             return false;
         }
         return true;

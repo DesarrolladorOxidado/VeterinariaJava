@@ -19,7 +19,7 @@ public class MascotaDAO extends Dao{
         super(conexionBD);
     }
 
-    public Mascota registrarMascota(Mascota mascota) throws SQLException {
+    public Mascota registrarMascota(Mascota mascota, Connection connection) throws SQLException {
 
         Mascota mascotaBD = null;
 
@@ -33,7 +33,7 @@ public class MascotaDAO extends Dao{
                 "VALUES(?,?,?,?,?,?) " +
                 "RETURNING id_mascota";
 
-        try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+        try ( PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,mascota.getNombre());
             statement.setString(2,mascota.getTipo().getCodigo());
             statement.setString(3,mascota.getRaza());
@@ -45,11 +45,7 @@ public class MascotaDAO extends Dao{
                 if ( resultado.next()){
                     int idMascota = resultado.getInt("id_mascota");
 
-                    HistoriaClinica historiaClinica = new HistoriaClinica(idMascota);
-                    HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
-                    HistoriaClinica historiaClinicaBD = historiaClinicaDAO.registrarHistoriaClinica(historiaClinica);
-
-                    mascotaBD = new Mascota(idMascota,mascota.getNombre(),mascota.getTipo(),mascota.getRaza(),mascota.getFechaNacimiento(),mascota.getPeso(),mascota.getIdDuenio(),historiaClinicaBD);
+                    mascotaBD = new Mascota(idMascota,mascota.getNombre(),mascota.getTipo(),mascota.getRaza(),mascota.getFechaNacimiento(),mascota.getPeso(),mascota.getIdDuenio(),null);
                 }
             }
         }

@@ -18,7 +18,7 @@ public class HistoriaClinicaDAO extends Dao {
         super(conexionBD);
     }
 
-    public HistoriaClinica registrarHistoriaClinica(HistoriaClinica historiaClinica) throws SQLException {
+    public HistoriaClinica registrarHistoriaClinica(HistoriaClinica historiaClinica, Connection connection) throws SQLException {
         HistoriaClinica historiaClinicaBD = null;
 
         String sql = "INSERT INTO historias_clinicas(" +
@@ -28,7 +28,7 @@ public class HistoriaClinicaDAO extends Dao {
                 "VALUES(?,?,?)" +
                 "RETURNING id_historia_clinica";
 
-        try(Connection connection = conexionBD.obtenerConexion();PreparedStatement statement = connection.prepareStatement(sql)){
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1,historiaClinica.getIdMascota());
             statement.setObject(2, historiaClinica.getFechaCreacion());
             statement.setObject(3,historiaClinica.getFechaActualizacion());
@@ -70,13 +70,13 @@ public class HistoriaClinicaDAO extends Dao {
         return historiaClinicaBD;
     }
 
-    public void actualizarFecha(HistoriaClinica historiaClinica) throws SQLException{
+    public void actualizarFecha(HistoriaClinica historiaClinica, Connection connection) throws SQLException{
 
         String sql = "UPDATE historias_clinicas " +
                 "SET fecha_actualizacion_historia_clinica = ? " +
                 "WHERE id_historia_clinica = ?";
 
-        try( Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+        try( PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setObject(1, historiaClinica.getFechaActualizacion());
             statement.setInt(2, historiaClinica.getId());
 

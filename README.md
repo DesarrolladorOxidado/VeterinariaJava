@@ -8,7 +8,7 @@ El proyecto consiste en un sistema de gestión para una veterinaria ejecutado me
 
 - Repasar y afianzar Java.
 - Aplicar Programación Orientada a Objetos.
-- Trabajar la separación de responsabilidades entre modelos, controladores, persistencia y vista.
+- Trabajar la separación de responsabilidades entre modelos, controladores, servicios, persistencia y vista.
 - Implementar persistencia de datos utilizando PostgreSQL y JDBC.
 - Incorporar pruebas automatizadas.
 - Incorporar validaciones y manejo de errores.
@@ -35,10 +35,10 @@ Actualmente el sistema permite:
 El proyecto separa las distintas responsabilidades del sistema mediante:
 
 - `modelos`: contiene las entidades y reglas del dominio.
-- `controladores`: coordina los casos de uso de la aplicación.
 - `vistas`: contiene la aplicación de consola y la interacción con el usuario.
-- `servicios`: coordina casos de uso que requieren múltiples operaciones relacionadas, incluyendo el manejo transaccional.
-- `persistencia`: contiene la conexión con PostgreSQL y los DAO encargados del acceso a datos.
+- `controladores`: coordina los casos de uso de la aplicación.
+- `servicios`: coordina operaciones que requieren múltiples acciones relacionadas dentro de un mismo caso de uso.
+- `persistencia`: contiene la conexión con PostgreSQL, los DAO encargados del acceso a datos y la gestión de transacciones.
 - `configuracion`: contiene la creación y configuración de las dependencias de la aplicación.
 
 Entre las principales relaciones del dominio se encuentran:
@@ -50,19 +50,29 @@ HistoriaClinica → Consultas
 Consulta → Veterinario
 ```
 
-La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema. Las operaciones que requieren múltiples escrituras relacionadas se ejecutan mediante transacciones, garantizando que los cambios se confirmen o reviertan como una única unidad.
+La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema.
+
+Las operaciones que requieren múltiples escrituras relacionadas utilizan transacciones para mantener la consistencia de los datos. Actualmente se aplican, entre otros casos, al registro de una mascota junto con su historia clínica y al registro de una consulta junto con la actualización de su historia clínica.
 
 El proyecto cuenta además con ambientes separados para desarrollo y pruebas, permitiendo ejecutar los tests de persistencia sobre una base de datos independiente.
+
+## Manejo de errores y logging
+
+La aplicación diferencia los mensajes destinados al usuario de la información técnica necesaria para diagnosticar errores.
+
+Las excepciones relacionadas con persistencia se propagan hasta el punto de la aplicación encargado de decidir cómo continuar el flujo. Los errores recuperables permiten regresar al menú y volver a intentar la operación, mientras que los errores que impiden continuar con el funcionamiento básico de la aplicación provocan su finalización controlada.
+
+El logging se implementa utilizando SLF4J y Logback. Los errores técnicos y sus excepciones se registran tanto en consola como en archivos de log, con rotación por fecha y tamaño y conservación de archivos históricos.
 
 ## Pruebas
 
 El proyecto utiliza JUnit para probar tanto reglas del dominio como flujos que involucran persistencia.
 
-Actualmente la suite cuenta con **22 tests automatizados**.
+Actualmente la suite cuenta con 22 tests automatizados.
 
 ## Próximos pasos
 
-- Continuar mejorando el manejo de errores y validaciones.
+- Continuar mejorando las validaciones de datos y entradas de usuario.
 - Revisar y optimizar consultas a la base de datos a medida que aumente la complejidad del sistema.
 - Continuar evolucionando la capa de persistencia.
 
@@ -72,6 +82,8 @@ Actualmente la suite cuenta con **22 tests automatizados**.
 - PostgreSQL
 - JDBC
 - JUnit
+- SLF4J
+- Logback
 - IntelliJ IDEA
 - Git
 - GitHub

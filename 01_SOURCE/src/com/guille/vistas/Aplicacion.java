@@ -12,7 +12,12 @@ import java.time.format.ResolverStyle;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Aplicacion {
+
+    private static final Logger logger = LoggerFactory.getLogger(Aplicacion.class);
 
     private static final String CAMPO_NOMBRE = "nombre";
     private static final String CAMPO_APELLIDO = "apellido";
@@ -41,11 +46,15 @@ public class Aplicacion {
 
     public void ejecutar(){
 
-        mostrarOpcionesMenu();
-
+        try {
+            mostrarOpcionesMenu();
+        }catch (SQLException e){
+            logger.error("Error al acceder a la base de datos",e);
+            System.out.println("Ocurrió un problema al acceder a los datos. La aplicación se cerrará");
+        }
     }
 
-    private void mostrarOpcionesMenu(){
+    private void mostrarOpcionesMenu() throws SQLException{
         int opcion = -1;
 
         do{
@@ -58,13 +67,9 @@ public class Aplicacion {
             System.out.println("5 - Mostrar dueños");
             System.out.println("6 - Mostrar mascotas de un dueño");
 
-            try {
-                if (this.controladores.getControladorVeterinarios().existenVeterinarios())
-                    System.out.println("7 - Nueva consulta");
-            }catch (SQLException e ){
-                System.out.println(e.getMessage());
-                continue;
-            }
+            if (this.controladores.getControladorVeterinarios().existenVeterinarios())
+                System.out.println("7 - Nueva consulta");
+
 
             System.out.println("8 - Consultar historia clínica");
             System.out.println("0 - Salir");
@@ -110,7 +115,6 @@ public class Aplicacion {
                 }
                 case 7 -> {
 
-                    try{
                         if ( this.controladores.getControladorVeterinarios().existenVeterinarios()) {
                             System.out.println("*** Nueva consulta ***");
                             nuevaConsulta();
@@ -118,10 +122,6 @@ public class Aplicacion {
                             System.out.println("No se puede registrar una consulta porque no hay veterinarios registrados");
                             continuar();
                         }
-                    }catch (SQLException e){
-                        System.out.println(e.getMessage());
-                        continuar();
-                    }
                 }
                 case 8 -> {
                     System.out.println("*** Consultar historia clínica ***");
@@ -150,7 +150,7 @@ public class Aplicacion {
     //              OPCIONES DE MENU
     /* ----------------------- -------------------------------*/
 
-    private void registrarVeterinario(){
+    private void registrarVeterinario() {
          char rta;
 
          do{
@@ -183,7 +183,9 @@ public class Aplicacion {
                      if (!this.controladores.getControladorVeterinarios().existeVeterinarioConDocumento(tipoDocumentoVeterinario, numeroDocumentoVeterinario))
                          break;
                  }catch (SQLException e ){
-                     System.out.println(e.getMessage());
+                     logger.error("Error al verificar si existe un veterinario con el documento indicado",e);
+                     System.out.println("Ocurrió un inconveniente durante el proceso de registro del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                     continuar();
                      return;
                  }
 
@@ -205,9 +207,12 @@ public class Aplicacion {
                      if (!this.controladores.getControladorVeterinarios().existeVeterinarioConMatricula(matriculaVeterinario))
                          break;
                  }catch (SQLException e){
-                     System.out.println(e.getMessage());
+                     logger.error("Error al verificar si existe un veterinario con la matricula indicada",e);
+                     System.out.println("Ocurrió un inconveniente durante el proceso de registro del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                     continuar();
                      return;
                  }
+
                  System.out.println("Ya existe un veterinario con matricula " + matriculaVeterinario);
                  System.out.println("¿Desea volver a intentar? (s/n)");
                  rta = solicitarRespuestaSiNo();
@@ -232,7 +237,9 @@ public class Aplicacion {
              try {
                  this.controladores.getControladorVeterinarios().registrarVeterinario(nombreVeterinario, apellidoVeterinario, tipoDocumentoVeterinario, numeroDocumentoVeterinario, telefonoVeterinario, matriculaVeterinario);
              }catch (SQLException e){
-                 System.out.println(e.getMessage());
+                 logger.error("Error al intentar registrar al veterinario",e);
+                 System.out.println("Ocurrió un inconveniente durante el proceso de registro del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                 continuar();
                  return;
              }
 
@@ -274,7 +281,9 @@ public class Aplicacion {
                     if (!this.controladores.getControladorDuenios().existeDuenioConDocumento(tipoDocumentoDuenio, numeroDocumentoDuenio))
                         break;
                 }catch (SQLException e ){
-                    System.out.println(e.getMessage());
+                    logger.error("Error al verificar si existe un dueño con el documento indicado", e);
+                    System.out.println("Ocurrió un inconveniente durante el proceso de registro del dueño. Por favor, vuelva a intentarlo más tarde.");
+                    continuar();
                     return;
                 }
                 System.out.println("Ya existe un duenio con ese documento.");
@@ -304,7 +313,9 @@ public class Aplicacion {
             try {
                 this.controladores.getControladorDuenios().registrarDuenio(nombreDuenio, apellidoDuenio, tipoDocumentoDuenio, numeroDocumentoDuenio, telefonoDuenio);
             }catch (SQLException e ){
-                System.out.println(e.getMessage());
+                logger.error("Error al intentar registrar al dueño", e);
+                System.out.println("Ocurrió un inconveniente durante el proceso de registro del dueño. Por favor, vuelva a intentarlo más tarde.");
+                continuar();
                 return;
             }
 
@@ -336,7 +347,9 @@ public class Aplicacion {
         try {
             return this.controladores.getControladorDuenios().registrarDuenio(nombreDuenio, apellidoDuenio, tipoDocumentoDuenio, numeroDocumentoDuenio, telefonoDuenio);
         }catch (SQLException e ){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar registrar al dueño", e);
+            System.out.println("Ocurrió un inconveniente durante el proceso de registro del dueño. Por favor, vuelva a intentarlo más tarde.");
+            continuar();
             return null;
         }
     }
@@ -375,7 +388,8 @@ public class Aplicacion {
                 System.out.println(veterinario);
             }
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener los veterinarios", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los veterinarios.");
         }
     }
 
@@ -394,7 +408,8 @@ public class Aplicacion {
             }
 
         }catch (SQLException e ){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener los dueños", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los dueños.");
         }
     }
 
@@ -420,11 +435,13 @@ public class Aplicacion {
         if (numeroDocumento.isEmpty())
             return;
 
-        Duenio duenio = null;
+        Duenio duenio;
         try {
              duenio = this.controladores.getControladorDuenios().obtenerDuenioPorDocumento(tipoDocumentoDuenio, numeroDocumento);
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener el dueño por documento", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los datos del dueño.");
+            continuar();
             return;
         }
 
@@ -447,7 +464,9 @@ public class Aplicacion {
 
                 }
             }catch( SQLException e ){
-                System.out.println(e.getMessage());
+                logger.error("Error al verificar si el dueño tiene mascotas registradas", e);
+                System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
+                continuar();
                 return;
             }
         }else
@@ -462,7 +481,6 @@ public class Aplicacion {
 
         if (veterinario == null)
             return;
-
 
         Duenio duenio = obtenerDuenioParaMascota();
 
@@ -479,7 +497,9 @@ public class Aplicacion {
                     registrarMascotasDelDuenio(duenio);
                 }
             }catch (SQLException e ){
-                System.out.println(e.getMessage());
+                logger.error("Error al verificar si el dueño tiene mascotas registradas", e);
+                System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
+                continuar();
                 return;
             }
 
@@ -514,11 +534,13 @@ public class Aplicacion {
             return;
         }
 
-        Duenio duenio = null;
+        Duenio duenio;
         try {
              duenio = this.controladores.getControladorDuenios().obtenerDuenioPorDocumento(tipoDocumento, documento);
         }catch (SQLException e ){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener el dueño por documento", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los datos del dueño.");
+            continuar();
             return;
         }
 
@@ -535,7 +557,9 @@ public class Aplicacion {
                 return;
             }
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al verificar si el dueño tiene mascotas registradas", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
+            continuar();
             return;
         }
 
@@ -634,11 +658,13 @@ public class Aplicacion {
         if (documentoDuenio.isEmpty())
             return null;
 
-        Duenio duenio = null;
+        Duenio duenio;
         try {
             duenio = this.controladores.getControladorDuenios().obtenerDuenioPorDocumento(tipoDocumentoDuenio, documentoDuenio);
         }catch (SQLException e ){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener el dueño por documento", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los datos del dueño.");
+            continuar();
             return null;
         }
 
@@ -695,7 +721,9 @@ public class Aplicacion {
 
             return mascotas.get(opcion - 1);
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener las mascotas del dueño", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
+            continuar();
             return null;
         }
     }
@@ -736,7 +764,9 @@ public class Aplicacion {
             return veterinarios.get(opcion-1);
 
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar obtener los veterinarios", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los veterinarios.");
+            continuar();
             return null;
         }
 
@@ -854,9 +884,10 @@ public class Aplicacion {
         }while ( peso <= 0);
 
         try {
-            Mascota mascotaBD = this.controladores.getControladorMascotas().registrarMascota(nombre, tipo, raza, fechaNacimiento, peso, duenio.getIdDuenio());
+             this.controladores.getControladorMascotas().registrarMascota(nombre, tipo, raza, fechaNacimiento, peso, duenio.getIdDuenio());
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar registrar la mascota", e);
+            System.out.println("Ocurrió un inconveniente durante el registro de la mascota. Por favor, vuelva a intentarlo más tarde.");
             continuar();
             return false;
         }
@@ -901,7 +932,8 @@ public class Aplicacion {
         try {
             this.controladores.getControladorConsultas().registrarConsulta(motivo, diagnostico, tratamiento, observaciones, veterinario, mascota.getHistoriaClinica());
         }catch (SQLException e){
-            System.out.println(e.getMessage());
+            logger.error("Error al intentar registrar la consulta", e);
+            System.out.println("Ocurrió un inconveniente durante el registro de la consulta. Por favor, vuelva a intentarlo más tarde.");
         }
     }
 
@@ -919,8 +951,8 @@ public class Aplicacion {
                 System.out.println(mascota);
             }
         }catch (SQLException e){
-            System.out.println(e.getMessage());
-            return;
+            logger.error("Error al intentar obtener las mascotas del dueño", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
         }
     }
 

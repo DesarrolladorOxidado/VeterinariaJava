@@ -33,6 +33,7 @@ public class Aplicacion {
     private static final String CAMPO_FECHA_NACIMIENTO = "fecha de nacimiento (día/mes/año)";
 
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private Scanner scanner;
 
@@ -385,7 +386,8 @@ public class Aplicacion {
             }
 
             for ( Veterinario veterinario : veterinarios ){
-                System.out.println(veterinario);
+                mostrarVeterinario(veterinario);
+                System.out.println("======================4");
             }
         }catch (SQLException e){
             logger.error("Error al intentar obtener los veterinarios", e);
@@ -404,7 +406,8 @@ public class Aplicacion {
             }
 
             for ( Duenio duenio : duenios ){
-                System.out.println(duenio);
+                mostrarDuenio(duenio);
+                System.out.println("=====================================");
             }
 
         }catch (SQLException e ){
@@ -939,6 +942,23 @@ public class Aplicacion {
 
 
     //---- SALIDA POR PANTALLA
+    private void mostrarVeterinario(Veterinario veterinario){
+        System.out.println("Nombre: " + veterinario.getNombre());
+        System.out.println("Apellido: " + veterinario.getApellido());
+        System.out.println("Tipo documento: " + veterinario.getTipoDocumento().getCodigo() + " - Número: " + veterinario.getNumeroDocumento());
+        System.out.println("Matricula: " + veterinario.getMatricula());
+        System.out.println("Teléfono: " + veterinario.getTelefono());
+        System.out.println("Fecha alta: " + formatearFechaHora(veterinario.getFechaAlta()));
+    }
+
+    private void mostrarDuenio(Duenio duenio){
+        System.out.println("Nombre: " + duenio.getNombre());
+        System.out.println("Apellido: " + duenio.getApellido());
+        System.out.println("Tipo documento: " + duenio.getTipoDocumento().getCodigo() + " - Número: " + duenio.getNumeroDocumento());
+        System.out.println("Teléfono: " + duenio.getTelefono());
+        System.out.println("Fecha alta: " + formatearFechaHora(duenio.getFechaAlta()));
+    }
+
     private void mostrarMascotasDelDuenio(Duenio duenio) {
         try {
             List<Mascota> mascotas = this.controladores.getControladorMascotas().obtenerMascotasDeUnDuenio(duenio.getIdDuenio());
@@ -948,12 +968,22 @@ public class Aplicacion {
             }
 
             for (Mascota mascota : mascotas) {
-                System.out.println(mascota);
+                mostrarMascota(mascota);
             }
         }catch (SQLException e){
             logger.error("Error al intentar obtener las mascotas del dueño", e);
             System.out.println("Ocurrió un inconveniente al intentar obtener las mascotas del dueño.");
         }
+    }
+
+    private void mostrarMascota(Mascota mascota) {
+        System.out.println("Nombre: " + mascota.getNombre());
+        System.out.println("Tipo: " + mascota.getTipo());
+        System.out.println("Raza: " + mascota.getRaza());
+        System.out.println("Fecha de nacimiento: " + formatearFecha(mascota.getFechaNacimiento()));
+        System.out.println("Peso: " + mascota.getPeso());
+        System.out.println("Fecha alta: " + formatearFechaHora(mascota.getFechaAlta()));
+        System.out.println("==============================================");
     }
 
     private void mostrarDetalleConsulta(Consulta consulta) {
@@ -970,6 +1000,9 @@ public class Aplicacion {
 
     private String formatearFechaHora(LocalDateTime fechaHora ){
         return fechaHora.format(FORMATO_FECHA_HORA);
+    }
+    private String formatearFecha(LocalDate fecha) {
+        return fecha.format(FORMATO_FECHA);
     }
 
 }

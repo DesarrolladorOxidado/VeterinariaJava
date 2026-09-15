@@ -1,5 +1,6 @@
 package com.guille.persistencia.dao;
 
+import com.guille.modelos.Consulta;
 import com.guille.modelos.HistoriaClinica;
 import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoMascota;
@@ -60,13 +61,21 @@ public class MascotaDAO extends Dao{
 
         List<Mascota> mascotas = new ArrayList<>();
 
-        String sql = "SELECT * FROM mascotas WHERE id_duenio_mascota = ? ORDER BY nombre_mascota";
+        String sql = "SELECT id_mascota,\n" +
+                "    nombre_mascota,\n" +
+                "    tipo_mascota,\n" +
+                "    raza_mascota,\n" +
+                "    fecha_nacimiento_mascota,\n" +
+                "    peso_mascota,\n" +
+                "    id_duenio_mascota,\n" +
+                "    fecha_alta_mascota\n" +
+                "FROM mascotas \n" +
+                "WHERE id_duenio_mascota = ? " +
+                "ORDER BY nombre_mascota";
 
         try( Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
 
             statement.setInt(1, idDuenio);
-
-            HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
 
             try(ResultSet resultado = statement.executeQuery()){
                 while (resultado.next()){
@@ -78,9 +87,7 @@ public class MascotaDAO extends Dao{
                     double peso = resultado.getDouble("peso_mascota");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_mascota", LocalDateTime.class);
 
-                    HistoriaClinica historiaClinica = historiaClinicaDAO.obtenerHistoriaClinica(idMascota);
-
-                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenio,fechaAlta,historiaClinica);
+                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenio,fechaAlta,null);
 
                     mascotas.add(mascota);
                 }

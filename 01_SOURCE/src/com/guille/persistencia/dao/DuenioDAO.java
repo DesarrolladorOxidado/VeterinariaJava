@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,11 @@ public class DuenioDAO extends Dao {
                 String tipoDocumentoST = resultado.getString("tipo_documento_duenio");
                 String numeroDocumento = resultado.getString("numero_documento_duenio");
                 String telefono = resultado.getString("telefono_duenio");
+                LocalDateTime fechaAlta = resultado.getObject("fecha_alta_duenio", LocalDateTime.class);
 
                 TipoDocumento tipo = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
 
-                Duenio duenio = new Duenio(id,nombre,apellido,tipo,numeroDocumento,telefono);
+                Duenio duenio = new Duenio(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta);
 
                 duenios.add(duenio);
             }
@@ -57,8 +59,9 @@ public class DuenioDAO extends Dao {
                     String nombre = resultado.getString("nombre_duenio");
                     String apellido = resultado.getString("apellido_duenio");
                     String telefono = resultado.getString("telefono_duenio");
+                    LocalDateTime fechaAlta = resultado.getObject("fecha_alta_duenio", LocalDateTime.class);
 
-                    duenio = new Duenio(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono);
+                    duenio = new Duenio(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta);
 
                 }
             }
@@ -77,8 +80,9 @@ public class DuenioDAO extends Dao {
                 "apellido_duenio," +
                 "tipo_documento_duenio," +
                 "numero_documento_duenio," +
-                "telefono_duenio)" +
-                "VALUES(?,?,?,?,?) " +
+                "telefono_duenio," +
+                "fecha_alta_duenio)" +
+                "VALUES(?,?,?,?,?,?) " +
                 "RETURNING id_duenio";
 
         try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
@@ -87,11 +91,12 @@ public class DuenioDAO extends Dao {
             statement.setString(3,duenio.getTipoDocumento().getCodigo());
             statement.setString(4,duenio.getNumeroDocumento());
             statement.setString(5,duenio.getTelefono());
+            statement.setObject(6,duenio.getFechaAlta());
 
             try( ResultSet resultado = statement.executeQuery()){
                 if ( resultado.next()){
                     int id = resultado.getInt("id_duenio");
-                    duenioBD = new Duenio(id,duenio.getNombre(),duenio.getApellido(),duenio.getTipoDocumento(),duenio.getNumeroDocumento(),duenio.getTelefono());
+                    duenioBD = new Duenio(id,duenio.getNombre(),duenio.getApellido(),duenio.getTipoDocumento(),duenio.getNumeroDocumento(),duenio.getTelefono(),duenio.getFechaAlta());
                 }
             }
         }

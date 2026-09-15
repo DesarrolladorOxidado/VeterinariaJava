@@ -52,9 +52,9 @@ public class HistoriaClinica {
     @Override
     public String toString() {
         return "HistoriaClinica{" +
-                "id= " + id +
-                "idMascota= " + idMascota +
-                "fechaCreacion=" + fechaCreacion +
+                "id = " + id +
+                ", idMascota = " + idMascota +
+                ", fechaCreacion =" + fechaCreacion +
                 ", fechaActualizacion=" + fechaActualizacion +
                 ", consultas=" + consultas +
                 '}';

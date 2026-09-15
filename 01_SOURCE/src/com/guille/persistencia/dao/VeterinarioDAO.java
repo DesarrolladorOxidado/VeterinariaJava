@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,6 @@ public class VeterinarioDAO extends Dao{
     public VeterinarioDAO(ConexionBD conexionBD){
         super(conexionBD);
     }
-
 
 
     public List<Veterinario> obtenerVeterinarios() throws SQLException {
@@ -33,10 +33,11 @@ public class VeterinarioDAO extends Dao{
                 String numeroDocumento = resultado.getString("numero_documento_veterinario");
                 String telefono = resultado.getString("telefono_veterinario");
                 String matricula = resultado.getString("matricula_veterinario");
+                LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
                 TipoDocumento tipo = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
 
-                Veterinario veterinario = new Veterinario(id,nombre,apellido,tipo,numeroDocumento,telefono,matricula);
+                Veterinario veterinario = new Veterinario(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta,matricula);
 
                 veterinarios.add(veterinario);
             }
@@ -61,8 +62,9 @@ public class VeterinarioDAO extends Dao{
                     String numeroDocumento =  resultado.getString("numero_documento_veterinario");
                     String telefono = resultado.getString("telefono_veterinario");
                     String matricula = resultado.getString("matricula_veterinario");
+                    LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
-                    veterinario = new Veterinario(id,nombre,apellido,TipoDocumento.obtenerTipoDocumento(tipoDocumentoST),numeroDocumento,telefono,matricula);
+                    veterinario = new Veterinario(id,nombre,apellido,TipoDocumento.obtenerTipoDocumento(tipoDocumentoST),numeroDocumento,telefono,fechaAlta,matricula);
 
                 }
             }
@@ -88,8 +90,9 @@ public class VeterinarioDAO extends Dao{
                     String apellido = resultado.getString("apellido_veterinario");
                     String telefono = resultado.getString("telefono_veterinario");
                     String matricula = resultado.getString("matricula_veterinario");
+                    LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
-                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,matricula);
+                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula);
 
                 }
             }
@@ -115,10 +118,11 @@ public class VeterinarioDAO extends Dao{
                     String telefono = resultado.getString("telefono_veterinario");
                     String tipoDocumentoST = resultado.getString("tipo_documento_veterinario");
                     String numeroDocumento = resultado.getString("numero_documento_veterinario");
+                    LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
                     TipoDocumento tipoDocumento = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
 
-                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,matricula);
+                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula);
 
                 }
             }
@@ -138,8 +142,9 @@ public class VeterinarioDAO extends Dao{
                 "tipo_documento_veterinario," +
                 "numero_documento_veterinario," +
                 "telefono_veterinario," +
-                "matricula_veterinario)" +
-                "VALUES(?,?,?,?,?,?) " +
+                "matricula_veterinario," +
+                "fecha_alta_veterinario)" +
+                "VALUES(?,?,?,?,?,?,?) " +
                 "RETURNING id_veterinario";
 
         try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
@@ -149,11 +154,12 @@ public class VeterinarioDAO extends Dao{
             statement.setString(4,veterinario.getNumeroDocumento());
             statement.setString(5,veterinario.getTelefono());
             statement.setString(6,veterinario.getMatricula());
+            statement.setObject(7,veterinario.getFechaAlta());
 
             try( ResultSet resultado = statement.executeQuery()){
                 if ( resultado.next()){
                     int id = resultado.getInt("id_veterinario");
-                    veterinarioBD = new Veterinario(id,veterinario.getNombre(),veterinario.getApellido(),veterinario.getTipoDocumento(),veterinario.getNumeroDocumento(),veterinario.getTelefono(),veterinario.getMatricula());
+                    veterinarioBD = new Veterinario(id,veterinario.getNombre(),veterinario.getApellido(),veterinario.getTipoDocumento(),veterinario.getNumeroDocumento(),veterinario.getTelefono(),veterinario.getFechaAlta(),veterinario.getMatricula());
                 }
             }
         }

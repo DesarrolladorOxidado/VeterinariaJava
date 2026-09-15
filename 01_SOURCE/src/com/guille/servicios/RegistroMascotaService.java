@@ -29,7 +29,7 @@ public class RegistroMascotaService {
 
             HistoriaClinica historiaClinicaBD = historiaClinicaDAO.registrarHistoriaClinica(historiaClinica,connection);
 
-            return new Mascota(mascotaBD.getId(),mascotaBD.getNombre(),mascotaBD.getTipo(),mascotaBD.getRaza(),mascotaBD.getFechaNacimiento(),mascotaBD.getPeso(),mascotaBD.getIdDuenio(),historiaClinicaBD);
+            return new Mascota(mascotaBD.getId(),mascotaBD.getNombre(),mascotaBD.getTipo(),mascotaBD.getRaza(),mascotaBD.getFechaNacimiento(),mascotaBD.getPeso(),mascotaBD.getIdDuenio(),mascotaBD.getFechaAlta(),historiaClinicaBD);
 
         });
     }

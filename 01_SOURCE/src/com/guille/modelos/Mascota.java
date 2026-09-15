@@ -1,6 +1,7 @@
 package com.guille.modelos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 public class Mascota {
@@ -14,13 +15,16 @@ public class Mascota {
     private int idDuenio;
     private HistoriaClinica historiaClinica;
 
+    private final LocalDateTime fechaAlta;
+
     public Mascota(String nombre, TipoMascota tipo, int idDuenio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.idDuenio = idDuenio;
+        this.fechaAlta = LocalDateTime.now();
     }
 
-    public Mascota(int id, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, Double peso, int idDuenio, HistoriaClinica historiaClinica) {
+    public Mascota(int id, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, Double peso, int idDuenio, LocalDateTime fechaAlta,HistoriaClinica historiaClinica) {
         this.id = id;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -28,6 +32,7 @@ public class Mascota {
         this.fechaNacimiento = fechaNacimiento;
         this.peso = peso;
         this.idDuenio = idDuenio;
+        this.fechaAlta = fechaAlta;
         this.historiaClinica = historiaClinica;
     }
 
@@ -86,6 +91,8 @@ public class Mascota {
 
     public void setIdDuenio( int idDuenio ){ this.idDuenio = idDuenio; }
 
+    public LocalDateTime getFechaAlta(){ return this.fechaAlta;}
+
     public HistoriaClinica getHistoriaClinica(){ return this.historiaClinica; }
 
     @Override
@@ -98,6 +105,7 @@ public class Mascota {
                 ", edad=" + getEdad() +
                 ", peso=" + peso +
                 ", idDuenio = " + idDuenio +
+                ", fechaAlta = " + fechaAlta +
                 ", historiaClinica=" + historiaClinica +
                 '}';
     }

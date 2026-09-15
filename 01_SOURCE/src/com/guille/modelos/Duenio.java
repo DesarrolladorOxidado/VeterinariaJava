@@ -1,5 +1,7 @@
 package com.guille.modelos;
 
+import java.time.LocalDateTime;
+
 public class Duenio extends Persona {
 
     private int idDuenio;
@@ -8,8 +10,8 @@ public class Duenio extends Persona {
         super(nombre, apellido, tipoDocumento, numero_documento, telefono);
     }
 
-    public Duenio(int idDuenio, String nombre, String apellido,TipoDocumento tipoDocumento, String numero_documento, String telefono) {
-        super(nombre, apellido, tipoDocumento, numero_documento, telefono);
+    public Duenio(int idDuenio, String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono, LocalDateTime fechaAlta) {
+        super(nombre, apellido, tipoDocumento, numero_documento, telefono, fechaAlta);
         this.idDuenio = idDuenio;
     }
 

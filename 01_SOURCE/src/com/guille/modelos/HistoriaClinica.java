@@ -39,11 +39,6 @@ public class HistoriaClinica {
         return fechaCreacion;
     }
 
-    public void registrarConsulta( Consulta consulta){
-        this.consultas.add(consulta);
-        this.fechaActualizacion = consulta.getFecha();
-    }
-
     public List<Consulta> obtenerConsultas(){
 
         return new ArrayList<>(this.consultas);

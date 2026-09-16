@@ -24,30 +24,9 @@ public class HistoriaClinicaTest {
     }
 
     @Test
-    public void debeRegistrarConsulta(){
-
-        Consulta consulta = new Consulta("Control rutinario",null,1);
-
-        historiaClinica.registrarConsulta(consulta);
-
-        Assertions.assertEquals(1, historiaClinica.obtenerConsultas().size());
-        Assertions.assertSame(consulta,historiaClinica.obtenerConsultas().get(0));
-
-    }
-
-    @Test
     public void nuevaHistoriaClinicaNoDebeTenerConsultas(){
 
         Assertions.assertTrue(historiaClinica.obtenerConsultas().isEmpty());
     }
 
-    @Test
-    public void debeActualizarFechaHistoriaClinicaAlRegistrarNuevaConsulta(){
-
-        Consulta consulta = new Consulta("Control",null,1);
-
-        historiaClinica.registrarConsulta(consulta);
-
-        Assertions.assertEquals(consulta.getFecha(),historiaClinica.getFechaActualizacion());
-    }
 }

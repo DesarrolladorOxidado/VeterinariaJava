@@ -574,8 +574,15 @@ public class Aplicacion {
             return;
         }
 
-        HistoriaClinica historiaClinica = mascota.getHistoriaClinica();
-
+        HistoriaClinica historiaClinica;
+        try {
+            historiaClinica = this.controladores.getControladorHistoriasClinicas().obtenerHistoriaClinica(mascota.getId());
+        }catch (SQLException e){
+            logger.error("Error al obtener la historia clínica", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener la historia clínica.");
+            continuar();
+            return;
+        }
 
         System.out.println("Historia clínica de: " + mascota.getNombre());
         System.out.println("Fecha creación: " + formatearFechaHora(historiaClinica.getFechaCreacion()));
@@ -826,7 +833,7 @@ public class Aplicacion {
             return false;
 
 
-        TipoMascota tipo = null;
+        TipoMascota tipo;
         do {
             String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
             if (tipoSt.isEmpty())
@@ -933,7 +940,13 @@ public class Aplicacion {
         }
 
         try {
-            this.controladores.getControladorConsultas().registrarConsulta(motivo, diagnostico, tratamiento, observaciones, veterinario, mascota.getHistoriaClinica());
+            int idHistoriaClinica = this.controladores.getControladorHistoriasClinicas().obtenerIdHistoriaClinica(mascota.getId());
+
+            if ( idHistoriaClinica == -1 ) {
+                System.out.println("No se encontró la historia clínica de la mascota.");
+                return;
+            }
+            this.controladores.getControladorConsultas().registrarConsulta(motivo, diagnostico, tratamiento, observaciones, veterinario, idHistoriaClinica);
         }catch (SQLException e){
             logger.error("Error al intentar registrar la consulta", e);
             System.out.println("Ocurrió un inconveniente durante el registro de la consulta. Por favor, vuelva a intentarlo más tarde.");

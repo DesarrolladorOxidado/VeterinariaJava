@@ -27,6 +27,7 @@ public class FabricaAplicacion {
         ControladorVeterinarios controladorVeterinarios = new ControladorVeterinarios(veterinarioDAO);
         ControladorDuenios controladorDuenios = new ControladorDuenios(duenioDAO);
         ControladorMascotas controladorMascotas = new ControladorMascotas(mascotaDAO, registroMascotaService);
+        ControladorHistoriasClinicas controladorHistoriasClinicas = new ControladorHistoriasClinicas(historiaClinicaDAO);
         ControladorConsultas controladorConsultas = new ControladorConsultas(registrarConsultaService);
 
         Controladores controladores = new Controladores();
@@ -34,6 +35,7 @@ public class FabricaAplicacion {
         controladores.setControladorVeterinarios(controladorVeterinarios);
         controladores.setControladorDuenios(controladorDuenios);
         controladores.setControladorMascotas(controladorMascotas);
+        controladores.setControladorHistoriasClinicas(controladorHistoriasClinicas);
         controladores.setControladorConsultas(controladorConsultas);
 
         return new Aplicacion(controladores);

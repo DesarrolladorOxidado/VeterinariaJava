@@ -54,7 +54,7 @@ public class ControladorConsultasTest {
     @Test
     public void alRegistrarConsultaDebeTenerLosDatosIngresados() throws SQLException {
 
-        Consulta consulta = controladorConsultas.registrarConsulta("Control", "Sin datos", "Sin datos", "Sin datos", veterinario, mascota.getHistoriaClinica());
+        Consulta consulta = controladorConsultas.registrarConsulta("Control", "Sin datos", "Sin datos", "Sin datos", veterinario, mascota.getHistoriaClinica().getId());
 
         Assertions.assertTrue(consulta.getId() > 0);
         Assertions.assertEquals("Control", consulta.getMotivo());

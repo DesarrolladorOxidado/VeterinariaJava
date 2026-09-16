@@ -1,7 +1,6 @@
 package com.guille.servicios;
 
 import com.guille.modelos.Consulta;
-import com.guille.modelos.HistoriaClinica;
 import com.guille.persistencia.GestorTransacciones;
 import com.guille.persistencia.dao.ConsultaDAO;
 import com.guille.persistencia.dao.HistoriaClinicaDAO;
@@ -20,12 +19,11 @@ public class RegistrarConsultaService {
         this.gestorTransacciones = gestorTransacciones;
     }
 
-    public Consulta registrarConsulta(Consulta consulta, HistoriaClinica historiaClinica) throws SQLException {
+    public Consulta registrarConsulta(Consulta consulta) throws SQLException {
 
         return gestorTransacciones.ejecutar( connection -> {
             Consulta consultaBD = consultaDAO.registrarConsulta(consulta,connection);
-            historiaClinica.registrarConsulta(consultaBD);
-            historiaClinicaDAO.actualizarFecha(historiaClinica, connection);
+            historiaClinicaDAO.actualizarFecha(consulta.getIdHistoriaClinica(),consulta.getFecha(), connection);
 
             return consultaBD;
         });

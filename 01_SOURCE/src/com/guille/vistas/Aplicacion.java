@@ -387,7 +387,7 @@ public class Aplicacion {
 
             for ( Veterinario veterinario : veterinarios ){
                 mostrarVeterinario(veterinario);
-                System.out.println("======================4");
+                System.out.println("======================");
             }
         }catch (SQLException e){
             logger.error("Error al intentar obtener los veterinarios", e);

@@ -23,7 +23,7 @@ public class RegistrarConsultaService {
 
         return gestorTransacciones.ejecutar( connection -> {
             Consulta consultaBD = consultaDAO.registrarConsulta(consulta,connection);
-            historiaClinicaDAO.actualizarFecha(consulta.getIdHistoriaClinica(),consulta.getFecha(), connection);
+            historiaClinicaDAO.actualizarFecha(consultaBD.getIdHistoriaClinica(),consultaBD.getFecha(), connection);
 
             return consultaBD;
         });

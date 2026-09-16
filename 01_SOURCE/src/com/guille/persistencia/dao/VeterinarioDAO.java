@@ -46,34 +46,6 @@ public class VeterinarioDAO extends Dao{
         return veterinarios;
     }
 
-    public Veterinario obtenerVeterinarioPorId(int id) throws SQLException{
-
-        Veterinario veterinario = null;
-
-        try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM veterinarios WHERE id_veterinario = ?" )){
-
-            statement.setInt(1, id);
-
-            try( ResultSet resultado = statement.executeQuery()){
-                if ( resultado.next()){
-                    String nombre = resultado.getString("nombre_veterinario");
-                    String apellido = resultado.getString("apellido_veterinario");
-                    String tipoDocumentoST = resultado.getString("tipo_documento_veterinario");
-                    String numeroDocumento =  resultado.getString("numero_documento_veterinario");
-                    String telefono = resultado.getString("telefono_veterinario");
-                    String matricula = resultado.getString("matricula_veterinario");
-                    LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
-
-                    veterinario = new Veterinario(id,nombre,apellido,TipoDocumento.obtenerTipoDocumento(tipoDocumentoST),numeroDocumento,telefono,fechaAlta,matricula);
-
-                }
-            }
-
-        }
-
-        return veterinario;
-    }
-
     public Veterinario obtenerVeterinarioPorDocumento(TipoDocumento tipoDocumento, String numeroDocumento) throws SQLException{
 
         Veterinario veterinario = null;

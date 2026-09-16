@@ -1,7 +1,5 @@
 package com.guille.persistencia.dao;
 
-import com.guille.modelos.Consulta;
-import com.guille.modelos.HistoriaClinica;
 import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoMascota;
 import com.guille.persistencia.ConexionBD;

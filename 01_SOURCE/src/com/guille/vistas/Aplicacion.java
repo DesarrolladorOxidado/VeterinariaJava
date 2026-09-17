@@ -35,9 +35,9 @@ public class Aplicacion {
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
-    private Controladores controladores;
+    private final Controladores controladores;
 
     public Aplicacion(Controladores controladores){
         this.scanner = new Scanner(System.in);
@@ -257,23 +257,22 @@ public class Aplicacion {
 
             String numeroDocumentoDuenio;
             TipoDocumento tipoDocumentoDuenio = null;
+
             do {
+                String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+                if (tipoSt.isEmpty())
+                    return;
 
-                do {
-                    String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-                    if (tipoSt.isEmpty())
-                        return;
+                try {
+                    tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
 
-                    try {
-                        tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Tipo de documento incorrecto");
+                    tipoDocumentoDuenio = null;
+                }
+            }while ( tipoDocumentoDuenio == null);
 
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Tipo de documento incorrecto");
-                        tipoDocumentoDuenio = null;
-                    }
-                }while ( tipoDocumentoDuenio == null);
-
-
+            do{
                 numeroDocumentoDuenio = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
                 if (numeroDocumentoDuenio.isEmpty())
                     return;
@@ -745,7 +744,7 @@ public class Aplicacion {
             int i = 1;
 
             for(Veterinario veterinario : veterinarios){
-                System.out.println(i + " - " + veterinario);
+                System.out.println(i + " - " + veterinario.getNombre() + " " + veterinario.getApellido() + " - Matricula: " + veterinario.getMatricula());
                 i++;
             }
 
@@ -891,7 +890,7 @@ public class Aplicacion {
                 peso = 0;
             }
 
-        }while ( peso <= 0);
+        }while ( peso <= 0 || !Double.isInfinite(peso));
 
         try {
              this.controladores.getControladorMascotas().registrarMascota(nombre, tipo, raza, fechaNacimiento, peso, duenio.getIdDuenio());
@@ -1007,7 +1006,6 @@ public class Aplicacion {
         System.out.println("* Tratamiento: " + consulta.getTratamiento());
         System.out.println("* Observaciones: " + consulta.getObservaciones());
         System.out.println("* Atendido por: " + consulta.getVeterinario().getNombre() + " " + consulta.getVeterinario().getApellido());
-
 
     }
 

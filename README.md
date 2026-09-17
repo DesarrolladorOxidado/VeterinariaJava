@@ -68,13 +68,13 @@ El logging se implementa utilizando SLF4J y Logback. Los errores técnicos y sus
 
 El proyecto utiliza JUnit para probar tanto reglas del dominio como flujos que involucran persistencia.
 
-Actualmente la suite cuenta con 22 tests automatizados.
+Actualmente la suite cuenta con 24 tests automatizados.
 
 ## Próximos pasos
 
 - Continuar mejorando las validaciones de datos y entradas de usuario.
-- Revisar y optimizar consultas a la base de datos a medida que aumente la complejidad del sistema.
-- Continuar evolucionando la capa de persistencia.
+- Incorporar nuevos casos de uso, como la edición de datos registrados.
+- Ampliar la cobertura de pruebas automatizadas a medida que se incorporen nuevas funcionalidades.
 
 ## Tecnologías
 

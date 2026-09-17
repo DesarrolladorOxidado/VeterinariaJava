@@ -52,7 +52,7 @@ public class ControladorMascotasTest {
         LocalDate fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
         Mascota mascota = controladorMascotas.registrarMascota("Mateo", TipoMascota.PERRO,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
 
-        Assertions.assertTrue(mascota.getId() > 0);
+        Assertions.assertTrue(mascota.getIdMascota() > 0);
         Assertions.assertEquals("Mateo",mascota.getNombre());
         Assertions.assertEquals(TipoMascota.PERRO,mascota.getTipo());
         Assertions.assertEquals("Border Collie",mascota.getRaza());
@@ -60,6 +60,6 @@ public class ControladorMascotasTest {
         Assertions.assertEquals(24.3,mascota.getPeso());
         Assertions.assertEquals(duenio.getIdDuenio(),mascota.getIdDuenio());
         Assertions.assertNotNull(mascota.getHistoriaClinica());
-        Assertions.assertTrue(mascota.getHistoriaClinica().getId() > 0);
+        Assertions.assertTrue(mascota.getHistoriaClinica().getIdHistoriaClinica() > 0);
     }
 }

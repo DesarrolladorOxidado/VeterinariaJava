@@ -6,7 +6,7 @@ import java.util.List;
 
 public class HistoriaClinica {
 
-    private int id;
+    private int idHistoriaClinica;
     private int idMascota;
     private final LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
@@ -19,15 +19,15 @@ public class HistoriaClinica {
         this.consultas = new ArrayList<>();
     }
 
-    public HistoriaClinica(int id, int idMascota, LocalDateTime fechaCreacion,LocalDateTime fechaActualizacion, List<Consulta> consultas) {
-        this.id = id;
+    public HistoriaClinica(int idHistoriaClinica, int idMascota, LocalDateTime fechaCreacion,LocalDateTime fechaActualizacion, List<Consulta> consultas) {
+        this.idHistoriaClinica = idHistoriaClinica;
         this.idMascota = idMascota;
         this.fechaCreacion = fechaCreacion;
         this.fechaActualizacion = fechaActualizacion;
         this.consultas = new ArrayList<>(consultas);
     }
 
-    public int getId(){ return this.id; }
+    public int getIdHistoriaClinica(){ return this.idHistoriaClinica; }
 
     public int getIdMascota(){ return this.idMascota;}
 
@@ -47,7 +47,7 @@ public class HistoriaClinica {
     @Override
     public String toString() {
         return "HistoriaClinica{" +
-                "id = " + id +
+                "idHistoriaClinica = " + idHistoriaClinica +
                 ", idMascota = " + idMascota +
                 ", fechaCreacion =" + fechaCreacion +
                 ", fechaActualizacion=" + fechaActualizacion +

@@ -6,7 +6,7 @@ import java.time.Period;
 
 public class Mascota {
 
-    private int id;
+    private int idMascota;
     private String nombre;
     private TipoMascota tipo;
     private String raza;
@@ -24,8 +24,8 @@ public class Mascota {
         this.fechaAlta = LocalDateTime.now();
     }
 
-    public Mascota(int id, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, Double peso, int idDuenio, LocalDateTime fechaAlta,HistoriaClinica historiaClinica) {
-        this.id = id;
+    public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta,HistoriaClinica historiaClinica) {
+        this.idMascota = idMascota;
         this.nombre = nombre;
         this.tipo = tipo;
         this.raza = raza;
@@ -36,7 +36,7 @@ public class Mascota {
         this.historiaClinica = historiaClinica;
     }
 
-    public int getId(){ return this.id; }
+    public int getIdMascota(){ return this.idMascota; }
     public String getNombre() {
         return nombre;
     }
@@ -97,7 +97,7 @@ public class Mascota {
 
     @Override
     public String toString() {
-        return "Mascota{" +
+        return "Mascota{ idMascota = '" + this.idMascota +
                 "nombre='" + nombre + '\'' +
                 ", tipo=" + tipo +
                 ", raza='" + raza + '\'' +

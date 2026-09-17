@@ -32,7 +32,8 @@ public class Veterinario extends Persona {
     @Override
     public String toString() {
 
-        return "Veterinario { " + super.toString() +
+        return "Veterinario { idVeterinario = " + this.idVeterinario + ", "
+                + super.toString() +
                 ", matricula='" + matricula + '\'' +
                 '}';
     }

@@ -28,8 +28,6 @@ public class ControladorConsultas {
     public Consulta registrarConsulta(String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, int idHistoriaClinica) throws SQLException {
 
         Consulta consulta = crearConsulta(motivo,diagnostico,tratamiento,observaciones,veterinario,idHistoriaClinica);
-        Consulta consultaBD = this.registrarConsultaService.registrarConsulta(consulta);
-
-        return consultaBD;
+        return this.registrarConsultaService.registrarConsulta(consulta);
     }
 }

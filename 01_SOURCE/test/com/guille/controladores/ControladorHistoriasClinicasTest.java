@@ -51,29 +51,29 @@ public class ControladorHistoriasClinicasTest {
     @Test
     public void debeDevolverIdDeHistoriaClinica() throws SQLException{
 
-        Assertions.assertEquals(this.mascota.getHistoriaClinica().getId(),this.controladorHistoriasClinicas.obtenerIdHistoriaClinica(mascota.getId()));
+        Assertions.assertEquals(this.mascota.getHistoriaClinica().getIdHistoriaClinica(),this.controladorHistoriasClinicas.obtenerIdHistoriaClinica(mascota.getIdMascota()));
 
     }
 
     @Test
     public void debeDevolverHistoriaClinicaConConsultas() throws SQLException{
-            this.controladorConsultas.registrarConsulta("Control","","","",veterinario,mascota.getHistoriaClinica().getId());
+            this.controladorConsultas.registrarConsulta("Control","","","",veterinario,mascota.getHistoriaClinica().getIdHistoriaClinica());
 
-            Assertions.assertEquals(1, this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getId()).obtenerConsultas().size());
+            Assertions.assertEquals(1, this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getIdMascota()).obtenerConsultas().size());
     }
 
     @Test
     public void debeDevolverHistoriaClinicaConVariasConsultas() throws SQLException{
         int cantidadConsultas = 4;
         for (int i = 1; i <= cantidadConsultas; i++) {
-            this.controladorConsultas.registrarConsulta("Control " + i, "", "", "", veterinario, mascota.getHistoriaClinica().getId());
+            this.controladorConsultas.registrarConsulta("Control " + i, "", "", "", veterinario, mascota.getHistoriaClinica().getIdHistoriaClinica());
         }
 
-        Assertions.assertEquals(cantidadConsultas, this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getId()).obtenerConsultas().size());
+        Assertions.assertEquals(cantidadConsultas, this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getIdMascota()).obtenerConsultas().size());
     }
 
     @Test
     public void debeDevolverHistoriaClinicaSinConsultas() throws SQLException{
-        Assertions.assertTrue(this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getId()).obtenerConsultas().isEmpty());
+        Assertions.assertTrue(this.controladorHistoriasClinicas.obtenerHistoriaClinica(mascota.getIdMascota()).obtenerConsultas().isEmpty());
     }
 }

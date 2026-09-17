@@ -576,7 +576,7 @@ public class Aplicacion {
 
         HistoriaClinica historiaClinica;
         try {
-            historiaClinica = this.controladores.getControladorHistoriasClinicas().obtenerHistoriaClinica(mascota.getId());
+            historiaClinica = this.controladores.getControladorHistoriasClinicas().obtenerHistoriaClinica(mascota.getIdMascota());
         }catch (SQLException e){
             logger.error("Error al obtener la historia clínica", e);
             System.out.println("Ocurrió un inconveniente al intentar obtener la historia clínica.");
@@ -940,7 +940,7 @@ public class Aplicacion {
         }
 
         try {
-            int idHistoriaClinica = this.controladores.getControladorHistoriasClinicas().obtenerIdHistoriaClinica(mascota.getId());
+            int idHistoriaClinica = this.controladores.getControladorHistoriasClinicas().obtenerIdHistoriaClinica(mascota.getIdMascota());
 
             if ( idHistoriaClinica == -1 ) {
                 System.out.println("No se encontró la historia clínica de la mascota.");

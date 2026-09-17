@@ -6,7 +6,7 @@ public enum TipoMascota {
     CONEJO("CJ"),
     HAMSTER("HM");
 
-    private String codigo;
+    private final String codigo;
 
     TipoMascota(String codigo){ this.codigo = codigo;}
 

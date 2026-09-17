@@ -6,7 +6,7 @@ public enum TipoDocumento {
     LIBRETA_ENROLAMIENTO("LE"),
     LIBRETA_CIVICA("LC");
 
-    private String codigo;
+    private final String codigo;
 
     TipoDocumento(String codigo){
         this.codigo = codigo;

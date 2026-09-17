@@ -9,7 +9,7 @@ public class Consulta {
     private static final String CAMPO_OBSERVACIONES_INCOMPLETO = "Sin observaciones";
 
 
-    private int id;
+    private int idConsulta;
     //La fecha no se modifica, se establece únicamente al crear la consulta
     private final LocalDateTime fecha;
     final private String motivo;
@@ -31,8 +31,8 @@ public class Consulta {
         this.observaciones = CAMPO_OBSERVACIONES_INCOMPLETO;
     }
 
-    public Consulta(int id, LocalDateTime fecha, String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, int idHistoriaClinica) {
-        this.id = id;
+    public Consulta(int idConsulta, LocalDateTime fecha, String motivo, String diagnostico, String tratamiento, String observaciones, Veterinario veterinario, int idHistoriaClinica) {
+        this.idConsulta = idConsulta;
         this.fecha = fecha;
         this.motivo = motivo;
         this.diagnostico = diagnostico;
@@ -42,7 +42,7 @@ public class Consulta {
         this.idHistoriaClinica = idHistoriaClinica;
     }
 
-    public int getId(){ return this.id; }
+    public int getIdConsulta(){ return this.idConsulta; }
 
     public LocalDateTime getFecha() {
         return fecha;
@@ -84,7 +84,7 @@ public class Consulta {
 
     @Override
     public String toString() {
-        return "Consulta{" +
+        return "Consulta{ idConsulta= " + this.idConsulta +
                 "fecha=" + fecha +
                 ", motivo='" + motivo + '\'' +
                 ", diagnostico='" + diagnostico + '\'' +

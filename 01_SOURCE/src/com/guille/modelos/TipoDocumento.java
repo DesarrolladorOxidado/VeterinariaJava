@@ -16,7 +16,7 @@ public enum TipoDocumento {
 
     public static TipoDocumento obtenerTipoDocumento(String codigoDocumento){
         for( TipoDocumento tipoDocumento : TipoDocumento.values()) {
-            if (tipoDocumento.getCodigo().equals(codigoDocumento)) {
+            if (tipoDocumento.getCodigo().equalsIgnoreCase(codigoDocumento)) {
                 return tipoDocumento;
 
             }

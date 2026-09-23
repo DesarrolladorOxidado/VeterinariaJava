@@ -14,7 +14,7 @@ public enum TipoMascota {
 
     public static TipoMascota obtenerTipoMascota( String codigoMascota){
         for( TipoMascota tipoMascota : TipoMascota.values()) {
-            if (tipoMascota.getCodigo().equals(codigoMascota)) {
+            if (tipoMascota.getCodigo().equalsIgnoreCase(codigoMascota)) {
                 return tipoMascota;
 
             }

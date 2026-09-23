@@ -24,6 +24,10 @@ public class ControladorVeterinarios {
         return this.veterinarioDAO.registrarVeterinario(veterinario);
     }
 
+    public void actualizarVeterinario(Veterinario veterinario) throws SQLException{
+        this.veterinarioDAO.actualizarVeterinario(veterinario);
+    }
+
     public List<Veterinario> obtenerVeterinarios() throws SQLException{
         return this.veterinarioDAO.obtenerVeterinarios();
     }

@@ -105,4 +105,27 @@ public class ControladorVeterinariosTest {
 
     }
 
+    @Test
+    public void alActualizarDatosDebePersistirNuevosDatos() throws SQLException{
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
+
+        veterinario.setNombre("Lalo");
+        veterinario.setApellido("Landa");
+        veterinario.setTipoDocumento(TipoDocumento.DNI);
+        veterinario.setNumeroDocumento("85244");
+        veterinario.setTelefono("12452");
+        veterinario.setMatricula("MV-512");
+
+        controladorVeterinarios.actualizarVeterinario(veterinario);
+
+        Veterinario veterinarioEncontrado = controladorVeterinarios.obtenerVeterinarioConMatricula("MV-512");
+
+        Assertions.assertEquals(veterinario.getIdVeterinario(), veterinarioEncontrado.getIdVeterinario());
+        Assertions.assertEquals(veterinario.getNombre(),veterinarioEncontrado.getNombre());
+        Assertions.assertEquals(veterinario.getApellido(),veterinarioEncontrado.getApellido());
+        Assertions.assertEquals(veterinario.getTipoDocumento(),veterinarioEncontrado.getTipoDocumento());
+        Assertions.assertEquals(veterinario.getNumeroDocumento(),veterinarioEncontrado.getNumeroDocumento());
+        Assertions.assertEquals(veterinario.getTelefono(),veterinarioEncontrado.getTelefono());
+        Assertions.assertEquals(veterinario.getMatricula(),veterinarioEncontrado.getMatricula());
+    }
 }

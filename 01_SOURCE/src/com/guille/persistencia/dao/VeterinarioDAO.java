@@ -4,10 +4,7 @@ import com.guille.modelos.TipoDocumento;
 import com.guille.modelos.Veterinario;
 import com.guille.persistencia.ConexionBD;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,5 +143,31 @@ public class VeterinarioDAO extends Dao{
         }
 
         return false;
+    }
+
+    public void actualizarVeterinario(Veterinario veterinario) throws SQLException{
+        String sql = "UPDATE veterinarios " +
+                     "SET nombre_veterinario = ?, " +
+                     "apellido_veterinario = ?, " +
+                     "tipo_documento_veterinario = ?, " +
+                     "numero_documento_veterinario = ?, " +
+                     "telefono_veterinario = ?, " +
+                     "matricula_veterinario = ? " +
+                     "WHERE id_veterinario = ?";
+
+        try(Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1,veterinario.getNombre());
+            statement.setString(2,veterinario.getApellido());
+            statement.setString(3,veterinario.getTipoDocumento().getCodigo());
+            statement.setString(4,veterinario.getNumeroDocumento());
+            statement.setString(5,veterinario.getTelefono());
+            statement.setString(6,veterinario.getMatricula());
+            statement.setInt(7,veterinario.getIdVeterinario());
+
+            int resultado = statement.executeUpdate();
+
+            if ( resultado != 1 )
+                throw new SQLException("No se pudo actualizar el veterinario");
+        }
     }
 }

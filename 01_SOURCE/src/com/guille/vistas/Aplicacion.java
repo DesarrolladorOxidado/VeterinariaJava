@@ -1,7 +1,13 @@
 package com.guille.vistas;
 
-import com.guille.controladores.*;
+import com.guille.controladores.Controladores;
 import com.guille.modelos.*;
+import com.guille.vistas.menu.Menu;
+import com.guille.vistas.menu.OpcionMenuPrincipal;
+import com.guille.vistas.menu.OpcionesEditarVeterinario;
+import com.guille.vistas.menu.OpcionesMenuEdicion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -9,11 +15,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Aplicacion {
 
@@ -56,24 +60,19 @@ public class Aplicacion {
     }
 
     private void mostrarOpcionesMenu() throws SQLException{
-        int opcion = -1;
+        int opcion;
+        OpcionMenuPrincipal opcionSeleccionada = null;
 
         do{
 
-            System.out.println("MENU VETERINARIA: por favor, elija una opción:" );
-            System.out.println("1 - Registrar veterinario");
-            System.out.println("2 - Registrar duenio");
-            System.out.println("3 - Registrar mascotas");
-            System.out.println("4 - Mostrar veterinarios");
-            System.out.println("5 - Mostrar dueños");
-            System.out.println("6 - Mostrar mascotas de un dueño");
+            List<OpcionMenuPrincipal> menuPrincipal = new ArrayList<>(List.of(OpcionMenuPrincipal.values()));
 
-            if (this.controladores.getControladorVeterinarios().existenVeterinarios())
-                System.out.println("7 - Nueva consulta");
+            boolean existenVeterinarios = this.controladores.getControladorVeterinarios().existenVeterinarios();
 
+            if (!existenVeterinarios)
+                menuPrincipal.remove(OpcionMenuPrincipal.NUEVA_CONSULTA);
 
-            System.out.println("8 - Consultar historia clínica");
-            System.out.println("0 - Salir");
+            Menu.opcionesMenuPrincipal(menuPrincipal);
 
             try {
                 opcion = Integer.valueOf(scanner.nextLine().trim());
@@ -81,42 +80,50 @@ public class Aplicacion {
                 System.out.println("Debe ingresar una opción numérica");
                 continue;
             }
-            switch (opcion) {
-                case 1 -> {
+
+            if ( opcion < 1 || opcion > menuPrincipal.size()) {
+                System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                continue;
+            }
+
+            opcionSeleccionada = menuPrincipal.get(opcion-1);
+
+            switch (opcionSeleccionada) {
+                case REGISTRAR_VETERINARIO -> {
                     System.out.println("*** Registrar veterinario***");
                     registrarVeterinario();
 
                 }
-                case 2 -> {
+                case REGISTRAR_DUENIO -> {
                     System.out.println("*** Registrar duenio ***");
                     registrarDuenio();
 
                 }
-                case 3 -> {
+                case REGISTRAR_MASCOTA -> {
                     System.out.println("*** Registrar mascota ***");
                     registrarMascotasDelDuenio();
 
                 }
-                case 4 -> {
+                case MOSTRAR_VETERINARIOS -> {
                     System.out.println("*** Veterinarios ***");
                     mostrarVeterinarios();
                     continuar();
 
                 }
-                case 5 -> {
+                case MOSTRAR_DUENIOS -> {
                     System.out.println("*** Duenios ***");
                     mostrarDuenios();
                     continuar();
 
                 }
-                case 6 -> {
+                case MOSTRAR_MASCOTAS -> {
                     System.out.println("*** Mascotas ***");
                     mostrarMascotas();
 
                 }
-                case 7 -> {
+                case NUEVA_CONSULTA -> {
 
-                        if ( this.controladores.getControladorVeterinarios().existenVeterinarios()) {
+                        if ( existenVeterinarios ) {
                             System.out.println("*** Nueva consulta ***");
                             nuevaConsulta();
                         }else{
@@ -124,21 +131,405 @@ public class Aplicacion {
                             continuar();
                         }
                 }
-                case 8 -> {
+                case CONSULTAR_HISTORIA_CLINICA -> {
                     System.out.println("*** Consultar historia clínica ***");
                     consultarHistoriaClinica();
                 }
-                case 0 -> {
+                case EDITAR -> {
+                    System.out.println("*** Editar datos ***");
+                    editarDatos();
+                }
+                case SALIR -> {
+                    System.out.println("*** GRACIAS POR USAR EL SITEMA ***");
+                }
+            }
+        }while (opcionSeleccionada != OpcionMenuPrincipal.SALIR);
+
+    }
+
+    private void editarDatos(){
+        int opcion;
+        OpcionesMenuEdicion opcionSeleccionada = null;
+
+        do {
+            List<OpcionesMenuEdicion> menuEdicion = new ArrayList<>(List.of(OpcionesMenuEdicion.values()));
+            Menu.opcionesMenuEdicion(menuEdicion);
+
+            try {
+                opcion = Integer.valueOf(scanner.nextLine().trim());
+            }catch (NumberFormatException e){
+                System.out.println("Debe ingresar una opción numérica");
+                continue;
+            }
+
+            if ( opcion < 1 || opcion > menuEdicion.size()) {
+                System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                continue;
+            }
+
+            opcionSeleccionada = menuEdicion.get(opcion-1);
+
+            switch (opcionSeleccionada){
+                case EDITAR_VETERINARIO -> {
+                        editarVeterinario();
+                }
+                case EDITAR_DUENIO -> {
 
                 }
-                default -> {
-                    System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                case EDITAR_MASCOTA -> {
 
                 }
             }
-        }while (opcion != 0);
+        }while (opcionSeleccionada != OpcionesMenuEdicion.VOLVER);
+    }
 
-        System.out.println("Gracias por usar el sistema.");
+    private void editarVeterinario() {
+        System.out.println("\n******POR FAVOR, SELECCIONE UN VETERINARIO: ");
+
+        Veterinario veterinario = seleccionarVeterinario();
+
+        if ( veterinario == null)
+            return;
+
+        int opcion;
+        OpcionesEditarVeterinario opcionSeleccionada = null;
+
+        do {
+            List<OpcionesEditarVeterinario> opcionesEditarVeterinarios = new ArrayList<>(List.of(OpcionesEditarVeterinario.values()));
+            Menu.menuOpcionesEditarVeterinario(opcionesEditarVeterinarios);
+
+            try {
+                opcion = Integer.valueOf(scanner.nextLine().trim());
+            }catch (NumberFormatException e){
+                System.out.println("Debe ingresar una opción numérica");
+                continue;
+            }
+
+            if ( opcion < 1 || opcion > opcionesEditarVeterinarios.size()) {
+                System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                continue;
+            }
+
+            opcionSeleccionada = opcionesEditarVeterinarios.get(opcion-1);
+
+            switch (opcionSeleccionada){
+                case EDITAR_NOMBRE -> {
+                        char rta;
+                        System.out.println("***** EDITAR NOMBRE VETERINARIO *****");
+                        System.out.println("* Nombre actual: " + veterinario.getNombre());
+                        String nombreAnterior = veterinario.getNombre();
+
+                        try{
+                            String nuevoNombreVeterinario;
+                            boolean cancelarEdicion = false;
+
+                            do{
+                                rta = 'n';
+                                nuevoNombreVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_NOMBRE);
+
+                                if (nuevoNombreVeterinario.isEmpty()){
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                if ( nuevoNombreVeterinario.equals(nombreAnterior)){
+                                    System.out.println("El nombre ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                        cancelarEdicion = true;
+                                }
+
+                            }while( rta == 's');
+
+                            if ( cancelarEdicion )
+                                break;
+
+                            System.out.println("¿Está seguro de cambiar el nombre de " + nombreAnterior + " por " + nuevoNombreVeterinario + "? (s/n)");
+                            rta = solicitarRespuestaSiNo();
+
+                            if (rta != 's')
+                                break;
+
+                            veterinario.setNombre(nuevoNombreVeterinario);
+                            this.controladores.getControladorVeterinarios().actualizarVeterinario(veterinario);
+
+                            System.out.println("Nombre actualizado correctamente");
+                            mostrarVeterinario(veterinario);
+                            continuar();
+
+                        }catch (SQLException e ){
+                            veterinario.setNombre(nombreAnterior);
+                            logger.error("Error al intentar actualizar los datos del veterinario.", e);
+                            System.out.println("Ocurrió un error al intentar actualizar el nombre del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                            continuar();
+                        }
+
+                }
+                case EDITAR_APELLIDO -> {
+                        char rta;
+                        System.out.println("***** EDITAR APELLIDO VETERINARIO *****");
+                        System.out.println("* Apellido actual: " + veterinario.getApellido());
+                        String apellidoAnterior = veterinario.getApellido();
+
+                        try{
+                            String nuevoApellidoVeterinario;
+                            boolean cancelarEdicion = false;
+
+                            do{
+                                rta = 'n';
+
+                                nuevoApellidoVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_APELLIDO);
+                                if (nuevoApellidoVeterinario.isEmpty()){
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                if ( nuevoApellidoVeterinario.equals(apellidoAnterior)){
+
+                                    System.out.println("El apellido ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                        cancelarEdicion = true;
+
+                                }
+
+                            }while (rta == 's');
+
+                            if (cancelarEdicion)
+                                break;
+
+                            System.out.println("¿Está seguro de cambiar el apellido de " + apellidoAnterior + " por " + nuevoApellidoVeterinario + "? (s/n)");
+                            rta =solicitarRespuestaSiNo();
+
+                            if ( rta != 's')
+                                break;
+
+                            veterinario.setApellido(nuevoApellidoVeterinario);
+                            this.controladores.getControladorVeterinarios().actualizarVeterinario(veterinario);
+
+                            System.out.println("Apellido actualizado correctamente");
+                            mostrarVeterinario(veterinario);
+                            continuar();
+                        } catch (SQLException e){
+                            veterinario.setApellido(apellidoAnterior);
+                            logger.error("Error al intentar actualizar los datos del veterinario.", e);
+                            System.out.println("Ocurrió un error al intentar actualizar el apellido del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                            continuar();
+
+                        }
+                }
+                case EDITAR_DOCUMENTO -> {
+                    System.out.println("***** EDITAR DOCUMENTO VETERINARIO *****");
+                    System.out.println("* Documento actual: " + veterinario.getTipoDocumento().getCodigo() + " " + veterinario.getNumeroDocumento());
+
+                    char rta;
+                    TipoDocumento tipoDocumentoAnterior = veterinario.getTipoDocumento();
+                    String numeroDocumentoAnterior = veterinario.getNumeroDocumento();
+
+                    try{
+                        TipoDocumento nuevoTipoDocumento = null;
+                        String nuevoNumeroDocumento = null;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+
+                            do {
+                                String nuevoTipoDocumentoST = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+
+                                if (nuevoTipoDocumentoST.isEmpty()) {
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                nuevoTipoDocumento = TipoDocumento.obtenerTipoDocumento(nuevoTipoDocumentoST);
+
+                                if (nuevoTipoDocumento == null) {
+                                    System.out.println("Tipo de documento incorrecto");
+                                }
+                            }while ( nuevoTipoDocumento == null);
+
+                            if (cancelarEdicion )
+                                break;
+
+                            nuevoNumeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
+                            if ( nuevoNumeroDocumento.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            Veterinario veterinarioEncontrado = this.controladores.getControladorVeterinarios().obtenerVeterinarioConDocumento(nuevoTipoDocumento,nuevoNumeroDocumento);
+
+                            if ( veterinarioEncontrado != null ){
+                                if ( veterinarioEncontrado.getIdVeterinario() == veterinario.getIdVeterinario()){
+                                    System.out.println("El documento ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if (rta != 's')
+                                        cancelarEdicion = true;
+                                }else{
+                                    System.out.println("El tipo y número de documento ingresado ya existe. ¿Desea intentar nuevamente? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                        cancelarEdicion = true;
+                                }
+                            }
+
+                        }while ( rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getCodigo() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getCodigo() + " " + nuevoNumeroDocumento + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        veterinario.setTipoDocumento(nuevoTipoDocumento);
+                        veterinario.setNumeroDocumento(nuevoNumeroDocumento);
+
+                        this.controladores.getControladorVeterinarios().actualizarVeterinario(veterinario);
+
+                        System.out.println("Documento actualizado correctamente");
+                        mostrarVeterinario(veterinario);
+                        continuar();
+                    }catch (SQLException e){
+                        veterinario.setTipoDocumento(tipoDocumentoAnterior);
+                        veterinario.setNumeroDocumento(numeroDocumentoAnterior);
+                        logger.error("Error al intentar actualizar los datos del veterinario.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el documento del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+                }
+                case EDITAR_TELEFONO -> {
+                    char rta;
+                    System.out.println("***** EDITAR TELÉFONO VETERINARIO *****");
+                    System.out.println("* Teléfono actual: " + veterinario.getTelefono());
+                    String telefonoAnterior = veterinario.getTelefono();
+
+                    try{
+                        String nuevoTelefonoVeterinario;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+                            nuevoTelefonoVeterinario = solicitarCampoObligatorio(CAMPO_TELEFONO);
+
+                            if ( nuevoTelefonoVeterinario.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevoTelefonoVeterinario.equals(telefonoAnterior)){
+
+                                System.out.println("El teléfono ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while (rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el número de teléfono " + telefonoAnterior + " por " + nuevoTelefonoVeterinario + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        veterinario.setTelefono(nuevoTelefonoVeterinario);
+                        this.controladores.getControladorVeterinarios().actualizarVeterinario(veterinario);
+
+                        System.out.println("Número de teléfono actualizado correctamente");
+                        mostrarVeterinario(veterinario);
+                        continuar();
+                    } catch (SQLException e){
+                        veterinario.setTelefono(telefonoAnterior);
+                        logger.error("Error al intentar actualizar los datos del veterinario.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el número de teléfono del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+
+                    }
+
+                }
+                case EDITAR_MATRICULA -> {
+                    char rta;
+                    System.out.println("***** EDITAR MATRÍCULA VETERINARIO *****");
+                    System.out.println("* Matrícula actual: " + veterinario.getMatricula());
+                    String matriculaAnterior = veterinario.getMatricula();
+
+                    try {
+
+                         String nuevaMatriculaVeterinario;
+                         boolean cancelarEdicion = false;
+
+                         do {
+                             rta = 'n';
+
+                             nuevaMatriculaVeterinario = solicitarCampoObligatorio(Aplicacion.CAMPO_MATRICULA);
+                             if (nuevaMatriculaVeterinario.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                             }
+
+                             Veterinario veterinarioEncontrado = this.controladores.getControladorVeterinarios().obtenerVeterinarioConMatricula(nuevaMatriculaVeterinario);
+
+                             if ( veterinarioEncontrado != null){
+                                 if ( veterinarioEncontrado.getIdVeterinario() == veterinario.getIdVeterinario() ){
+
+                                    System.out.println("La matrícula ingresada coincide con la actual. ¿Desea ingresar otra? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                       cancelarEdicion = true;
+
+                                 }else{
+
+                                    System.out.println("La matrícula ingresada ya existe. ¿Desea intentar nuevamente? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                        cancelarEdicion = true;
+                                 }
+                             }
+
+                        }while ( rta == 's');
+
+                        if ( cancelarEdicion )
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar la matrícula " + matriculaAnterior + " por " + nuevaMatriculaVeterinario + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        veterinario.setMatricula(nuevaMatriculaVeterinario);
+                        this.controladores.getControladorVeterinarios().actualizarVeterinario(veterinario);
+
+                        System.out.println("Matricula actualizada correctamente");
+                        mostrarVeterinario(veterinario);
+                        continuar();
+
+                    }catch (SQLException e ){
+                        veterinario.setMatricula(matriculaAnterior);
+                        logger.error("Error al intentar actualizar los datos del veterinario.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar la matricula del veterinario. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+
+                }
+            }
+
+
+        }while ( opcionSeleccionada != OpcionesEditarVeterinario.VOLVER);
 
     }
 
@@ -164,13 +555,10 @@ public class Aplicacion {
                  if (tipoSt.isEmpty())
                      return;
 
-                 try {
-                     tipoDocumentoVeterinario = TipoDocumento.valueOf(tipoSt.toUpperCase());
-
-                 } catch (IllegalArgumentException e) {
+                 tipoDocumentoVeterinario = TipoDocumento.obtenerTipoDocumento(tipoSt);
+                 if (tipoDocumentoVeterinario == null)
                      System.out.println("Tipo de documento incorrecto");
-                     tipoDocumentoVeterinario = null;
-                 }
+
              }while ( tipoDocumentoVeterinario == null);
 
 
@@ -190,7 +578,7 @@ public class Aplicacion {
                      return;
                  }
 
-                 System.out.println("Ya existe un veterinario con el número de documento " + numeroDocumentoVeterinario);
+                 System.out.println("Ya existe un veterinario con el documento " + tipoDocumentoVeterinario.getCodigo() + " " + numeroDocumentoVeterinario);
                  System.out.println("¿Desea volver a intentar? (s/n)");
                  rta = solicitarRespuestaSiNo();
 
@@ -263,13 +651,11 @@ public class Aplicacion {
                 if (tipoSt.isEmpty())
                     return;
 
-                try {
-                    tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+                tipoDocumentoDuenio = TipoDocumento.obtenerTipoDocumento(tipoSt);
 
-                } catch (IllegalArgumentException e) {
+                if (tipoDocumentoDuenio == null)
                     System.out.println("Tipo de documento incorrecto");
-                    tipoDocumentoDuenio = null;
-                }
+
             }while ( tipoDocumentoDuenio == null);
 
             do{
@@ -286,7 +672,7 @@ public class Aplicacion {
                     continuar();
                     return;
                 }
-                System.out.println("Ya existe un duenio con ese documento.");
+                System.out.println("Ya existe un duenio con el documento " + tipoDocumentoDuenio.getCodigo() + " " + numeroDocumentoDuenio);
                 System.out.println("¿Desea volver a intentar? (s/n)");
                 rta = solicitarRespuestaSiNo();
 
@@ -646,19 +1032,17 @@ public class Aplicacion {
     private Duenio obtenerDuenioParaMascota(){
         char rta;
 
-        TipoDocumento tipoDocumentoDuenio = null;
+        TipoDocumento tipoDocumentoDuenio;
         do {
             String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
             if (tipoSt.isEmpty())
                 return null;
 
-            try {
-                tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
+            tipoDocumentoDuenio = TipoDocumento.obtenerTipoDocumento(tipoSt);
 
-            } catch (IllegalArgumentException e) {
+            if ( tipoDocumentoDuenio == null)
                 System.out.println("Tipo de documento incorrecto");
-                tipoDocumentoDuenio = null;
-            }
+
         }while ( tipoDocumentoDuenio == null);
 
 
@@ -680,7 +1064,7 @@ public class Aplicacion {
         if ( duenio != null)
             return duenio;
 
-        System.out.println("No se ha encontrado el dueño con número de documento: " +  documentoDuenio);
+        System.out.println("No se ha encontrado el dueño con documento: " + tipoDocumentoDuenio.getCodigo() + " " + documentoDuenio);
         System.out.println("¿Desea darlo de alta? s/n");
 
         rta = solicitarRespuestaSiNo();

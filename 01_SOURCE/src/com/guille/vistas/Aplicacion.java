@@ -2,10 +2,7 @@ package com.guille.vistas;
 
 import com.guille.controladores.Controladores;
 import com.guille.modelos.*;
-import com.guille.vistas.menu.Menu;
-import com.guille.vistas.menu.OpcionMenuPrincipal;
-import com.guille.vistas.menu.OpcionesEditarVeterinario;
-import com.guille.vistas.menu.OpcionesMenuEdicion;
+import com.guille.vistas.menu.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,7 +171,7 @@ public class Aplicacion {
                         editarVeterinario();
                 }
                 case EDITAR_DUENIO -> {
-
+                        editarDuenio();
                 }
                 case EDITAR_MASCOTA -> {
 
@@ -530,6 +527,289 @@ public class Aplicacion {
 
 
         }while ( opcionSeleccionada != OpcionesEditarVeterinario.VOLVER);
+
+    }
+
+    public void editarDuenio(){
+        System.out.println("\n******POR FAVOR, SELECCIONE UN DUEÑO: ");
+
+        Duenio duenio = seleccionarDuenio();
+
+        if ( duenio == null)
+            return;
+
+        int opcion;
+        OpcionesEditarDuenio opcionSeleccionada = null;
+
+        do {
+            List<OpcionesEditarDuenio> opcionesEditarDuenios = new ArrayList<>(List.of(OpcionesEditarDuenio.values()));
+            Menu.menuOpcionesEditarDuenio(opcionesEditarDuenios);
+
+            try {
+                opcion = Integer.valueOf(scanner.nextLine().trim());
+            }catch (NumberFormatException e){
+                System.out.println("Debe ingresar una opción numérica");
+                continue;
+            }
+
+            if ( opcion < 1 || opcion > opcionesEditarDuenios.size()) {
+                System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                continue;
+            }
+
+            opcionSeleccionada = opcionesEditarDuenios.get(opcion-1);
+
+            switch (opcionSeleccionada){
+                case EDITAR_NOMBRE -> {
+                    char rta;
+                    System.out.println("***** EDITAR NOMBRE DUENIO *****");
+                    System.out.println("* Nombre actual: " + duenio.getNombre());
+                    String nombreAnterior = duenio.getNombre();
+
+                    try{
+                        String nuevoNombreDuenio;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+                            nuevoNombreDuenio = solicitarCampoObligatorio(Aplicacion.CAMPO_NOMBRE);
+
+                            if (nuevoNombreDuenio.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevoNombreDuenio.equals(nombreAnterior)){
+                                System.out.println("El nombre ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while( rta == 's');
+
+                        if ( cancelarEdicion )
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el nombre de " + nombreAnterior + " por " + nuevoNombreDuenio + "? (s/n)");
+                        rta = solicitarRespuestaSiNo();
+
+                        if (rta != 's')
+                            break;
+
+                        duenio.setNombre(nuevoNombreDuenio);
+                        this.controladores.getControladorDuenios().actualizarDuenio(duenio);
+
+                        System.out.println("Nombre actualizado correctamente");
+                        mostrarDuenio(duenio);
+                        continuar();
+
+                    }catch (SQLException e ){
+                        duenio.setNombre(nombreAnterior);
+                        logger.error("Error al intentar actualizar los datos del dueño.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el nombre del dueño. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+
+                }
+                case EDITAR_APELLIDO -> {
+                    char rta;
+                    System.out.println("***** EDITAR APELLIDO DUEÑO *****");
+                    System.out.println("* Apellido actual: " + duenio.getApellido());
+                    String apellidoAnterior = duenio.getApellido();
+
+                    try{
+                        String nuevoApellidoDuenio;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+
+                            nuevoApellidoDuenio = solicitarCampoObligatorio(Aplicacion.CAMPO_APELLIDO);
+                            if (nuevoApellidoDuenio.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevoApellidoDuenio.equals(apellidoAnterior)){
+
+                                System.out.println("El apellido ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+
+                            }
+
+                        }while (rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el apellido de " + apellidoAnterior + " por " + nuevoApellidoDuenio + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        duenio.setApellido(nuevoApellidoDuenio);
+                        this.controladores.getControladorDuenios().actualizarDuenio(duenio);
+
+                        System.out.println("Apellido actualizado correctamente");
+                        mostrarDuenio(duenio);
+                        continuar();
+                    } catch (SQLException e){
+                        duenio.setApellido(apellidoAnterior);
+                        logger.error("Error al intentar actualizar los datos del dueño.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el apellido del dueño. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+
+                    }
+                }
+                case EDITAR_DOCUMENTO -> {
+                    System.out.println("***** EDITAR DOCUMENTO DUEÑO *****");
+                    System.out.println("* Documento actual: " + duenio.getTipoDocumento().getCodigo() + " " + duenio.getNumeroDocumento());
+
+                    char rta;
+                    TipoDocumento tipoDocumentoAnterior = duenio.getTipoDocumento();
+                    String numeroDocumentoAnterior = duenio.getNumeroDocumento();
+
+                    try{
+                        TipoDocumento nuevoTipoDocumento = null;
+                        String nuevoNumeroDocumento = null;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+
+                            do {
+                                String nuevoTipoDocumentoST = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+
+                                if (nuevoTipoDocumentoST.isEmpty()) {
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                nuevoTipoDocumento = TipoDocumento.obtenerTipoDocumento(nuevoTipoDocumentoST);
+
+                                if (nuevoTipoDocumento == null) {
+                                    System.out.println("Tipo de documento incorrecto");
+                                }
+                            }while ( nuevoTipoDocumento == null);
+
+                            if (cancelarEdicion )
+                                break;
+
+                            nuevoNumeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
+                            if ( nuevoNumeroDocumento.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            Duenio duenioEncontrado = this.controladores.getControladorDuenios().obtenerDuenioPorDocumento(nuevoTipoDocumento,nuevoNumeroDocumento);
+
+                            if ( duenioEncontrado != null ){
+                                if ( duenioEncontrado.getIdDuenio() == duenio.getIdDuenio()){
+                                    System.out.println("El documento ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if (rta != 's')
+                                        cancelarEdicion = true;
+                                }else{
+                                    System.out.println("El tipo y número de documento ingresado ya existe. ¿Desea intentar nuevamente? (s/n)");
+                                    rta = solicitarRespuestaSiNo();
+
+                                    if ( rta != 's')
+                                        cancelarEdicion = true;
+                                }
+                            }
+
+                        }while ( rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getCodigo() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getCodigo() + " " + nuevoNumeroDocumento + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        duenio.setTipoDocumento(nuevoTipoDocumento);
+                        duenio.setNumeroDocumento(nuevoNumeroDocumento);
+
+                        this.controladores.getControladorDuenios().actualizarDuenio(duenio);
+
+                        System.out.println("Documento actualizado correctamente");
+                        mostrarDuenio(duenio);
+                        continuar();
+                    }catch (SQLException e){
+                        duenio.setTipoDocumento(tipoDocumentoAnterior);
+                        duenio.setNumeroDocumento(numeroDocumentoAnterior);
+                        logger.error("Error al intentar actualizar los datos del dueño.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el documento del dueño. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+                }
+                case EDITAR_TELEFONO -> {
+                    char rta;
+                    System.out.println("***** EDITAR TELÉFONO DUENIO *****");
+                    System.out.println("* Teléfono actual: " + duenio.getTelefono());
+                    String telefonoAnterior = duenio.getTelefono();
+
+                    try{
+                        String nuevoTelefonoDuenio;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+                            nuevoTelefonoDuenio = solicitarCampoObligatorio(CAMPO_TELEFONO);
+
+                            if ( nuevoTelefonoDuenio.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevoTelefonoDuenio.equals(telefonoAnterior)){
+
+                                System.out.println("El teléfono ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while (rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el número de teléfono " + telefonoAnterior + " por " + nuevoTelefonoDuenio + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        duenio.setTelefono(nuevoTelefonoDuenio);
+                        this.controladores.getControladorDuenios().actualizarDuenio(duenio);
+
+                        System.out.println("Número de teléfono actualizado correctamente");
+                        mostrarDuenio(duenio);
+                        continuar();
+                    } catch (SQLException e){
+                        duenio.setTelefono(telefonoAnterior);
+                        logger.error("Error al intentar actualizar los datos del dueño.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el número de teléfono del dueño. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+
+                    }
+
+                }
+
+            }
+
+        }while ( opcionSeleccionada != OpcionesEditarDuenio.VOLVER);
 
     }
 
@@ -1127,6 +1407,12 @@ public class Aplicacion {
             List<Veterinario> veterinarios = this.controladores.getControladorVeterinarios().obtenerVeterinarios();
             int i = 1;
 
+            if (veterinarios.isEmpty()) {
+                System.out.println("No hay veterinarios registrados.");
+                continuar();
+                return null;
+            }
+
             for(Veterinario veterinario : veterinarios){
                 System.out.println(i + " - " + veterinario.getNombre() + " " + veterinario.getApellido() + " - Matricula: " + veterinario.getMatricula());
                 i++;
@@ -1159,6 +1445,56 @@ public class Aplicacion {
         }catch (SQLException e){
             logger.error("Error al intentar obtener los veterinarios", e);
             System.out.println("Ocurrió un inconveniente al intentar obtener los veterinarios.");
+            continuar();
+            return null;
+        }
+
+    }
+
+    private Duenio seleccionarDuenio(){
+
+        try {
+            List<Duenio> duenios = this.controladores.getControladorDuenios().obtenerDuenios();
+            int i = 1;
+
+            if (duenios.isEmpty()) {
+                System.out.println("No hay dueños registrados.");
+                continuar();
+                return null;
+            }
+
+            for(Duenio duenio : duenios){
+                System.out.println(i + " - " + duenio.getNombre() + " " + duenio.getApellido() );
+                i++;
+            }
+
+            int opcion = -1;
+            boolean opcionInvalida;
+            int totalDuenios = duenios.size();
+            do{
+                System.out.println("Por favor, elija un dueño: ");
+                try{
+                    opcion = Integer.valueOf(this.scanner.nextLine().trim());
+                }catch ( NumberFormatException e ){
+                    opcion  = -1;
+                }
+
+                opcionInvalida = opcion < 1 || opcion > totalDuenios;
+
+                if (opcionInvalida) {
+                    System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
+
+                    if (solicitarRespuestaSiNo() != 's')
+                        return null;
+                }
+
+            }while ( opcionInvalida);
+
+            return duenios.get(opcion-1);
+
+        }catch (SQLException e){
+            logger.error("Error al intentar obtener los dueños", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los dueños.");
             continuar();
             return null;
         }

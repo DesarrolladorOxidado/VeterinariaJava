@@ -25,6 +25,10 @@ public class ControladorDuenios {
 
     }
 
+    public void actualizarDuenio(Duenio duenio) throws SQLException{
+        this.duenioDAO.actualizarDuenio(duenio);
+    }
+
     public boolean existeDuenioConDocumento(TipoDocumento tipoDocumento, String documento) throws SQLException{
         return obtenerDuenioPorDocumento(tipoDocumento,documento) != null;
     }

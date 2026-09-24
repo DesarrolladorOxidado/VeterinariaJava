@@ -3,6 +3,7 @@ package com.guille.controladores;
 import com.guille.BaseDatosTestDAO;
 import com.guille.modelos.Duenio;
 import com.guille.modelos.TipoDocumento;
+import com.guille.modelos.Veterinario;
 import com.guille.persistencia.ConexionBD;
 import com.guille.persistencia.dao.DuenioDAO;
 import org.junit.jupiter.api.Assertions;
@@ -80,5 +81,27 @@ public class ControladorDueniosTest {
 
         Assertions.assertNull(controladorDuenios.obtenerDuenioPorDocumento(TipoDocumento.DNI,"999999"));
 
+    }
+
+    @Test
+    public void alActualizarDatosDebePersistirNuevosDatos() throws SQLException{
+        Duenio duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito",TipoDocumento.DNI,"1245782","234");
+
+        duenio.setNombre("Lalo");
+        duenio.setApellido("Landa");
+        duenio.setTipoDocumento(TipoDocumento.DNI);
+        duenio.setNumeroDocumento("85244");
+        duenio.setTelefono("12452");
+
+        controladorDuenios.actualizarDuenio(duenio);
+
+        Duenio duenioEncontrado = controladorDuenios.obtenerDuenioPorDocumento(TipoDocumento.DNI,"85244");
+
+        Assertions.assertEquals(duenio.getIdDuenio(), duenioEncontrado.getIdDuenio());
+        Assertions.assertEquals(duenio.getNombre(),duenioEncontrado.getNombre());
+        Assertions.assertEquals(duenio.getApellido(),duenioEncontrado.getApellido());
+        Assertions.assertEquals(duenio.getTipoDocumento(),duenioEncontrado.getTipoDocumento());
+        Assertions.assertEquals(duenio.getNumeroDocumento(),duenioEncontrado.getNumeroDocumento());
+        Assertions.assertEquals(duenio.getTelefono(),duenioEncontrado.getTelefono());
     }
 }

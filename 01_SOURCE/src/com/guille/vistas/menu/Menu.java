@@ -37,6 +37,15 @@ public class Menu {
         mostrarOpciones(opcionesEditarVeterinarios);
     }
 
+    public static void menuOpcionesEditarDuenio(List<OpcionesEditarDuenio> opcionesEditarDuenios){
+        System.out.println("--------------------------------");
+        System.out.println("     EDITAR DATOS DUEÑO        ");
+        System.out.println("--------------------------------");
+        System.out.println("POR FAVOR, ELIJA UNA OPCIÓN:");
+
+        mostrarOpciones(opcionesEditarDuenios);
+    }
+
     private static void mostrarOpciones(List<? extends OpcionesMenu> opcionesMenus){
         int numeroOpcion = 1;
         for( OpcionesMenu opcionMenu : opcionesMenus){

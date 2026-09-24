@@ -2,6 +2,7 @@ package com.guille.persistencia.dao;
 
 import com.guille.modelos.Duenio;
 import com.guille.modelos.TipoDocumento;
+import com.guille.modelos.Veterinario;
 import com.guille.persistencia.ConexionBD;
 
 import java.sql.Connection;
@@ -102,6 +103,30 @@ public class DuenioDAO extends Dao {
         }
 
         return duenioBD;
+    }
+
+    public void actualizarDuenio(Duenio duenio) throws SQLException{
+        String sql = "UPDATE duenios " +
+                "SET nombre_duenio = ?, " +
+                "apellido_duenio = ?, " +
+                "tipo_documento_duenio = ?, " +
+                "numero_documento_duenio = ?, " +
+                "telefono_duenio = ? " +
+                "WHERE id_duenio = ?";
+
+        try(Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1,duenio.getNombre());
+            statement.setString(2,duenio.getApellido());
+            statement.setString(3,duenio.getTipoDocumento().getCodigo());
+            statement.setString(4,duenio.getNumeroDocumento());
+            statement.setString(5,duenio.getTelefono());
+            statement.setInt(6,duenio.getIdDuenio());
+
+            int resultado = statement.executeUpdate();
+
+            if ( resultado != 1 )
+                throw new SQLException("No se pudo actualizar el dueño");
+        }
     }
 
     public boolean tieneMascotas(int idDuenio) throws SQLException{

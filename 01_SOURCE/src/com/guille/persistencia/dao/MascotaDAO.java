@@ -1,7 +1,7 @@
 package com.guille.persistencia.dao;
 
 import com.guille.modelos.Mascota;
-import com.guille.modelos.TipoMascotaEnum;
+import com.guille.modelos.TipoMascota;
 import com.guille.persistencia.ConexionBD;
 
 import java.sql.Connection;
@@ -36,7 +36,7 @@ public class MascotaDAO extends Dao{
 
         try ( PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,mascota.getNombre());
-            statement.setString(2,mascota.getTipo().getCodigo());
+            statement.setString(2,mascota.getTipo().getIdTipoMascota());
             statement.setString(3,mascota.getRaza());
             statement.setObject(4,mascota.getFechaNacimiento());
             statement.setDouble(5,mascota.getPeso());
@@ -65,7 +65,7 @@ public class MascotaDAO extends Dao{
 
         try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1, mascota.getNombre());
-            statement.setString(2, mascota.getTipo().getCodigo());
+            statement.setString(2, mascota.getTipo().getIdTipoMascota());
             statement.setString(3, mascota.getRaza());
             statement.setObject(4,mascota.getFechaNacimiento());
             statement.setDouble(5, mascota.getPeso());
@@ -82,15 +82,17 @@ public class MascotaDAO extends Dao{
 
         List<Mascota> mascotas = new ArrayList<>();
 
-        String sql = "SELECT id_mascota,\n" +
-                "    nombre_mascota,\n" +
-                "    tipo_mascota,\n" +
-                "    raza_mascota,\n" +
-                "    fecha_nacimiento_mascota,\n" +
-                "    peso_mascota,\n" +
-                "    id_duenio_mascota,\n" +
-                "    fecha_alta_mascota\n" +
-                "FROM mascotas \n" +
+        String sql = "SELECT M.id_mascota,\n" +
+                "    M.nombre_mascota,\n" +
+                "    M.tipo_mascota,\n" +
+                "    M.raza_mascota,\n" +
+                "    M.fecha_nacimiento_mascota,\n" +
+                "    M.peso_mascota,\n" +
+                "    M.id_duenio_mascota,\n" +
+                "    M.fecha_alta_mascota,\n" +
+                "    TM.descripcion_tipo_mascota\n" +
+                "FROM mascotas M \n" +
+                "INNER JOIN tipos_mascotas TM ON M.tipo_mascota = TM.id_tipo_mascota \n"+
                 "WHERE id_duenio_mascota = ? " +
                 "ORDER BY nombre_mascota";
 
@@ -102,7 +104,9 @@ public class MascotaDAO extends Dao{
                 while (resultado.next()){
                     int idMascota = resultado.getInt("id_mascota");
                     String nombre = resultado.getString("nombre_mascota");
-                    TipoMascotaEnum tipo= TipoMascotaEnum.obtenerCodigoTipoMascota(resultado.getString("tipo_mascota"));
+                    String tipoMascotaST = resultado.getString("tipo_mascota");
+                    String descripcionTipoMascotaST = resultado.getString("descripcion_tipo_mascota");
+                    TipoMascota tipo = new TipoMascota(tipoMascotaST, descripcionTipoMascotaST);
                     String raza = resultado.getString("raza_mascota");
                     LocalDate fechaNacimiento = resultado.getObject("fecha_nacimiento_mascota", LocalDate.class);
                     double peso = resultado.getDouble("peso_mascota");

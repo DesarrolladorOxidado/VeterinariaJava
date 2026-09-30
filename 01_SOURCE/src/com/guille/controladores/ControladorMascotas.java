@@ -1,7 +1,7 @@
 package com.guille.controladores;
 
 import com.guille.modelos.Mascota;
-import com.guille.modelos.TipoMascotaEnum;
+import com.guille.modelos.TipoMascota;
 import com.guille.persistencia.dao.MascotaDAO;
 import com.guille.servicios.RegistroMascotaService;
 
@@ -20,7 +20,7 @@ public class ControladorMascotas {
         this.registroMascotaService = registroMascotaService;
     }
 
-    private Mascota crearMascota(String nombre, TipoMascotaEnum tipoMascota, String raza, LocalDate fechaNacimiento, double peso, int idDuenio){
+    private Mascota crearMascota(String nombre, TipoMascota tipoMascota, String raza, LocalDate fechaNacimiento, double peso, int idDuenio){
 
         Mascota mascota = new Mascota(nombre, tipoMascota, idDuenio);
         mascota.setRaza(raza);
@@ -31,7 +31,7 @@ public class ControladorMascotas {
         return mascota;
     }
 
-    public Mascota registrarMascota(String nombre, TipoMascotaEnum tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio) throws SQLException {
+    public Mascota registrarMascota(String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio) throws SQLException {
         Mascota mascota = crearMascota(nombre,tipo,raza,fechaNacimiento,peso, idDuenio);
         return this.registroMascotaService.registrarMascota(mascota);
     }

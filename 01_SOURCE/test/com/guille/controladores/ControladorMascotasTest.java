@@ -1,10 +1,7 @@
 package com.guille.controladores;
 
 import com.guille.BaseDatosTestDAO;
-import com.guille.modelos.Duenio;
-import com.guille.modelos.Mascota;
-import com.guille.modelos.TipoDocumento;
-import com.guille.modelos.TipoMascotaEnum;
+import com.guille.modelos.*;
 import com.guille.persistencia.ConexionBD;
 import com.guille.persistencia.GestorTransacciones;
 import com.guille.persistencia.dao.DuenioDAO;
@@ -50,12 +47,13 @@ public class ControladorMascotasTest {
     @Test
     public void alRegistrarMascotaDebeTenerLosDatosIngresados() throws SQLException{
 
+        TipoMascota perro = new TipoMascota("PE","Perro");
         LocalDate fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
-        Mascota mascota = controladorMascotas.registrarMascota("Mateo", TipoMascotaEnum.PERRO,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
+        Mascota mascota = controladorMascotas.registrarMascota("Mateo", perro,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
 
         Assertions.assertTrue(mascota.getIdMascota() > 0);
         Assertions.assertEquals("Mateo",mascota.getNombre());
-        Assertions.assertEquals(TipoMascotaEnum.PERRO,mascota.getTipo());
+        Assertions.assertEquals(perro,mascota.getTipo());
         Assertions.assertEquals("Border Collie",mascota.getRaza());
         Assertions.assertEquals( fechaNacimiento,mascota.getFechaNacimiento());
         Assertions.assertEquals(24.3,mascota.getPeso());

@@ -1,6 +1,7 @@
 package com.guille.controladores;
 
 import com.guille.modelos.TipoDocumento;
+import com.guille.modelos.TipoMascota;
 import com.guille.persistencia.dao.CatalogosDAO;
 
 import java.sql.SQLException;
@@ -16,5 +17,9 @@ public class ControladorCatalogos {
 
     public List<TipoDocumento> obtenerTiposDocumentos() throws SQLException{
         return this.catalogosDAO.obtenerTiposDocumentos();
+    }
+
+    public List<TipoMascota> obtenerTiposMascotas() throws SQLException{
+        return this.catalogosDAO.obtenerTiposMascotas();
     }
 }

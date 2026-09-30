@@ -664,7 +664,7 @@ public class Aplicacion {
                     char rta;
 
                     try{
-                        TipoDocumento nuevoTipoDocumento = null;
+                        TipoDocumento nuevoTipoDocumento;
                         String nuevoNumeroDocumento = null;
                         boolean cancelarEdicion = false;
 
@@ -678,25 +678,6 @@ public class Aplicacion {
                                 break;
                             }
 
-                            /*
-                            do {
-                                String nuevoTipoDocumentoST = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-
-                                if (nuevoTipoDocumentoST.isEmpty()) {
-                                    cancelarEdicion = true;
-                                    break;
-                                }
-
-                                nuevoTipoDocumento = TipoDocumentoEnum.obtenerNombreTipoDocumento(nuevoTipoDocumentoST);
-
-                                if (nuevoTipoDocumento == null) {
-                                    System.out.println("Tipo de documento incorrecto");
-                                }
-                            }while ( nuevoTipoDocumento == null);
-
-                            if (cancelarEdicion )
-                                break;
-                            */
                             nuevoNumeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
                             if ( nuevoNumeroDocumento.isEmpty()){
                                 cancelarEdicion = true;
@@ -899,35 +880,24 @@ public class Aplicacion {
                 case EDITAR_TIPO_MASCOTA -> {
                     char rta;
                     System.out.println("***** EDITAR TIPO MASCOTA *****");
-                    TipoMascotaEnum tipoMascotaAnterior = mascota.getTipo();
-                    System.out.println("* Tipo actual: " + tipoMascotaAnterior);
+                    TipoMascota tipoMascotaAnterior = mascota.getTipo();
+                    System.out.println("* Tipo actual: " + tipoMascotaAnterior.getDescripcionTipoMascota());
 
                     try{
-                        TipoMascotaEnum nuevoTipoMascota = null;
+                        TipoMascota nuevoTipoMascota;
                         boolean cancelarEdicion = false;
 
                         do{
                             rta = 'n';
 
-                            do {
-                                String nuevoTipoMascotaST = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
+                            nuevoTipoMascota = seleccionarTipoMascota();
 
-                                if (nuevoTipoMascotaST.isEmpty()) {
-                                    cancelarEdicion = true;
-                                    break;
-                                }
-
-                                nuevoTipoMascota = TipoMascotaEnum.obtenerNombreTipoMascota(nuevoTipoMascotaST);
-
-                                if (nuevoTipoMascota == null) {
-                                    System.out.println("Tipo de mascota incorrecto");
-                                }
-                            }while ( nuevoTipoMascota == null);
-
-                            if (cancelarEdicion )
+                            if ( nuevoTipoMascota == null ) {
+                                cancelarEdicion = true;
                                 break;
+                            }
 
-                            if ( nuevoTipoMascota.equals(tipoMascotaAnterior)){
+                            if ( nuevoTipoMascota.getIdTipoMascota().equals(tipoMascotaAnterior.getIdTipoMascota())){
 
                                 System.out.println("El tipo de mascota ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
                                 rta = solicitarRespuestaSiNo();
@@ -942,7 +912,7 @@ public class Aplicacion {
                         if (cancelarEdicion)
                             break;
 
-                        System.out.println("¿Está seguro de cambiar el tipo de mascota " + tipoMascotaAnterior + " por " + nuevoTipoMascota + "? (s/n)");
+                        System.out.println("¿Está seguro de cambiar el tipo de mascota " + tipoMascotaAnterior.getDescripcionTipoMascota() + " por " + nuevoTipoMascota.getDescripcionTipoMascota() + "? (s/n)");
                         rta =solicitarRespuestaSiNo();
 
                         if ( rta != 's')
@@ -1884,6 +1854,57 @@ public class Aplicacion {
         }
     }
 
+    private TipoMascota seleccionarTipoMascota() {
+
+        try {
+            List<TipoMascota> tiposMascotas = this.controladores.getControladorCatalogos().obtenerTiposMascotas();
+
+            if (tiposMascotas.isEmpty()) {
+                System.out.println("No hay tipos de mascotas para mostrar.");
+                continuar();
+                return null;
+            }
+
+            System.out.println("\n******POR FAVOR, SELECCIONE UN TIPO DE MASCOTA: ");
+
+            int i = 1;
+            for(TipoMascota tipoMascota : tiposMascotas){
+                System.out.println(i + " - " + tipoMascota.getIdTipoMascota() + " : " + tipoMascota.getDescripcionTipoMascota() );
+                i++;
+            }
+
+            int opcion = -1;
+            boolean opcionInvalida;
+            int totalTiposMascotas = tiposMascotas.size();
+            do{
+                System.out.println("Por favor, elija un tipo de mascota: ");
+                try{
+                    opcion = Integer.valueOf(this.scanner.nextLine().trim());
+                }catch ( NumberFormatException e ){
+                    opcion  = -1;
+                }
+
+                opcionInvalida = opcion < 1 || opcion > totalTiposMascotas;
+
+                if (opcionInvalida) {
+                    System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
+
+                    if (solicitarRespuestaSiNo() != 's')
+                        return null;
+                }
+
+            }while ( opcionInvalida);
+
+            return tiposMascotas.get(opcion-1);
+
+        }catch (SQLException e){
+            logger.error("Error al intentar obtener los tipos de mascotas", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los tipos de mascotas.");
+            continuar();
+            return null;
+        }
+    }
+
     private String solicitarCampoObligatorio(String campo){
 
         char rta;
@@ -1935,18 +1956,10 @@ public class Aplicacion {
             return false;
 
 
-        TipoMascotaEnum tipo;
-        do {
-            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
-            if (tipoSt.isEmpty())
-                return false;
+        TipoMascota tipo = seleccionarTipoMascota();
 
-            tipo = TipoMascotaEnum.obtenerNombreTipoMascota(tipoSt);
-
-            if ( tipo == null )
-                System.out.println("Tipo de mascota incorrecto");
-
-        }while ( tipo == null);
+        if ( tipo == null )
+            return false;
 
         String raza = solicitarCampoObligatorio(CAMPO_RAZA);
         if ( raza.isEmpty())
@@ -2102,7 +2115,7 @@ public class Aplicacion {
 
     private void mostrarMascota(Mascota mascota) {
         System.out.println("Nombre: " + mascota.getNombre());
-        System.out.println("Tipo: " + mascota.getTipo().getNombre());
+        System.out.println("Tipo: " + mascota.getTipo().getDescripcionTipoMascota());
         System.out.println("Raza: " + mascota.getRaza());
         System.out.println("Edad: " + mascota.getEdad());
         System.out.println("Fecha de nacimiento: " + formatearFecha(mascota.getFechaNacimiento()));

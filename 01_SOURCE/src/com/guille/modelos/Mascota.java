@@ -11,7 +11,7 @@ public class Mascota {
 
     private int idMascota;
     private String nombre;
-    private TipoMascotaEnum tipo;
+    private TipoMascota tipo;
     private String raza;
     private LocalDate fechaNacimiento;
     private double peso;
@@ -20,14 +20,14 @@ public class Mascota {
 
     private final LocalDateTime fechaAlta;
 
-    public Mascota(String nombre, TipoMascotaEnum tipo, int idDuenio) {
+    public Mascota(String nombre, TipoMascota tipo, int idDuenio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.idDuenio = idDuenio;
         this.fechaAlta = LocalDateTime.now();
     }
 
-    public Mascota(int idMascota, String nombre, TipoMascotaEnum tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, HistoriaClinica historiaClinica) {
+    public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, HistoriaClinica historiaClinica) {
         this.idMascota = idMascota;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -51,14 +51,14 @@ public class Mascota {
         this.nombre = nombre;
     }
 
-    public TipoMascotaEnum getTipo() {
+    public TipoMascota getTipo() {
         return tipo;
     }
 
     //Este metodo permite corregir errores de carga de datos
     //no es porque un animal pueda cambiar de tipo. Su uso
     //está destinado exclusivamente ante un error
-    public void setTipo(TipoMascotaEnum tipo) {
+    public void setTipo(TipoMascota tipo) {
         this.tipo = tipo;
     }
 
@@ -102,7 +102,7 @@ public class Mascota {
     public String toString() {
         return "Mascota{ idMascota = '" + this.idMascota +
                 "nombre='" + nombre + '\'' +
-                ", tipo=" + tipo +
+                ", tipo=" + tipo.getIdTipoMascota() + " - " + tipo.getDescripcionTipoMascota() + '\''+
                 ", raza='" + raza + '\'' +
                 ", fecha nacimiento = " + fechaNacimiento +
                 ", edad=" + getEdad() +
@@ -113,7 +113,4 @@ public class Mascota {
                 '}';
     }
 
-    public void setF(LocalDate nuevaFechaNacimiento) {
-
-    }
 }

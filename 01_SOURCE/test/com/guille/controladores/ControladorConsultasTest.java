@@ -47,7 +47,7 @@ public class ControladorConsultasTest {
 
         dni = new TipoDocumento("DNI","Documento Nacional de Identidad");
         Duenio duenio = controladorDuenios.registrarDuenio("Cosme", "Fulanito", dni, "221232", "232323");
-        mascota = controladorMascotas.registrarMascota("Mateo", TipoMascotaEnum.PERRO, "Border Collie", LocalDate.of(2022, 7, 13), 24.3, duenio.getIdDuenio());
+        mascota = controladorMascotas.registrarMascota("Mateo", new TipoMascota("PE","Perro"), "Border Collie", LocalDate.of(2022, 7, 13), 24.3, duenio.getIdDuenio());
         veterinario = controladorVeterinarios.registrarVeterinario("Julius", "Hibbert", dni, "123522", "15555", "52");
 
         controladorConsultas = new ControladorConsultas(registrarConsultaService);

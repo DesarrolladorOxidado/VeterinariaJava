@@ -20,6 +20,7 @@ public class ControladorHistoriasClinicasTest {
     private ControladorConsultas controladorConsultas;
     private Mascota mascota;
     private Veterinario veterinario;
+    private TipoDocumento dni;
 
     @BeforeEach
     public void setUp() throws SQLException {
@@ -43,9 +44,10 @@ public class ControladorHistoriasClinicasTest {
         ControladorMascotas controladorMascotas = new ControladorMascotas(mascotaDAO, registroMascotaService);
         this.controladorConsultas = new ControladorConsultas(registrarConsultaService);
 
-        this.veterinario = controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"123","1234","MV-5");
-        Duenio duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", TipoDocumento.DNI,"1234","5412");
-        this.mascota = controladorMascotas.registrarMascota("Mateo",TipoMascota.PERRO,"Border Collie",LocalDate.of(2022,7,13),24.2,duenio.getIdDuenio());
+        this.dni = new TipoDocumento("DNI","Documento Nacional de Identidad");
+        this.veterinario = controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"123","1234","MV-5");
+        Duenio duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", dni,"1234","5412");
+        this.mascota = controladorMascotas.registrarMascota("Mateo", TipoMascotaEnum.PERRO,"Border Collie",LocalDate.of(2022,7,13),24.2,duenio.getIdDuenio());
     }
 
     @Test

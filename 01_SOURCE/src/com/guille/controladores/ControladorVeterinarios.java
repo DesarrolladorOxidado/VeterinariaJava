@@ -15,11 +15,11 @@ public class ControladorVeterinarios {
         this.veterinarioDAO = veterinarioDAO;
     }
 
-    private Veterinario crearVeterinario( String nombre, String apellido, TipoDocumento tipoDocumento,String numeroDocumento, String telefono, String matricula){
+    private Veterinario crearVeterinario(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String matricula){
         return new Veterinario(nombre,apellido,tipoDocumento,numeroDocumento,telefono,matricula);
     }
 
-    public Veterinario registrarVeterinario(String nombre,String apellido,TipoDocumento tipoDocumento,String numeroDocumento, String telefono, String matricula) throws SQLException {
+    public Veterinario registrarVeterinario(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String matricula) throws SQLException {
         Veterinario veterinario = crearVeterinario(nombre, apellido, tipoDocumento, numeroDocumento, telefono, matricula);
         return this.veterinarioDAO.registrarVeterinario(veterinario);
     }

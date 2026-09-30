@@ -1,9 +1,6 @@
 package com.guille.persistencia.dao;
 
-import com.guille.modelos.Consulta;
-import com.guille.modelos.HistoriaClinica;
-import com.guille.modelos.TipoDocumento;
-import com.guille.modelos.Veterinario;
+import com.guille.modelos.*;
 import com.guille.persistencia.ConexionBD;
 
 import java.sql.Connection;
@@ -66,12 +63,14 @@ public class HistoriaClinicaDAO extends Dao {
                 "V.apellido_veterinario,\n" +
                 "V.telefono_veterinario,\n" +
                 "V.tipo_documento_veterinario,\n" +
+                "TD.descripcion_documento,\n" +
                 "V.numero_documento_veterinario,\n" +
                 "V.matricula_veterinario,\n" +
                 "V.fecha_alta_veterinario\n" +
                 "FROM historias_clinicas H\n" +
                 "LEFT JOIN consultas C ON H.id_historia_clinica = C.historia_clinica_consulta\n" +
                 "LEFT JOIN veterinarios V ON C.veterinario_consulta = V.id_veterinario\n" +
+                "LEFT JOIN tipos_documentos TD ON V.tipo_documento_veterinario = TD.id_tipo_documento\n" +
                 "WHERE H.mascota_historia_clinica = ?\n" +
                 "ORDER BY C.fecha_consulta DESC";
 
@@ -102,11 +101,12 @@ public class HistoriaClinicaDAO extends Dao {
                             String apellidoVeterinario = resultSet.getString("apellido_veterinario");
                             String telefonoVeterinario = resultSet.getString("telefono_veterinario");
                             String tipoDocumentoST =  resultSet.getString("tipo_documento_veterinario");
+                            String descripcionTipoDocumentoST = resultSet.getString("descripcion_documento");
                             String numeroDocumento = resultSet.getString("numero_documento_veterinario");
                             String matriculaVeterinario = resultSet.getString("matricula_veterinario");
                             LocalDateTime fechaAltaVeterinario = resultSet.getObject("fecha_alta_veterinario", LocalDateTime.class);
 
-                            TipoDocumento tipoDocumento = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
+                            TipoDocumento tipoDocumento = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
                             Veterinario veterinario = new Veterinario(idVeterinario,nombreVeterinario,apellidoVeterinario,tipoDocumento,numeroDocumento,telefonoVeterinario,fechaAltaVeterinario,matriculaVeterinario);
 

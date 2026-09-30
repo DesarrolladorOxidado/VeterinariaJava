@@ -4,7 +4,7 @@ import com.guille.BaseDatosTestDAO;
 import com.guille.modelos.Duenio;
 import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoDocumento;
-import com.guille.modelos.TipoMascota;
+import com.guille.modelos.TipoMascotaEnum;
 import com.guille.persistencia.ConexionBD;
 import com.guille.persistencia.GestorTransacciones;
 import com.guille.persistencia.dao.DuenioDAO;
@@ -36,7 +36,8 @@ public class ControladorMascotasTest {
         DuenioDAO duenioDAO = new DuenioDAO(conexionBD);
         ControladorDuenios controladorDuenios = new ControladorDuenios(duenioDAO);
 
-        this.duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", TipoDocumento.DNI,"221232","232323");
+        TipoDocumento dni = new TipoDocumento("DNI","Documento Nacional de Identidad");
+        this.duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", dni,"221232","232323");
 
         HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
 
@@ -50,11 +51,11 @@ public class ControladorMascotasTest {
     public void alRegistrarMascotaDebeTenerLosDatosIngresados() throws SQLException{
 
         LocalDate fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
-        Mascota mascota = controladorMascotas.registrarMascota("Mateo", TipoMascota.PERRO,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
+        Mascota mascota = controladorMascotas.registrarMascota("Mateo", TipoMascotaEnum.PERRO,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
 
         Assertions.assertTrue(mascota.getIdMascota() > 0);
         Assertions.assertEquals("Mateo",mascota.getNombre());
-        Assertions.assertEquals(TipoMascota.PERRO,mascota.getTipo());
+        Assertions.assertEquals(TipoMascotaEnum.PERRO,mascota.getTipo());
         Assertions.assertEquals("Border Collie",mascota.getRaza());
         Assertions.assertEquals( fechaNacimiento,mascota.getFechaNacimiento());
         Assertions.assertEquals(24.3,mascota.getPeso());

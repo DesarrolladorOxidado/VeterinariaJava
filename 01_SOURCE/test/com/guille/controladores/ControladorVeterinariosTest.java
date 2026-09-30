@@ -15,6 +15,7 @@ import java.sql.SQLException;
 public class ControladorVeterinariosTest {
 
     private ControladorVeterinarios controladorVeterinarios;
+    private TipoDocumento dni;
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -23,6 +24,7 @@ public class ControladorVeterinariosTest {
 
         baseDatosTestDAO.borrarDatos();
 
+        dni = new TipoDocumento("DNI","Documento Nacional de Identidad");
         VeterinarioDAO veterinarioDAO = new VeterinarioDAO(conexionBD);
         controladorVeterinarios = new ControladorVeterinarios(veterinarioDAO);
     }
@@ -30,12 +32,12 @@ public class ControladorVeterinariosTest {
     @Test
     public void alRegistrarVeterinarioDebeTenerLosDatosIngresados() throws SQLException{
 
-        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"30124585","223547710","12");
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"30124585","223547710","12");
 
         Assertions.assertTrue( veterinario.getIdVeterinario() > 0);
         Assertions.assertEquals("Julius", veterinario.getNombre());
         Assertions.assertEquals("Hibbert", veterinario.getApellido());
-        Assertions.assertEquals(TipoDocumento.DNI, veterinario.getTipoDocumento());
+        Assertions.assertEquals(dni, veterinario.getTipoDocumento());
         Assertions.assertEquals("30124585", veterinario.getNumeroDocumento());
         Assertions.assertEquals("223547710", veterinario.getTelefono());
         Assertions.assertEquals("12", veterinario.getMatricula());
@@ -44,52 +46,52 @@ public class ControladorVeterinariosTest {
     @Test
     public void debeIndicarQueExisteVeterinarioConDocumentoRegistrado() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"1234","234","12");
+        controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
-        Assertions.assertTrue(controladorVeterinarios.existeVeterinarioConDocumento(TipoDocumento.DNI,"5332"));
+        Assertions.assertTrue(controladorVeterinarios.existeVeterinarioConDocumento(dni,"5332"));
 
     }
 
     @Test
     public void debeIndicarQueNoExisteVeterinarioConDocumentoRegistrado() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"1234","234","12");
+        controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
-        Assertions.assertFalse(controladorVeterinarios.existeVeterinarioConDocumento(TipoDocumento.DNI,"5412324574"));
+        Assertions.assertFalse(controladorVeterinarios.existeVeterinarioConDocumento(dni,"5412324574"));
 
     }
 
     @Test
     public void debeDevolverElVeterinarioSegunDocumentoIndicado() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"1234","234","12");
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
-        Assertions.assertEquals(veterinario.getIdVeterinario(),controladorVeterinarios.obtenerVeterinarioConDocumento(TipoDocumento.DNI,"5332").getIdVeterinario());
+        Assertions.assertEquals(veterinario.getIdVeterinario(),controladorVeterinarios.obtenerVeterinarioConDocumento(dni,"5332").getIdVeterinario());
     }
 
     @Test
     public void debeDevolverNuloAlNoEncontrarVeterinarioConDocumentoIndicado() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",dni,"1234","234","12");
+        controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
-        Assertions.assertNull(controladorVeterinarios.obtenerVeterinarioConDocumento(TipoDocumento.DNI,"999999"));
+        Assertions.assertNull(controladorVeterinarios.obtenerVeterinarioConDocumento(dni,"999999"));
 
     }
 
     @Test
     public void debeDevolverElVeterinarioSegunMatriculaIndicada() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"1234","234","12");
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera",dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
         Assertions.assertEquals(veterinario.getIdVeterinario(),controladorVeterinarios.obtenerVeterinarioConMatricula("99").getIdVeterinario());
     }
@@ -97,9 +99,9 @@ public class ControladorVeterinariosTest {
     @Test
     public void debeDevolverNuloAlNoEncontrarVeterinarioConMatriculaIndicada() throws SQLException{
 
-        controladorVeterinarios.registrarVeterinario("Julius","Hibbert",TipoDocumento.DNI,"1234","234","12");
-        controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
-        controladorVeterinarios.registrarVeterinario("Marvin","Monroe",TipoDocumento.DNI,"12543","234","52");
+        controladorVeterinarios.registrarVeterinario("Julius","Hibbert", dni,"1234","234","12");
+        controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+        controladorVeterinarios.registrarVeterinario("Marvin","Monroe", dni,"12543","234","52");
 
         Assertions.assertNull(controladorVeterinarios.obtenerVeterinarioConMatricula("999999"));
 
@@ -107,11 +109,11 @@ public class ControladorVeterinariosTest {
 
     @Test
     public void alActualizarDatosDebePersistirNuevosDatos() throws SQLException{
-        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera",TipoDocumento.DNI,"5332","234","99");
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
 
         veterinario.setNombre("Lalo");
         veterinario.setApellido("Landa");
-        veterinario.setTipoDocumento(TipoDocumento.DNI);
+        veterinario.setTipoDocumento(dni);
         veterinario.setNumeroDocumento("85244");
         veterinario.setTelefono("12452");
         veterinario.setMatricula("MV-512");
@@ -123,7 +125,7 @@ public class ControladorVeterinariosTest {
         Assertions.assertEquals(veterinario.getIdVeterinario(), veterinarioEncontrado.getIdVeterinario());
         Assertions.assertEquals(veterinario.getNombre(),veterinarioEncontrado.getNombre());
         Assertions.assertEquals(veterinario.getApellido(),veterinarioEncontrado.getApellido());
-        Assertions.assertEquals(veterinario.getTipoDocumento(),veterinarioEncontrado.getTipoDocumento());
+        Assertions.assertEquals(veterinario.getTipoDocumento().getIdTipoDocumento(),veterinarioEncontrado.getTipoDocumento().getIdTipoDocumento());
         Assertions.assertEquals(veterinario.getNumeroDocumento(),veterinarioEncontrado.getNumeroDocumento());
         Assertions.assertEquals(veterinario.getTelefono(),veterinarioEncontrado.getTelefono());
         Assertions.assertEquals(veterinario.getMatricula(),veterinarioEncontrado.getMatricula());

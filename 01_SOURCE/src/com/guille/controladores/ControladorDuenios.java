@@ -15,11 +15,11 @@ public class ControladorDuenios {
         this.duenioDAO = duenioDAO;
     }
 
-    private Duenio crearDuenio( String nombre, String apellido, TipoDocumento tipoDocumento,String numeroDocumento, String telefono){
+    private Duenio crearDuenio(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono){
         return new Duenio(nombre,apellido,tipoDocumento,numeroDocumento,telefono);
     }
 
-    public Duenio registrarDuenio(String nombre, String apellido,TipoDocumento tipoDocumento, String numeroDocumento, String telefono) throws SQLException{
+    public Duenio registrarDuenio(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono) throws SQLException{
         Duenio duenio = crearDuenio(nombre,apellido,tipoDocumento,numeroDocumento,telefono);
         return this.duenioDAO.registrarDuenio(duenio);
 

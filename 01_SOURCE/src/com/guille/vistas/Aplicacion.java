@@ -58,16 +58,16 @@ public class Aplicacion {
 
     private void mostrarOpcionesMenu() throws SQLException{
         int opcion;
-        OpcionMenuPrincipal opcionSeleccionada = null;
+        OpcionesMenuPrincipal opcionSeleccionada = null;
 
         do{
 
-            List<OpcionMenuPrincipal> menuPrincipal = new ArrayList<>(List.of(OpcionMenuPrincipal.values()));
+            List<OpcionesMenuPrincipal> menuPrincipal = new ArrayList<>(List.of(OpcionesMenuPrincipal.values()));
 
             boolean existenVeterinarios = this.controladores.getControladorVeterinarios().existenVeterinarios();
 
             if (!existenVeterinarios)
-                menuPrincipal.remove(OpcionMenuPrincipal.NUEVA_CONSULTA);
+                menuPrincipal.remove(OpcionesMenuPrincipal.NUEVA_CONSULTA);
 
             Menu.opcionesMenuPrincipal(menuPrincipal);
 
@@ -140,7 +140,7 @@ public class Aplicacion {
                     System.out.println("*** GRACIAS POR USAR EL SITEMA ***");
                 }
             }
-        }while (opcionSeleccionada != OpcionMenuPrincipal.SALIR);
+        }while (opcionSeleccionada != OpcionesMenuPrincipal.SALIR);
 
     }
 
@@ -174,14 +174,13 @@ public class Aplicacion {
                         editarDuenio();
                 }
                 case EDITAR_MASCOTA -> {
-
+                        editarMascotas();
                 }
             }
         }while (opcionSeleccionada != OpcionesMenuEdicion.VOLVER);
     }
 
     private void editarVeterinario() {
-        System.out.println("\n******POR FAVOR, SELECCIONE UN VETERINARIO: ");
 
         Veterinario veterinario = seleccionarVeterinario();
 
@@ -213,8 +212,8 @@ public class Aplicacion {
                 case EDITAR_NOMBRE -> {
                         char rta;
                         System.out.println("***** EDITAR NOMBRE VETERINARIO *****");
-                        System.out.println("* Nombre actual: " + veterinario.getNombre());
                         String nombreAnterior = veterinario.getNombre();
+                        System.out.println("* Nombre actual: " + nombreAnterior);
 
                         try{
                             String nuevoNombreVeterinario;
@@ -266,8 +265,9 @@ public class Aplicacion {
                 case EDITAR_APELLIDO -> {
                         char rta;
                         System.out.println("***** EDITAR APELLIDO VETERINARIO *****");
-                        System.out.println("* Apellido actual: " + veterinario.getApellido());
                         String apellidoAnterior = veterinario.getApellido();
+                        System.out.println("* Apellido actual: " + apellidoAnterior);
+
 
                         try{
                             String nuevoApellidoVeterinario;
@@ -319,11 +319,11 @@ public class Aplicacion {
                 }
                 case EDITAR_DOCUMENTO -> {
                     System.out.println("***** EDITAR DOCUMENTO VETERINARIO *****");
-                    System.out.println("* Documento actual: " + veterinario.getTipoDocumento().getCodigo() + " " + veterinario.getNumeroDocumento());
-
-                    char rta;
                     TipoDocumento tipoDocumentoAnterior = veterinario.getTipoDocumento();
                     String numeroDocumentoAnterior = veterinario.getNumeroDocumento();
+                    System.out.println("* Documento actual: " + tipoDocumentoAnterior.getDescripcionDocumento() + " " + numeroDocumentoAnterior);
+
+                    char rta;
 
                     try{
                         TipoDocumento nuevoTipoDocumento = null;
@@ -333,23 +333,12 @@ public class Aplicacion {
                         do{
                             rta = 'n';
 
-                            do {
-                                String nuevoTipoDocumentoST = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
+                            nuevoTipoDocumento = seleccionarTipoDocumento();
 
-                                if (nuevoTipoDocumentoST.isEmpty()) {
-                                    cancelarEdicion = true;
-                                    break;
-                                }
-
-                                nuevoTipoDocumento = TipoDocumento.obtenerTipoDocumento(nuevoTipoDocumentoST);
-
-                                if (nuevoTipoDocumento == null) {
-                                    System.out.println("Tipo de documento incorrecto");
-                                }
-                            }while ( nuevoTipoDocumento == null);
-
-                            if (cancelarEdicion )
+                            if ( nuevoTipoDocumento == null ){
+                                cancelarEdicion = true;
                                 break;
+                            }
 
                             nuevoNumeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
                             if ( nuevoNumeroDocumento.isEmpty()){
@@ -380,7 +369,7 @@ public class Aplicacion {
                         if (cancelarEdicion)
                             break;
 
-                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getCodigo() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getCodigo() + " " + nuevoNumeroDocumento + "? (s/n)");
+                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getDescripcionDocumento() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getDescripcionDocumento() + " " + nuevoNumeroDocumento + "? (s/n)");
                         rta =solicitarRespuestaSiNo();
 
                         if ( rta != 's')
@@ -405,8 +394,8 @@ public class Aplicacion {
                 case EDITAR_TELEFONO -> {
                     char rta;
                     System.out.println("***** EDITAR TELÉFONO VETERINARIO *****");
-                    System.out.println("* Teléfono actual: " + veterinario.getTelefono());
                     String telefonoAnterior = veterinario.getTelefono();
+                    System.out.println("* Teléfono actual: " + telefonoAnterior);
 
                     try{
                         String nuevoTelefonoVeterinario;
@@ -459,8 +448,8 @@ public class Aplicacion {
                 case EDITAR_MATRICULA -> {
                     char rta;
                     System.out.println("***** EDITAR MATRÍCULA VETERINARIO *****");
-                    System.out.println("* Matrícula actual: " + veterinario.getMatricula());
                     String matriculaAnterior = veterinario.getMatricula();
+                    System.out.println("* Matrícula actual: " + matriculaAnterior);
 
                     try {
 
@@ -531,7 +520,6 @@ public class Aplicacion {
     }
 
     public void editarDuenio(){
-        System.out.println("\n******POR FAVOR, SELECCIONE UN DUEÑO: ");
 
         Duenio duenio = seleccionarDuenio();
 
@@ -563,8 +551,8 @@ public class Aplicacion {
                 case EDITAR_NOMBRE -> {
                     char rta;
                     System.out.println("***** EDITAR NOMBRE DUENIO *****");
-                    System.out.println("* Nombre actual: " + duenio.getNombre());
                     String nombreAnterior = duenio.getNombre();
+                    System.out.println("* Nombre actual: " + nombreAnterior);
 
                     try{
                         String nuevoNombreDuenio;
@@ -616,8 +604,8 @@ public class Aplicacion {
                 case EDITAR_APELLIDO -> {
                     char rta;
                     System.out.println("***** EDITAR APELLIDO DUEÑO *****");
-                    System.out.println("* Apellido actual: " + duenio.getApellido());
                     String apellidoAnterior = duenio.getApellido();
+                    System.out.println("* Apellido actual: " + apellidoAnterior);
 
                     try{
                         String nuevoApellidoDuenio;
@@ -669,11 +657,11 @@ public class Aplicacion {
                 }
                 case EDITAR_DOCUMENTO -> {
                     System.out.println("***** EDITAR DOCUMENTO DUEÑO *****");
-                    System.out.println("* Documento actual: " + duenio.getTipoDocumento().getCodigo() + " " + duenio.getNumeroDocumento());
-
-                    char rta;
                     TipoDocumento tipoDocumentoAnterior = duenio.getTipoDocumento();
                     String numeroDocumentoAnterior = duenio.getNumeroDocumento();
+                    System.out.println("* Documento actual: " + tipoDocumentoAnterior.getDescripcionDocumento() + " " + numeroDocumentoAnterior);
+
+                    char rta;
 
                     try{
                         TipoDocumento nuevoTipoDocumento = null;
@@ -683,6 +671,14 @@ public class Aplicacion {
                         do{
                             rta = 'n';
 
+                            nuevoTipoDocumento = seleccionarTipoDocumento();
+
+                            if ( nuevoTipoDocumento == null ){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            /*
                             do {
                                 String nuevoTipoDocumentoST = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
 
@@ -691,7 +687,7 @@ public class Aplicacion {
                                     break;
                                 }
 
-                                nuevoTipoDocumento = TipoDocumento.obtenerTipoDocumento(nuevoTipoDocumentoST);
+                                nuevoTipoDocumento = TipoDocumentoEnum.obtenerNombreTipoDocumento(nuevoTipoDocumentoST);
 
                                 if (nuevoTipoDocumento == null) {
                                     System.out.println("Tipo de documento incorrecto");
@@ -700,7 +696,7 @@ public class Aplicacion {
 
                             if (cancelarEdicion )
                                 break;
-
+                            */
                             nuevoNumeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
                             if ( nuevoNumeroDocumento.isEmpty()){
                                 cancelarEdicion = true;
@@ -730,7 +726,7 @@ public class Aplicacion {
                         if (cancelarEdicion)
                             break;
 
-                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getCodigo() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getCodigo() + " " + nuevoNumeroDocumento + "? (s/n)");
+                        System.out.println("¿Está seguro de cambiar el documento " + tipoDocumentoAnterior.getDescripcionDocumento() + " " + numeroDocumentoAnterior + " por " + nuevoTipoDocumento.getDescripcionDocumento() + " " + nuevoNumeroDocumento + "? (s/n)");
                         rta =solicitarRespuestaSiNo();
 
                         if ( rta != 's')
@@ -755,8 +751,8 @@ public class Aplicacion {
                 case EDITAR_TELEFONO -> {
                     char rta;
                     System.out.println("***** EDITAR TELÉFONO DUENIO *****");
-                    System.out.println("* Teléfono actual: " + duenio.getTelefono());
                     String telefonoAnterior = duenio.getTelefono();
+                    System.out.println("* Teléfono actual: " + telefonoAnterior);
 
                     try{
                         String nuevoTelefonoDuenio;
@@ -813,6 +809,376 @@ public class Aplicacion {
 
     }
 
+    private void editarMascotas(){
+
+        Duenio duenio = seleccionarDuenio();
+
+        if ( duenio == null )
+            return;
+
+        Mascota mascota = seleccionarMascota(duenio);
+
+        if ( mascota == null)
+            return;
+
+        int opcion;
+        OpcionesEditarMascota opcionSeleccionada = null;
+
+        do {
+            List<OpcionesEditarMascota> opcionesEditarMascotas = new ArrayList<>(List.of(OpcionesEditarMascota.values()));
+            Menu.menuOpcionesEditarMascota(opcionesEditarMascotas);
+
+            try {
+                opcion = Integer.valueOf(scanner.nextLine().trim());
+            }catch (NumberFormatException e){
+                System.out.println("Debe ingresar una opción numérica");
+                continue;
+            }
+
+            if ( opcion < 1 || opcion > opcionesEditarMascotas.size()) {
+                System.out.println("La opción ingresada es incorrecta. Por favor, vuelva a intentarlo ");
+                continue;
+            }
+
+            opcionSeleccionada = opcionesEditarMascotas.get(opcion-1);
+
+            switch (opcionSeleccionada){
+                case EDITAR_NOMBRE -> {
+                    char rta;
+                    System.out.println("***** EDITAR NOMBRE MASCOTA *****");
+                    String nombreAnterior = mascota.getNombre();
+                    System.out.println("* Nombre actual: " + nombreAnterior);
+
+                    try{
+                        String nuevoNombreMascota;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+                            nuevoNombreMascota = solicitarCampoObligatorio(Aplicacion.CAMPO_NOMBRE);
+
+                            if (nuevoNombreMascota.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevoNombreMascota.equals(nombreAnterior)){
+                                System.out.println("El nombre ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while( rta == 's');
+
+                        if ( cancelarEdicion )
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el nombre de " + nombreAnterior + " por " + nuevoNombreMascota + "? (s/n)");
+                        rta = solicitarRespuestaSiNo();
+
+                        if (rta != 's')
+                            break;
+
+                        mascota.setNombre(nuevoNombreMascota);
+                        this.controladores.getControladorMascotas().actualizarMascota(mascota);
+
+                        System.out.println("Nombre actualizado correctamente");
+                        mostrarMascota(mascota);
+                        continuar();
+
+                    }catch (SQLException e ){
+                        mascota.setNombre(nombreAnterior);
+                        logger.error("Error al intentar actualizar los datos de la mascota.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el nombre de la mascota. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+
+                }
+                case EDITAR_TIPO_MASCOTA -> {
+                    char rta;
+                    System.out.println("***** EDITAR TIPO MASCOTA *****");
+                    TipoMascotaEnum tipoMascotaAnterior = mascota.getTipo();
+                    System.out.println("* Tipo actual: " + tipoMascotaAnterior);
+
+                    try{
+                        TipoMascotaEnum nuevoTipoMascota = null;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+
+                            do {
+                                String nuevoTipoMascotaST = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
+
+                                if (nuevoTipoMascotaST.isEmpty()) {
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                nuevoTipoMascota = TipoMascotaEnum.obtenerNombreTipoMascota(nuevoTipoMascotaST);
+
+                                if (nuevoTipoMascota == null) {
+                                    System.out.println("Tipo de mascota incorrecto");
+                                }
+                            }while ( nuevoTipoMascota == null);
+
+                            if (cancelarEdicion )
+                                break;
+
+                            if ( nuevoTipoMascota.equals(tipoMascotaAnterior)){
+
+                                System.out.println("El tipo de mascota ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+
+                            }
+
+                        }while (rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el tipo de mascota " + tipoMascotaAnterior + " por " + nuevoTipoMascota + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        mascota.setTipo(nuevoTipoMascota);
+                        this.controladores.getControladorMascotas().actualizarMascota(mascota);
+
+                        System.out.println("Tipo mascota actualizado correctamente");
+                        mostrarMascota(mascota);
+                        continuar();
+                    } catch (SQLException e){
+                        mascota.setTipo(tipoMascotaAnterior);
+                        logger.error("Error al intentar actualizar los datos de la mascota.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar los datos de la mascota. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+
+                    }
+                }
+                case EDITAR_RAZA -> {
+                    char rta;
+                    System.out.println("***** EDITAR RAZA MASCOTA *****");
+                    String razaAnterior = mascota.getRaza();
+                    System.out.println("* Raza actual: " + razaAnterior);
+
+                    try{
+                        String nuevaRazaMascota;
+                        boolean cancelarEdicion = false;
+
+                        do{
+                            rta = 'n';
+                            nuevaRazaMascota = solicitarCampoObligatorio(Aplicacion.CAMPO_RAZA);
+
+                            if (nuevaRazaMascota.isEmpty()){
+                                cancelarEdicion = true;
+                                break;
+                            }
+
+                            if ( nuevaRazaMascota.equals(razaAnterior)){
+                                System.out.println("La raza ingresada coincide con la actual. ¿Desea ingresar otra? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while( rta == 's');
+
+                        if ( cancelarEdicion )
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar la raza " + razaAnterior + " por " + nuevaRazaMascota + "? (s/n)");
+                        rta = solicitarRespuestaSiNo();
+
+                        if (rta != 's')
+                            break;
+
+                        mascota.setRaza(nuevaRazaMascota);
+                        this.controladores.getControladorMascotas().actualizarMascota(mascota);
+
+                        System.out.println("Raza actualizada correctamente");
+                        mostrarMascota(mascota);
+                        continuar();
+
+                    }catch (SQLException e ){
+                        mascota.setRaza(razaAnterior);
+                        logger.error("Error al intentar actualizar los datos de la mascota.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar la raza de la mascota. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+                }
+                case EDITAR_FECHA_NACIMIENTO -> {
+                    char rta;
+                    System.out.println("***** EDITAR FECHA NACIMIENTO MASCOTA *****");
+                    LocalDate fechaNacimientoAnterior = mascota.getFechaNacimiento();
+                    System.out.println("* Fecha de nacimiento actual: " + formatearFecha(fechaNacimientoAnterior));
+
+                    try{
+                        LocalDate nuevaFechaNacimiento = null;
+                        boolean cancelarEdicion = false;
+                        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
+
+                        do{
+                            rta = 'n';
+
+                            do{
+                                String fechaNacimientoSt = solicitarCampoObligatorio(CAMPO_FECHA_NACIMIENTO);
+
+                                if ( fechaNacimientoSt.isEmpty()) {
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                try{
+
+                                    nuevaFechaNacimiento = LocalDate.parse(fechaNacimientoSt, formatoFecha);
+                                    LocalDate fechaActual = LocalDate.now();
+
+                                    if ( nuevaFechaNacimiento.isAfter(fechaActual)){
+                                        System.out.println("La fecha de nacimiento no puede ser posterior a la fecha actual");
+                                        nuevaFechaNacimiento = null;
+                                    } else if (nuevaFechaNacimiento.isBefore(fechaActual.minusYears(Mascota.MAXIMA_EDAD))){
+                                        System.out.println("La fecha de nacimiento no puede ser anterior a " + formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
+                                        nuevaFechaNacimiento = null;
+                                    }
+
+                                }catch ( DateTimeParseException e ){
+                                    System.out.println("El formato de fecha ingresado es inválido");
+                                    nuevaFechaNacimiento = null;
+                                }
+
+                            }while (nuevaFechaNacimiento == null );
+
+                            if ( cancelarEdicion )
+                                break;
+
+                            if ( nuevaFechaNacimiento.equals(fechaNacimientoAnterior)){
+
+                                System.out.println("La fecha de nacimiento ingresada coincide con la actual. ¿Desea ingresar otra? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+                            }
+
+                        }while (rta == 's');
+
+                        if (cancelarEdicion)
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar la fecha de nacimiento " + formatearFecha(fechaNacimientoAnterior) + " por " + formatearFecha(nuevaFechaNacimiento) + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        mascota.setFechaNacimiento(nuevaFechaNacimiento);
+                        this.controladores.getControladorMascotas().actualizarMascota(mascota);
+
+                        System.out.println("Fecha de nacimiento actualizada correctamente");
+                        mostrarMascota(mascota);
+                        continuar();
+                    } catch (SQLException e){
+                        mascota.setFechaNacimiento(fechaNacimientoAnterior);
+                        logger.error("Error al intentar actualizar los datos de la mascota.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar la fecha de nacimiento de la mascota. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+
+                    }
+
+                }
+                case EDITAR_PESO -> {
+                    char rta;
+                    System.out.println("***** EDITAR PESO MASCOTA *****");
+                    double pesoAnterior = mascota.getPeso();
+                    System.out.println("* Peso actual: " + pesoAnterior);
+
+                    try {
+
+                        double nuevoPesoMascota;
+                        boolean cancelarEdicion = false;
+
+                        do {
+                            rta = 'n';
+
+                            nuevoPesoMascota = 0;
+                            do{
+                                String pesoSt = solicitarCampoObligatorio(CAMPO_PESO);
+                                if ( pesoSt.isEmpty()) {
+                                    cancelarEdicion = true;
+                                    break;
+                                }
+
+                                try{
+                                    nuevoPesoMascota = Double.valueOf(pesoSt);
+
+                                    if (!Double.isFinite(nuevoPesoMascota)) {
+                                        System.out.println("Peso incorrecto");
+                                    } else if (nuevoPesoMascota <= 0) {
+                                        System.out.println("El peso no puede ser menor o igual a 0");
+                                    } else if (nuevoPesoMascota > Mascota.MAXIMO_PESO) {
+                                        System.out.println("El peso no puede ser superior a " + Mascota.MAXIMO_PESO + " Kg");
+                                    }
+
+                                }catch (NumberFormatException e){
+                                    System.out.println("Peso incorrecto");
+                                    nuevoPesoMascota = 0;
+                                }
+
+                            }while ( nuevoPesoMascota <= 0 || nuevoPesoMascota > Mascota.MAXIMO_PESO || !Double.isFinite(nuevoPesoMascota));
+
+                            if (cancelarEdicion)
+                                break;
+
+                            if ( pesoAnterior == nuevoPesoMascota ){
+                                System.out.println("El peso ingresado coincide con el actual. ¿Desea ingresar otro? (s/n)");
+                                rta = solicitarRespuestaSiNo();
+
+                                if ( rta != 's')
+                                    cancelarEdicion = true;
+
+                            }
+
+                        }while ( rta == 's');
+
+                        if ( cancelarEdicion )
+                            break;
+
+                        System.out.println("¿Está seguro de cambiar el peso " + pesoAnterior + " por " + nuevoPesoMascota + "? (s/n)");
+                        rta =solicitarRespuestaSiNo();
+
+                        if ( rta != 's')
+                            break;
+
+                        mascota.setPeso(nuevoPesoMascota);
+                        this.controladores.getControladorMascotas().actualizarMascota(mascota);
+
+                        System.out.println("Peso actualizado correctamente");
+                        mostrarMascota(mascota);
+                        continuar();
+
+                    }catch (SQLException e ){
+                        mascota.setPeso(pesoAnterior);
+                        logger.error("Error al intentar actualizar los datos de la mascota.", e);
+                        System.out.println("Ocurrió un error al intentar actualizar el peso de la mascota. Por favor, vuelva a intentarlo más tarde.");
+                        continuar();
+                    }
+
+                }
+            }
+
+
+        }while ( opcionSeleccionada != OpcionesEditarMascota.VOLVER);
+
+    }
+
     private void continuar(){
         System.out.println("Presione ENTER para continuar...");
         this.scanner.nextLine();
@@ -829,18 +1195,9 @@ public class Aplicacion {
              String numeroDocumentoVeterinario;
              String matriculaVeterinario;
 
-             TipoDocumento tipoDocumentoVeterinario = null;
-             do {
-                 String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-                 if (tipoSt.isEmpty())
-                     return;
-
-                 tipoDocumentoVeterinario = TipoDocumento.obtenerTipoDocumento(tipoSt);
-                 if (tipoDocumentoVeterinario == null)
-                     System.out.println("Tipo de documento incorrecto");
-
-             }while ( tipoDocumentoVeterinario == null);
-
+             TipoDocumento tipoDocumentoVeterinario = seleccionarTipoDocumento();
+             if (tipoDocumentoVeterinario == null)
+                 return;
 
              do {
 
@@ -858,7 +1215,7 @@ public class Aplicacion {
                      return;
                  }
 
-                 System.out.println("Ya existe un veterinario con el documento " + tipoDocumentoVeterinario.getCodigo() + " " + numeroDocumentoVeterinario);
+                 System.out.println("Ya existe un veterinario con el documento " + tipoDocumentoVeterinario.getDescripcionDocumento() + " " + numeroDocumentoVeterinario);
                  System.out.println("¿Desea volver a intentar? (s/n)");
                  rta = solicitarRespuestaSiNo();
 
@@ -924,19 +1281,10 @@ public class Aplicacion {
         do{
 
             String numeroDocumentoDuenio;
-            TipoDocumento tipoDocumentoDuenio = null;
+            TipoDocumento tipoDocumentoDuenio = seleccionarTipoDocumento();
 
-            do {
-                String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-                if (tipoSt.isEmpty())
-                    return;
-
-                tipoDocumentoDuenio = TipoDocumento.obtenerTipoDocumento(tipoSt);
-
-                if (tipoDocumentoDuenio == null)
-                    System.out.println("Tipo de documento incorrecto");
-
-            }while ( tipoDocumentoDuenio == null);
+            if ( tipoDocumentoDuenio == null )
+                return;
 
             do{
                 numeroDocumentoDuenio = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
@@ -952,7 +1300,7 @@ public class Aplicacion {
                     continuar();
                     return;
                 }
-                System.out.println("Ya existe un duenio con el documento " + tipoDocumentoDuenio.getCodigo() + " " + numeroDocumentoDuenio);
+                System.out.println("Ya existe un duenio con el documento " + tipoDocumentoDuenio.getDescripcionDocumento() + " " + numeroDocumentoDuenio);
                 System.out.println("¿Desea volver a intentar? (s/n)");
                 rta = solicitarRespuestaSiNo();
 
@@ -992,7 +1340,7 @@ public class Aplicacion {
 
     }
 
-    private Duenio registrarDuenio(TipoDocumento tipoDocumentoDuenio,String numeroDocumentoDuenio){
+    private Duenio registrarDuenio(TipoDocumento tipoDocumentoDuenio, String numeroDocumentoDuenio){
 
         String nombreDuenio;
         String apellidoDuenio;
@@ -1083,21 +1431,9 @@ public class Aplicacion {
 
     private void mostrarMascotas(){
 
-        TipoDocumento tipoDocumentoDuenio = null;
-        do {
-            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-            if (tipoSt.isEmpty())
-                return;
-
-            try {
-                tipoDocumentoDuenio = TipoDocumento.valueOf(tipoSt.toUpperCase());
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("Tipo de documento incorrecto");
-                tipoDocumentoDuenio = null;
-            }
-        }while ( tipoDocumentoDuenio == null);
-
+        TipoDocumento tipoDocumentoDuenio = seleccionarTipoDocumento();
+        if (tipoDocumentoDuenio == null )
+            return;
 
         String numeroDocumento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
         if (numeroDocumento.isEmpty())
@@ -1138,7 +1474,7 @@ public class Aplicacion {
                 return;
             }
         }else
-            System.out.println("No se ha encontrado el duenio con documento: "+ numeroDocumento );
+            System.out.println("No se ha encontrado el duenio con documento: "+ tipoDocumentoDuenio.getIdTipoDocumento() + " " + numeroDocumento );
 
         continuar();
     }
@@ -1181,20 +1517,11 @@ public class Aplicacion {
     }
 
     private void consultarHistoriaClinica(){
-        TipoDocumento tipoDocumento = null;
-        do {
-            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-            if (tipoSt.isEmpty())
-                return;
 
-            try {
-                tipoDocumento = TipoDocumento.valueOf(tipoSt.toUpperCase());
+        TipoDocumento tipoDocumento = seleccionarTipoDocumento();
 
-            } catch (IllegalArgumentException e) {
-                System.out.println("Tipo de documento incorrecto");
-                tipoDocumento = null;
-            }
-        }while ( tipoDocumento == null);
+        if (tipoDocumento == null )
+            return;
 
         String documento = solicitarCampoObligatorio(CAMPO_DOCUMENTO);
 
@@ -1312,19 +1639,10 @@ public class Aplicacion {
     private Duenio obtenerDuenioParaMascota(){
         char rta;
 
-        TipoDocumento tipoDocumentoDuenio;
-        do {
-            String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_DOCUMENTO);
-            if (tipoSt.isEmpty())
-                return null;
+        TipoDocumento tipoDocumentoDuenio = seleccionarTipoDocumento();
 
-            tipoDocumentoDuenio = TipoDocumento.obtenerTipoDocumento(tipoSt);
-
-            if ( tipoDocumentoDuenio == null)
-                System.out.println("Tipo de documento incorrecto");
-
-        }while ( tipoDocumentoDuenio == null);
-
+        if ( tipoDocumentoDuenio == null )
+            return null;
 
         String documentoDuenio = solicitarCampoObligatorio(Aplicacion.CAMPO_DOCUMENTO);
 
@@ -1344,7 +1662,7 @@ public class Aplicacion {
         if ( duenio != null)
             return duenio;
 
-        System.out.println("No se ha encontrado el dueño con documento: " + tipoDocumentoDuenio.getCodigo() + " " + documentoDuenio);
+        System.out.println("No se ha encontrado el dueño con documento: " + tipoDocumentoDuenio.getDescripcionDocumento() + " " + documentoDuenio);
         System.out.println("¿Desea darlo de alta? s/n");
 
         rta = solicitarRespuestaSiNo();
@@ -1359,9 +1677,19 @@ public class Aplicacion {
 
         try {
             List<Mascota> mascotas = this.controladores.getControladorMascotas().obtenerMascotasDeUnDuenio(duenio.getIdDuenio());
+
+            if (mascotas.isEmpty()){
+                System.out.println("El dueño seleccionado no tiene mascotas registradas.");
+                continuar();
+                return null;
+            }
+
             int totalMascotas = mascotas.size();
 
             int i = 1;
+
+            System.out.println("\n******POR FAVOR, SELECCIONE UNA MASCOTA: ");
+
             for (Mascota mascota : mascotas) {
                 System.out.println(i + " - " + mascota.getNombre() + " - " + mascota.getTipo());
                 i++;
@@ -1413,6 +1741,8 @@ public class Aplicacion {
                 return null;
             }
 
+            System.out.println("\n******POR FAVOR, SELECCIONE UNA VETERINARIO: ");
+
             for(Veterinario veterinario : veterinarios){
                 System.out.println(i + " - " + veterinario.getNombre() + " " + veterinario.getApellido() + " - Matricula: " + veterinario.getMatricula());
                 i++;
@@ -1463,6 +1793,8 @@ public class Aplicacion {
                 return null;
             }
 
+            System.out.println("\n******POR FAVOR, SELECCIONE UN DUEÑO: ");
+
             for(Duenio duenio : duenios){
                 System.out.println(i + " - " + duenio.getNombre() + " " + duenio.getApellido() );
                 i++;
@@ -1499,6 +1831,57 @@ public class Aplicacion {
             return null;
         }
 
+    }
+
+    private TipoDocumento seleccionarTipoDocumento() {
+
+        try {
+            List<TipoDocumento> tipoDocumentos = this.controladores.getControladorCatalogos().obtenerTiposDocumentos();
+
+            if (tipoDocumentos.isEmpty()) {
+                System.out.println("No hay documentos para mostrar.");
+                continuar();
+                return null;
+            }
+
+            System.out.println("\n******POR FAVOR, SELECCIONE UN TIPO DE DOCUMENTO: ");
+
+            int i = 1;
+            for(TipoDocumento tipoDocumento : tipoDocumentos){
+                System.out.println(i + " - " + tipoDocumento.getIdTipoDocumento() + " : " + tipoDocumento.getDescripcionDocumento() );
+                i++;
+            }
+
+            int opcion = -1;
+            boolean opcionInvalida;
+            int totalTipoDocumentos = tipoDocumentos.size();
+            do{
+                System.out.println("Por favor, elija un tipo de documento: ");
+                try{
+                    opcion = Integer.valueOf(this.scanner.nextLine().trim());
+                }catch ( NumberFormatException e ){
+                    opcion  = -1;
+                }
+
+                opcionInvalida = opcion < 1 || opcion > totalTipoDocumentos;
+
+                if (opcionInvalida) {
+                    System.out.println("La opción ingresada es inválida. ¿Desea volver a intentar? (s/n)");
+
+                    if (solicitarRespuestaSiNo() != 's')
+                        return null;
+                }
+
+            }while ( opcionInvalida);
+
+            return tipoDocumentos.get(opcion-1);
+
+        }catch (SQLException e){
+            logger.error("Error al intentar obtener los tipos de documentos", e);
+            System.out.println("Ocurrió un inconveniente al intentar obtener los tipos de documentos.");
+            continuar();
+            return null;
+        }
     }
 
     private String solicitarCampoObligatorio(String campo){
@@ -1552,26 +1935,24 @@ public class Aplicacion {
             return false;
 
 
-        TipoMascota tipo;
+        TipoMascotaEnum tipo;
         do {
             String tipoSt = solicitarCampoObligatorio(CAMPO_TIPO_MASCOTA);
             if (tipoSt.isEmpty())
                 return false;
 
-            try {
-                tipo = TipoMascota.valueOf(tipoSt.toUpperCase());
+            tipo = TipoMascotaEnum.obtenerNombreTipoMascota(tipoSt);
 
-            } catch (IllegalArgumentException e) {
+            if ( tipo == null )
                 System.out.println("Tipo de mascota incorrecto");
-                tipo = null;
-            }
+
         }while ( tipo == null);
 
         String raza = solicitarCampoObligatorio(CAMPO_RAZA);
         if ( raza.isEmpty())
             return false;
 
-        LocalDate fechaNacimiento = null;
+        LocalDate fechaNacimiento;
         DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
         do{
             String fechaNacimientoSt = solicitarCampoObligatorio(CAMPO_FECHA_NACIMIENTO);
@@ -1580,11 +1961,14 @@ public class Aplicacion {
                 return false;
 
             try{
-
+                LocalDate fechaActual = LocalDate.now();
                 fechaNacimiento = LocalDate.parse(fechaNacimientoSt, formatoFecha);
 
-                if ( fechaNacimiento.isAfter(LocalDate.now())){
+                if ( fechaNacimiento.isAfter(fechaActual)){
                     System.out.println("La fecha de nacimiento no puede ser posterior a la fecha actual");
+                    fechaNacimiento = null;
+                }else if ( fechaNacimiento.isBefore(fechaActual.minusYears(Mascota.MAXIMA_EDAD))){
+                    System.out.println("La fecha de nacimiento no puede ser anterior a " + formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
                     fechaNacimiento = null;
                 }
 
@@ -1595,7 +1979,7 @@ public class Aplicacion {
 
         }while (fechaNacimiento == null );
 
-        double peso = 0;
+        double peso;
         do{
             String pesoSt = solicitarCampoObligatorio(CAMPO_PESO);
             if ( pesoSt.isEmpty())
@@ -1605,12 +1989,20 @@ public class Aplicacion {
 
                 peso = Double.valueOf(pesoSt);
 
+                if ( !Double.isFinite(peso)){
+                    System.out.println("Peso incorrecto");
+                }else if ( peso <= 0){
+                    System.out.println("El peso no puede ser menor o igual a 0");
+                }else if ( peso > Mascota.MAXIMO_PESO){
+                    System.out.println("El peso no puede ser superior a " + Mascota.MAXIMO_PESO + " Kg");
+                }
+
             }catch (NumberFormatException e){
                 System.out.println("Peso incorrecto");
                 peso = 0;
             }
 
-        }while ( peso <= 0 || !Double.isInfinite(peso));
+        }while ( peso <= 0 || peso > Mascota.MAXIMO_PESO || !Double.isFinite(peso));
 
         try {
              this.controladores.getControladorMascotas().registrarMascota(nombre, tipo, raza, fechaNacimiento, peso, duenio.getIdDuenio());
@@ -1677,7 +2069,7 @@ public class Aplicacion {
     private void mostrarVeterinario(Veterinario veterinario){
         System.out.println("Nombre: " + veterinario.getNombre());
         System.out.println("Apellido: " + veterinario.getApellido());
-        System.out.println("Tipo documento: " + veterinario.getTipoDocumento().getCodigo() + " - Número: " + veterinario.getNumeroDocumento());
+        System.out.println("Tipo documento: " + veterinario.getTipoDocumento().getDescripcionDocumento() + " - Número: " + veterinario.getNumeroDocumento());
         System.out.println("Matricula: " + veterinario.getMatricula());
         System.out.println("Teléfono: " + veterinario.getTelefono());
         System.out.println("Fecha alta: " + formatearFechaHora(veterinario.getFechaAlta()));
@@ -1686,7 +2078,7 @@ public class Aplicacion {
     private void mostrarDuenio(Duenio duenio){
         System.out.println("Nombre: " + duenio.getNombre());
         System.out.println("Apellido: " + duenio.getApellido());
-        System.out.println("Tipo documento: " + duenio.getTipoDocumento().getCodigo() + " - Número: " + duenio.getNumeroDocumento());
+        System.out.println("Tipo documento: " + duenio.getTipoDocumento().getDescripcionDocumento()+ " - Número: " + duenio.getNumeroDocumento());
         System.out.println("Teléfono: " + duenio.getTelefono());
         System.out.println("Fecha alta: " + formatearFechaHora(duenio.getFechaAlta()));
     }
@@ -1710,8 +2102,9 @@ public class Aplicacion {
 
     private void mostrarMascota(Mascota mascota) {
         System.out.println("Nombre: " + mascota.getNombre());
-        System.out.println("Tipo: " + mascota.getTipo());
+        System.out.println("Tipo: " + mascota.getTipo().getNombre());
         System.out.println("Raza: " + mascota.getRaza());
+        System.out.println("Edad: " + mascota.getEdad());
         System.out.println("Fecha de nacimiento: " + formatearFecha(mascota.getFechaNacimiento()));
         System.out.println("Peso: " + mascota.getPeso());
         System.out.println("Fecha alta: " + formatearFechaHora(mascota.getFechaAlta()));

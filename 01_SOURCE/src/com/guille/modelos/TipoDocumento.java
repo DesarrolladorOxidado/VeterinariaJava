@@ -1,26 +1,17 @@
 package com.guille.modelos;
 
-public enum TipoDocumento {
-    DNI("DNI"),
-    PASAPORTE("PAS"),
-    LIBRETA_ENROLAMIENTO("LE"),
-    LIBRETA_CIVICA("LC");
+public class TipoDocumento {
 
-    private final String codigo;
+    private String idTipoDocumento;
+    private String descripcionDocumento;
 
-    TipoDocumento(String codigo){
-        this.codigo = codigo;
+    public TipoDocumento(String idTipoDocumento, String descripcionDocumento){
+        this.idTipoDocumento = idTipoDocumento;
+        this.descripcionDocumento = descripcionDocumento;
     }
 
-    public String getCodigo(){ return this.codigo;}
+    public String getIdTipoDocumento(){ return this.idTipoDocumento; }
 
-    public static TipoDocumento obtenerTipoDocumento(String codigoDocumento){
-        for( TipoDocumento tipoDocumento : TipoDocumento.values()) {
-            if (tipoDocumento.getCodigo().equalsIgnoreCase(codigoDocumento)) {
-                return tipoDocumento;
+    public String getDescripcionDocumento(){ return this.descripcionDocumento;}
 
-            }
-        }
-        return null;
-    }
 }

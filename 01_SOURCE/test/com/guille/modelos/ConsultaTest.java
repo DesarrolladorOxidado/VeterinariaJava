@@ -14,7 +14,7 @@ public class ConsultaTest {
 
     @BeforeEach
     public void setUp() {
-        veterinario = new Veterinario("Cosme","Fulanito",TipoDocumento.DNI,"12121","212312","MPV-3232");
+        veterinario = new Veterinario("Cosme","Fulanito", new TipoDocumento("DNI","Documento Nacional de Identidad"),"12121","212312","MPV-3232");
         consulta = new Consulta("Control",veterinario,1);
     }
 

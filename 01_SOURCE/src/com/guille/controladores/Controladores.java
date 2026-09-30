@@ -7,6 +7,7 @@ public class Controladores {
     private ControladorMascotas controladorMascotas;
     private ControladorHistoriasClinicas controladorHistoriasClinicas;
     private ControladorConsultas controladorConsultas;
+    private ControladorCatalogos controladorCatalogos;
 
 
     public void setControladorVeterinarios(ControladorVeterinarios controladorVeterinarios){
@@ -46,4 +47,10 @@ public class Controladores {
     public ControladorConsultas getControladorConsultas(){
         return this.controladorConsultas;
     }
+
+    public void setControladorCatalogos( ControladorCatalogos controladorCatalogos){
+        this.controladorCatalogos = controladorCatalogos;
+    }
+
+    public ControladorCatalogos getControladorCatalogos(){ return this.controladorCatalogos; }
 }

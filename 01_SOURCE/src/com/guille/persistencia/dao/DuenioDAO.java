@@ -2,7 +2,6 @@ package com.guille.persistencia.dao;
 
 import com.guille.modelos.Duenio;
 import com.guille.modelos.TipoDocumento;
-import com.guille.modelos.Veterinario;
 import com.guille.persistencia.ConexionBD;
 
 import java.sql.Connection;
@@ -23,20 +22,23 @@ public class DuenioDAO extends Dao {
 
         List<Duenio> duenios = new ArrayList<>();
 
-        try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios ORDER BY apellido_duenio, nombre_duenio"); ResultSet resultado = statement.executeQuery()){
+        String sql = "SELECT D.*, TD.descripcion_documento FROM duenios D INNER JOIN tipos_documentos TD ON D.tipo_documento_duenio = TD.id_tipo_documento";
+
+        try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultado = statement.executeQuery()){
 
             while ( resultado.next()){
                 int id = resultado.getInt("id_duenio");
                 String nombre = resultado.getString("nombre_duenio");
                 String apellido = resultado.getString("apellido_duenio");
                 String tipoDocumentoST = resultado.getString("tipo_documento_duenio");
+                String descripcionTipoDocumentoST = resultado.getString("descripcion_documento");
                 String numeroDocumento = resultado.getString("numero_documento_duenio");
                 String telefono = resultado.getString("telefono_duenio");
                 LocalDateTime fechaAlta = resultado.getObject("fecha_alta_duenio", LocalDateTime.class);
 
-                TipoDocumento tipo = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
+                TipoDocumento tipoDocumento = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
-                Duenio duenio = new Duenio(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta);
+                Duenio duenio = new Duenio(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta);
 
                 duenios.add(duenio);
             }
@@ -51,7 +53,7 @@ public class DuenioDAO extends Dao {
 
         try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM duenios WHERE tipo_documento_duenio = ? AND  numero_documento_duenio = ?" )){
 
-            statement.setString(1, tipoDocumento.getCodigo());
+            statement.setString(1, tipoDocumento.getIdTipoDocumento());
             statement.setString(2,numeroDocumento);
 
             try( ResultSet resultado = statement.executeQuery()){
@@ -89,7 +91,7 @@ public class DuenioDAO extends Dao {
         try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,duenio.getNombre());
             statement.setString(2,duenio.getApellido());
-            statement.setString(3,duenio.getTipoDocumento().getCodigo());
+            statement.setString(3,duenio.getTipoDocumento().getIdTipoDocumento());
             statement.setString(4,duenio.getNumeroDocumento());
             statement.setString(5,duenio.getTelefono());
             statement.setObject(6,duenio.getFechaAlta());
@@ -117,7 +119,7 @@ public class DuenioDAO extends Dao {
         try(Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,duenio.getNombre());
             statement.setString(2,duenio.getApellido());
-            statement.setString(3,duenio.getTipoDocumento().getCodigo());
+            statement.setString(3,duenio.getTipoDocumento().getIdTipoDocumento());
             statement.setString(4,duenio.getNumeroDocumento());
             statement.setString(5,duenio.getTelefono());
             statement.setInt(6,duenio.getIdDuenio());

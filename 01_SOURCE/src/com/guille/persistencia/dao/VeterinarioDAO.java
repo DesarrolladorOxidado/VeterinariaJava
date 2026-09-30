@@ -20,19 +20,23 @@ public class VeterinarioDAO extends Dao{
 
         List<Veterinario> veterinarios = new ArrayList<>();
 
-        try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM veterinarios ORDER BY apellido_veterinario, nombre_veterinario"); ResultSet resultado = statement.executeQuery()){
+        String sql = "SELECT V.*, TD.descripcion_documento FROM veterinarios V INNER JOIN tipos_documentos TD ON V.tipo_documento_veterinario = TD.id_tipo_documento";
+
+
+        try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultado = statement.executeQuery()){
 
             while ( resultado.next()){
                 int id = resultado.getInt("id_veterinario");
                 String nombre = resultado.getString("nombre_veterinario");
                 String apellido = resultado.getString("apellido_veterinario");
                 String tipoDocumentoST = resultado.getString("tipo_documento_veterinario");
+                String descripcionTipoDocumentoST = resultado.getString("descripcion_documento");
                 String numeroDocumento = resultado.getString("numero_documento_veterinario");
                 String telefono = resultado.getString("telefono_veterinario");
                 String matricula = resultado.getString("matricula_veterinario");
                 LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
-                TipoDocumento tipo = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
+                TipoDocumento tipo = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
                 Veterinario veterinario = new Veterinario(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta,matricula);
 
@@ -49,7 +53,7 @@ public class VeterinarioDAO extends Dao{
 
         try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM veterinarios WHERE tipo_documento_veterinario = ? AND  numero_documento_veterinario = ?" )){
 
-            statement.setString(1, tipoDocumento.getCodigo());
+            statement.setString(1, tipoDocumento.getIdTipoDocumento());
             statement.setString(2,numeroDocumento);
 
             try( ResultSet resultado = statement.executeQuery()){
@@ -74,8 +78,9 @@ public class VeterinarioDAO extends Dao{
     public Veterinario obtenerVeterinarioPorMatricula(String matricula) throws SQLException{
 
         Veterinario veterinario = null;
+        String sql = "SELECT V.*, TD.descripcion_documento FROM veterinarios V INNER JOIN tipos_documentos TD ON V.tipo_documento_veterinario = TD.id_tipo_documento WHERE V.matricula_veterinario = ?";
 
-        try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement("SELECT * FROM veterinarios WHERE matricula_veterinario = ?" )){
+        try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql )){
 
             statement.setString(1, matricula);
 
@@ -86,10 +91,11 @@ public class VeterinarioDAO extends Dao{
                     String apellido = resultado.getString("apellido_veterinario");
                     String telefono = resultado.getString("telefono_veterinario");
                     String tipoDocumentoST = resultado.getString("tipo_documento_veterinario");
+                    String descripcionTipoDocumentoST = resultado.getString("descripcion_documento");
                     String numeroDocumento = resultado.getString("numero_documento_veterinario");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
 
-                    TipoDocumento tipoDocumento = TipoDocumento.obtenerTipoDocumento(tipoDocumentoST);
+                    TipoDocumento tipoDocumento = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
                     veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula);
 
@@ -119,7 +125,7 @@ public class VeterinarioDAO extends Dao{
         try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,veterinario.getNombre());
             statement.setString(2,veterinario.getApellido());
-            statement.setString(3,veterinario.getTipoDocumento().getCodigo());
+            statement.setString(3,veterinario.getTipoDocumento().getIdTipoDocumento());
             statement.setString(4,veterinario.getNumeroDocumento());
             statement.setString(5,veterinario.getTelefono());
             statement.setString(6,veterinario.getMatricula());
@@ -158,7 +164,7 @@ public class VeterinarioDAO extends Dao{
         try(Connection connection = conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,veterinario.getNombre());
             statement.setString(2,veterinario.getApellido());
-            statement.setString(3,veterinario.getTipoDocumento().getCodigo());
+            statement.setString(3,veterinario.getTipoDocumento().getIdTipoDocumento());
             statement.setString(4,veterinario.getNumeroDocumento());
             statement.setString(5,veterinario.getTelefono());
             statement.setString(6,veterinario.getMatricula());

@@ -6,9 +6,12 @@ import java.time.Period;
 
 public class Mascota {
 
+    public static int MAXIMA_EDAD = 50;
+    public static double MAXIMO_PESO = 150.0;
+
     private int idMascota;
     private String nombre;
-    private TipoMascota tipo;
+    private TipoMascotaEnum tipo;
     private String raza;
     private LocalDate fechaNacimiento;
     private double peso;
@@ -17,14 +20,14 @@ public class Mascota {
 
     private final LocalDateTime fechaAlta;
 
-    public Mascota(String nombre, TipoMascota tipo, int idDuenio) {
+    public Mascota(String nombre, TipoMascotaEnum tipo, int idDuenio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.idDuenio = idDuenio;
         this.fechaAlta = LocalDateTime.now();
     }
 
-    public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta,HistoriaClinica historiaClinica) {
+    public Mascota(int idMascota, String nombre, TipoMascotaEnum tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, HistoriaClinica historiaClinica) {
         this.idMascota = idMascota;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -48,14 +51,14 @@ public class Mascota {
         this.nombre = nombre;
     }
 
-    public TipoMascota getTipo() {
+    public TipoMascotaEnum getTipo() {
         return tipo;
     }
 
     //Este metodo permite corregir errores de carga de datos
     //no es porque un animal pueda cambiar de tipo. Su uso
     //está destinado exclusivamente ante un error
-    public void setTipo(TipoMascota tipo) {
+    public void setTipo(TipoMascotaEnum tipo) {
         this.tipo = tipo;
     }
 
@@ -108,5 +111,9 @@ public class Mascota {
                 ", fechaAlta = " + fechaAlta +
                 ", historiaClinica=" + historiaClinica +
                 '}';
+    }
+
+    public void setF(LocalDate nuevaFechaNacimiento) {
+
     }
 }

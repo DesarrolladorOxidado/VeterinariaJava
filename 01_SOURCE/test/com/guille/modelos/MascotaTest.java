@@ -16,7 +16,7 @@ public class MascotaTest {
 
     @BeforeEach
     public void setUp(){
-        mascota = new Mascota("Maestro Ruben", TipoMascota.GATO,0);
+        mascota = new Mascota("Maestro Ruben", TipoMascotaEnum.GATO,0);
         mascota.setRaza("Persa");
         fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
         mascota.setFechaNacimiento(fechaNacimiento);

@@ -20,6 +20,7 @@ public class FabricaAplicacion {
         MascotaDAO mascotaDAO = new MascotaDAO(conexionBD);
         HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
         ConsultaDAO consultaDAO = new ConsultaDAO(conexionBD);
+        CatalogosDAO catalogosDAO = new CatalogosDAO(conexionBD);
 
         RegistroMascotaService registroMascotaService = new RegistroMascotaService(mascotaDAO,historiaClinicaDAO,gestorTransacciones);
         RegistrarConsultaService registrarConsultaService = new RegistrarConsultaService(consultaDAO,historiaClinicaDAO,gestorTransacciones);
@@ -29,6 +30,7 @@ public class FabricaAplicacion {
         ControladorMascotas controladorMascotas = new ControladorMascotas(mascotaDAO, registroMascotaService);
         ControladorHistoriasClinicas controladorHistoriasClinicas = new ControladorHistoriasClinicas(historiaClinicaDAO);
         ControladorConsultas controladorConsultas = new ControladorConsultas(registrarConsultaService);
+        ControladorCatalogos controladorCatalogos = new ControladorCatalogos(catalogosDAO);
 
         Controladores controladores = new Controladores();
 
@@ -37,6 +39,7 @@ public class FabricaAplicacion {
         controladores.setControladorMascotas(controladorMascotas);
         controladores.setControladorHistoriasClinicas(controladorHistoriasClinicas);
         controladores.setControladorConsultas(controladorConsultas);
+        controladores.setControladorCatalogos(controladorCatalogos);
 
         return new Aplicacion(controladores);
     }

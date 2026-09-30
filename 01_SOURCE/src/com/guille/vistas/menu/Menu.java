@@ -8,7 +8,7 @@ public class Menu {
 
     }
 
-    public static void opcionesMenuPrincipal(List<OpcionMenuPrincipal> menuPrincipal){
+    public static void opcionesMenuPrincipal(List<OpcionesMenuPrincipal> menuPrincipal){
         System.out.println("===============================");
         System.out.println("     SISTEMA VETERINARIA        ");
         System.out.println("================================");
@@ -44,6 +44,15 @@ public class Menu {
         System.out.println("POR FAVOR, ELIJA UNA OPCIÓN:");
 
         mostrarOpciones(opcionesEditarDuenios);
+    }
+
+    public static void menuOpcionesEditarMascota(List<OpcionesEditarMascota> opcionesEditarMascota){
+        System.out.println("--------------------------------");
+        System.out.println("     EDITAR DATOS MASCOTA        ");
+        System.out.println("--------------------------------");
+        System.out.println("POR FAVOR, ELIJA UNA OPCIÓN:");
+
+        mostrarOpciones(opcionesEditarMascota);
     }
 
     private static void mostrarOpciones(List<? extends OpcionesMenu> opcionesMenus){

@@ -6,7 +6,7 @@ public class Duenio extends Persona {
 
     private int idDuenio;
 
-    public Duenio(String nombre, String apellido,TipoDocumento tipoDocumento, String numero_documento, String telefono) {
+    public Duenio(String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono) {
         super(nombre, apellido, tipoDocumento, numero_documento, telefono);
     }
 

@@ -1,6 +1,6 @@
 package com.guille.vistas.menu;
 
-public enum OpcionMenuPrincipal implements OpcionesMenu{
+public enum OpcionesMenuPrincipal implements OpcionesMenu{
     REGISTRAR_VETERINARIO("Registrar veterinario"),
     REGISTRAR_DUENIO("Registrar dueño"),
     REGISTRAR_MASCOTA("Registrar mascota"),
@@ -14,7 +14,7 @@ public enum OpcionMenuPrincipal implements OpcionesMenu{
 
     private final String descripcion;
 
-    OpcionMenuPrincipal(String descripcion) {
+    OpcionesMenuPrincipal(String descripcion) {
         this.descripcion = descripcion;
     }
 

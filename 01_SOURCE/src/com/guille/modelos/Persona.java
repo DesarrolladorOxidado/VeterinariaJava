@@ -14,7 +14,7 @@ public abstract class Persona {
 
     //El constructor solo lo necesitan las clases hijas, no cualquiera.
     //Por eso lo declaro como protected
-    protected Persona(String nombre, String apellido, TipoDocumento tipoDocumento,String numero_documento, String telefono) {
+    protected Persona(String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.tipoDocumento = tipoDocumento;

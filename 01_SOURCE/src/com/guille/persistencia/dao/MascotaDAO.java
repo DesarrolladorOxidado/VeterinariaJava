@@ -1,7 +1,7 @@
 package com.guille.persistencia.dao;
 
 import com.guille.modelos.Mascota;
-import com.guille.modelos.TipoMascota;
+import com.guille.modelos.TipoMascotaEnum;
 import com.guille.persistencia.ConexionBD;
 
 import java.sql.Connection;
@@ -55,6 +55,29 @@ public class MascotaDAO extends Dao{
         return mascotaBD;
     }
 
+    public void actualizarMascota( Mascota mascota ) throws SQLException{
+        String sql = "UPDATE mascotas SET nombre_mascota = ?," +
+                "tipo_mascota = ?," +
+                "raza_mascota = ?," +
+                "fecha_nacimiento_mascota = ?," +
+                "peso_mascota = ? " +
+                "WHERE id_mascota = ?";
+
+        try( Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setString(1, mascota.getNombre());
+            statement.setString(2, mascota.getTipo().getCodigo());
+            statement.setString(3, mascota.getRaza());
+            statement.setObject(4,mascota.getFechaNacimiento());
+            statement.setDouble(5, mascota.getPeso());
+            statement.setInt(6, mascota.getIdMascota());
+
+            int resultado = statement.executeUpdate();
+
+            if ( resultado != 1 )
+                throw new SQLException("No se pudo actualizar la mascota");
+        }
+    }
+
     public List<Mascota> obtenerMascotasDeUnDuenio( int idDuenio ) throws SQLException{
 
         List<Mascota> mascotas = new ArrayList<>();
@@ -79,7 +102,7 @@ public class MascotaDAO extends Dao{
                 while (resultado.next()){
                     int idMascota = resultado.getInt("id_mascota");
                     String nombre = resultado.getString("nombre_mascota");
-                    TipoMascota tipo= TipoMascota.obtenerTipoMascota(resultado.getString("tipo_mascota"));
+                    TipoMascotaEnum tipo= TipoMascotaEnum.obtenerCodigoTipoMascota(resultado.getString("tipo_mascota"));
                     String raza = resultado.getString("raza_mascota");
                     LocalDate fechaNacimiento = resultado.getObject("fecha_nacimiento_mascota", LocalDate.class);
                     double peso = resultado.getDouble("peso_mascota");

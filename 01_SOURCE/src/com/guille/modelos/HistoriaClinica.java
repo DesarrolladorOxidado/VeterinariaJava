@@ -1,5 +1,7 @@
 package com.guille.modelos;
 
+import com.guille.configuracion.FechaHora;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class HistoriaClinica {
 
     public HistoriaClinica(int idMascota) {
         this.idMascota = idMascota;
-        this.fechaCreacion = LocalDateTime.now();
+        this.fechaCreacion = FechaHora.ahora();
         this.fechaActualizacion = this.fechaCreacion;
         this.consultas = new ArrayList<>();
     }

@@ -1,6 +1,7 @@
 package com.guille.controladores;
 
 import com.guille.BaseDatosTestDAO;
+import com.guille.configuracion.FechaHora;
 import com.guille.modelos.*;
 import com.guille.persistencia.ConexionBD;
 import com.guille.persistencia.GestorTransacciones;
@@ -21,6 +22,7 @@ public class ControladorMascotasTest {
 
     private ControladorMascotas controladorMascotas;
     private Duenio duenio;
+    private TipoMascota perro;
 
     @BeforeEach
     public void setUp()throws SQLException {
@@ -35,6 +37,8 @@ public class ControladorMascotasTest {
 
         TipoDocumento dni = new TipoDocumento("DNI","Documento Nacional de Identidad");
         this.duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", dni,"221232","232323");
+        this.perro = new TipoMascota("PE","Perro");
+
 
         HistoriaClinicaDAO historiaClinicaDAO = new HistoriaClinicaDAO(conexionBD);
 
@@ -47,7 +51,6 @@ public class ControladorMascotasTest {
     @Test
     public void alRegistrarMascotaDebeTenerLosDatosIngresados() throws SQLException{
 
-        TipoMascota perro = new TipoMascota("PE","Perro");
         LocalDate fechaNacimiento = LocalDate.parse("13/07/2022", DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT));
         Mascota mascota = controladorMascotas.registrarMascota("Mateo", perro,"Border Collie", fechaNacimiento,24.3,duenio.getIdDuenio());
 
@@ -60,5 +63,30 @@ public class ControladorMascotasTest {
         Assertions.assertEquals(duenio.getIdDuenio(),mascota.getIdDuenio());
         Assertions.assertNotNull(mascota.getHistoriaClinica());
         Assertions.assertTrue(mascota.getHistoriaClinica().getIdHistoriaClinica() > 0);
+    }
+
+    @Test
+    public void alActualizarDebePersistirNuevosDatos() throws SQLException{
+
+        Mascota mascota = controladorMascotas.registrarMascota("Mateo", perro,"Border Collie", FechaHora.parsearFecha("13/07/2022"),24.3,duenio.getIdDuenio());
+
+        mascota.setNombre("Rubén");
+        mascota.setTipo(new TipoMascota("GT","Gato"));
+        mascota.setRaza("Persa");
+        mascota.setFechaNacimiento(FechaHora.parsearFecha("13/07/2023"));
+        mascota.setPeso(23.2);
+
+        controladorMascotas.actualizarMascota(mascota);
+
+        Mascota mascotaRecuperada = controladorMascotas.obtenerMascotasDeUnDuenio(duenio.getIdDuenio()).get(0);
+
+        Assertions.assertEquals(mascota.getIdMascota(), mascotaRecuperada.getIdMascota());
+        Assertions.assertEquals(mascota.getNombre(),mascotaRecuperada.getNombre());
+        Assertions.assertEquals(mascota.getTipo().getIdTipoMascota(),mascotaRecuperada.getTipo().getIdTipoMascota());
+        Assertions.assertEquals(mascota.getRaza(),mascotaRecuperada.getRaza());
+        Assertions.assertEquals(mascota.getFechaNacimiento(),mascotaRecuperada.getFechaNacimiento());
+        Assertions.assertEquals(mascota.getPeso(),mascotaRecuperada.getPeso());
+        Assertions.assertEquals(mascota.getIdDuenio(),mascotaRecuperada.getIdDuenio());
+        Assertions.assertEquals(mascota.getFechaAlta(),mascotaRecuperada.getFechaAlta());
     }
 }

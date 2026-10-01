@@ -1,5 +1,7 @@
 package com.guille.modelos;
 
+import com.guille.configuracion.FechaHora;
+
 import java.time.LocalDateTime;
 
 public class Consulta {
@@ -21,7 +23,7 @@ public class Consulta {
     private final int idHistoriaClinica;
 
     public Consulta( String motivo, Veterinario veterinario, int idHistoriaClinica) {
-        this.fecha = LocalDateTime.now();
+        this.fecha = FechaHora.ahora();
         this.motivo = motivo;
         this.veterinario = veterinario;
         this.idHistoriaClinica = idHistoriaClinica;

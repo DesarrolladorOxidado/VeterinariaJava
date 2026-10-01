@@ -1,5 +1,6 @@
 package com.guille.vistas;
 
+import com.guille.configuracion.FechaHora;
 import com.guille.controladores.Controladores;
 import com.guille.modelos.*;
 import com.guille.vistas.menu.*;
@@ -8,10 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -32,9 +30,6 @@ public class Aplicacion {
     private static final String CAMPO_RAZA = "raza";
     private static final String CAMPO_PESO = "peso";
     private static final String CAMPO_FECHA_NACIMIENTO = "fecha de nacimiento (día/mes/año)";
-
-    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final Scanner scanner;
 
@@ -988,12 +983,11 @@ public class Aplicacion {
                     char rta;
                     System.out.println("***** EDITAR FECHA NACIMIENTO MASCOTA *****");
                     LocalDate fechaNacimientoAnterior = mascota.getFechaNacimiento();
-                    System.out.println("* Fecha de nacimiento actual: " + formatearFecha(fechaNacimientoAnterior));
+                    System.out.println("* Fecha de nacimiento actual: " + FechaHora.formatearFecha(fechaNacimientoAnterior));
 
                     try{
                         LocalDate nuevaFechaNacimiento = null;
                         boolean cancelarEdicion = false;
-                        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
                         do{
                             rta = 'n';
@@ -1008,14 +1002,14 @@ public class Aplicacion {
 
                                 try{
 
-                                    nuevaFechaNacimiento = LocalDate.parse(fechaNacimientoSt, formatoFecha);
+                                    nuevaFechaNacimiento = FechaHora.parsearFecha(fechaNacimientoSt);
                                     LocalDate fechaActual = LocalDate.now();
 
                                     if ( nuevaFechaNacimiento.isAfter(fechaActual)){
                                         System.out.println("La fecha de nacimiento no puede ser posterior a la fecha actual");
                                         nuevaFechaNacimiento = null;
                                     } else if (nuevaFechaNacimiento.isBefore(fechaActual.minusYears(Mascota.MAXIMA_EDAD))){
-                                        System.out.println("La fecha de nacimiento no puede ser anterior a " + formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
+                                        System.out.println("La fecha de nacimiento no puede ser anterior a " + FechaHora.formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
                                         nuevaFechaNacimiento = null;
                                     }
 
@@ -1043,7 +1037,7 @@ public class Aplicacion {
                         if (cancelarEdicion)
                             break;
 
-                        System.out.println("¿Está seguro de cambiar la fecha de nacimiento " + formatearFecha(fechaNacimientoAnterior) + " por " + formatearFecha(nuevaFechaNacimiento) + "? (s/n)");
+                        System.out.println("¿Está seguro de cambiar la fecha de nacimiento " + FechaHora.formatearFecha(fechaNacimientoAnterior) + " por " + FechaHora.formatearFecha(nuevaFechaNacimiento) + "? (s/n)");
                         rta =solicitarRespuestaSiNo();
 
                         if ( rta != 's')
@@ -1547,8 +1541,8 @@ public class Aplicacion {
         }
 
         System.out.println("Historia clínica de: " + mascota.getNombre());
-        System.out.println("Fecha creación: " + formatearFechaHora(historiaClinica.getFechaCreacion()));
-        System.out.println("Ultima actualización: " + formatearFechaHora(historiaClinica.getFechaActualizacion()));
+        System.out.println("Fecha creación: " + FechaHora.formatearFechaHora(historiaClinica.getFechaCreacion()));
+        System.out.println("Ultima actualización: " + FechaHora.formatearFechaHora(historiaClinica.getFechaActualizacion()));
 
         if ( historiaClinica.obtenerConsultas().isEmpty()){
             System.out.println("No hay consultas");
@@ -1568,7 +1562,7 @@ public class Aplicacion {
         int i = 1;
 
         for( Consulta consulta : consultas) {
-            System.out.println( i + " - " + consulta.getMotivo() + " - Fecha: " + formatearFechaHora(consulta.getFecha()));
+            System.out.println( i + " - " + consulta.getMotivo() + " - Fecha: " + FechaHora.formatearFechaHora(consulta.getFecha()));
             i++;
         }
 
@@ -1966,7 +1960,6 @@ public class Aplicacion {
             return false;
 
         LocalDate fechaNacimiento;
-        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
         do{
             String fechaNacimientoSt = solicitarCampoObligatorio(CAMPO_FECHA_NACIMIENTO);
 
@@ -1975,13 +1968,13 @@ public class Aplicacion {
 
             try{
                 LocalDate fechaActual = LocalDate.now();
-                fechaNacimiento = LocalDate.parse(fechaNacimientoSt, formatoFecha);
+                fechaNacimiento = FechaHora.parsearFecha(fechaNacimientoSt);
 
                 if ( fechaNacimiento.isAfter(fechaActual)){
                     System.out.println("La fecha de nacimiento no puede ser posterior a la fecha actual");
                     fechaNacimiento = null;
                 }else if ( fechaNacimiento.isBefore(fechaActual.minusYears(Mascota.MAXIMA_EDAD))){
-                    System.out.println("La fecha de nacimiento no puede ser anterior a " + formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
+                    System.out.println("La fecha de nacimiento no puede ser anterior a " + FechaHora.formatearFecha(fechaActual.minusYears(Mascota.MAXIMA_EDAD)));
                     fechaNacimiento = null;
                 }
 
@@ -2085,7 +2078,7 @@ public class Aplicacion {
         System.out.println("Tipo documento: " + veterinario.getTipoDocumento().getDescripcionDocumento() + " - Número: " + veterinario.getNumeroDocumento());
         System.out.println("Matricula: " + veterinario.getMatricula());
         System.out.println("Teléfono: " + veterinario.getTelefono());
-        System.out.println("Fecha alta: " + formatearFechaHora(veterinario.getFechaAlta()));
+        System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(veterinario.getFechaAlta()));
     }
 
     private void mostrarDuenio(Duenio duenio){
@@ -2093,7 +2086,7 @@ public class Aplicacion {
         System.out.println("Apellido: " + duenio.getApellido());
         System.out.println("Tipo documento: " + duenio.getTipoDocumento().getDescripcionDocumento()+ " - Número: " + duenio.getNumeroDocumento());
         System.out.println("Teléfono: " + duenio.getTelefono());
-        System.out.println("Fecha alta: " + formatearFechaHora(duenio.getFechaAlta()));
+        System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(duenio.getFechaAlta()));
     }
 
     private void mostrarMascotasDelDuenio(Duenio duenio) {
@@ -2118,15 +2111,15 @@ public class Aplicacion {
         System.out.println("Tipo: " + mascota.getTipo().getDescripcionTipoMascota());
         System.out.println("Raza: " + mascota.getRaza());
         System.out.println("Edad: " + mascota.getEdad());
-        System.out.println("Fecha de nacimiento: " + formatearFecha(mascota.getFechaNacimiento()));
+        System.out.println("Fecha de nacimiento: " + FechaHora.formatearFecha(mascota.getFechaNacimiento()));
         System.out.println("Peso: " + mascota.getPeso());
-        System.out.println("Fecha alta: " + formatearFechaHora(mascota.getFechaAlta()));
+        System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(mascota.getFechaAlta()));
         System.out.println("==============================================");
     }
 
     private void mostrarDetalleConsulta(Consulta consulta) {
 
-        System.out.println("* Fecha de la consulta: " + formatearFechaHora(consulta.getFecha()));
+        System.out.println("* Fecha de la consulta: " + FechaHora.formatearFechaHora(consulta.getFecha()));
         System.out.println("* Motivo: " + consulta.getMotivo());
         System.out.println("* Diagnóstico: " + consulta.getDiagnostico());
         System.out.println("* Tratamiento: " + consulta.getTratamiento());
@@ -2135,12 +2128,6 @@ public class Aplicacion {
 
     }
 
-    private String formatearFechaHora(LocalDateTime fechaHora ){
-        return fechaHora.format(FORMATO_FECHA_HORA);
-    }
-    private String formatearFecha(LocalDate fecha) {
-        return fecha.format(FORMATO_FECHA);
-    }
 
 }
 

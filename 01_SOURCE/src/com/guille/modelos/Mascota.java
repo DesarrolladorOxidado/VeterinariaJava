@@ -1,5 +1,7 @@
 package com.guille.modelos;
 
+import com.guille.configuracion.FechaHora;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -24,7 +26,7 @@ public class Mascota {
         this.nombre = nombre;
         this.tipo = tipo;
         this.idDuenio = idDuenio;
-        this.fechaAlta = LocalDateTime.now();
+        this.fechaAlta = FechaHora.ahora();
     }
 
     public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, HistoriaClinica historiaClinica) {

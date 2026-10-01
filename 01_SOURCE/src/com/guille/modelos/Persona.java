@@ -1,5 +1,7 @@
 package com.guille.modelos;
 
+import com.guille.configuracion.FechaHora;
+
 import java.time.LocalDateTime;
 
 public abstract class Persona {
@@ -20,7 +22,7 @@ public abstract class Persona {
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numero_documento;
         this.telefono = telefono;
-        this.fechaAlta = LocalDateTime.now();
+        this.fechaAlta = FechaHora.ahora();
     }
 
     protected Persona(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, LocalDateTime fechaAlta) {

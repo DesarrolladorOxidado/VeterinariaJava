@@ -33,8 +33,8 @@ public class ControladorDuenios {
         return obtenerDuenioPorDocumento(tipoDocumento,documento) != null;
     }
 
-    public List<Duenio> obtenerDuenios() throws SQLException {
-        return this.duenioDAO.obtenerDuenios();
+    public List<Duenio> obtenerDueniosActivos() throws SQLException {
+        return this.duenioDAO.obtenerDueniosActivos();
     }
 
     public Duenio obtenerDuenioPorDocumento(TipoDocumento tipoDocumento, String numeroDocumento) throws SQLException{

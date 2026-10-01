@@ -66,7 +66,8 @@ public class HistoriaClinicaDAO extends Dao {
                 "TD.descripcion_documento,\n" +
                 "V.numero_documento_veterinario,\n" +
                 "V.matricula_veterinario,\n" +
-                "V.fecha_alta_veterinario\n" +
+                "V.fecha_alta_veterinario,\n" +
+                "V.activo_veterinario \n" +
                 "FROM historias_clinicas H\n" +
                 "LEFT JOIN consultas C ON H.id_historia_clinica = C.historia_clinica_consulta\n" +
                 "LEFT JOIN veterinarios V ON C.veterinario_consulta = V.id_veterinario\n" +
@@ -105,10 +106,11 @@ public class HistoriaClinicaDAO extends Dao {
                             String numeroDocumento = resultSet.getString("numero_documento_veterinario");
                             String matriculaVeterinario = resultSet.getString("matricula_veterinario");
                             LocalDateTime fechaAltaVeterinario = resultSet.getObject("fecha_alta_veterinario", LocalDateTime.class);
+                            boolean activo = resultSet.getBoolean("activo_veterinario");
 
                             TipoDocumento tipoDocumento = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
-                            Veterinario veterinario = new Veterinario(idVeterinario,nombreVeterinario,apellidoVeterinario,tipoDocumento,numeroDocumento,telefonoVeterinario,fechaAltaVeterinario,matriculaVeterinario);
+                            Veterinario veterinario = new Veterinario(idVeterinario,nombreVeterinario,apellidoVeterinario,tipoDocumento,numeroDocumento,telefonoVeterinario,fechaAltaVeterinario,matriculaVeterinario,activo);
 
                             Consulta consulta = new Consulta(idConsulta,fechaConsulta,motivo,diagnostico,tratamiento,observaciones,veterinario,idHistoriaClinica);
 

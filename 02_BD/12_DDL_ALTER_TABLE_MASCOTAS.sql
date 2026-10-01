@@ -1,0 +1,2 @@
+ALTER TABLE mascotas
+	ADD COLUMN activo_mascota BOOLEAN NOT NULL DEFAULT true

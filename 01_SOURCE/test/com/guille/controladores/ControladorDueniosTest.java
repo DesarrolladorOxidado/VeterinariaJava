@@ -1,7 +1,9 @@
 package com.guille.controladores;
 
 import com.guille.BaseDatosTestDAO;
+import com.guille.configuracion.FechaHora;
 import com.guille.modelos.Duenio;
+import com.guille.modelos.Mascota;
 import com.guille.modelos.TipoDocumento;
 import com.guille.persistencia.ConexionBD;
 import com.guille.persistencia.dao.DuenioDAO;
@@ -15,11 +17,12 @@ public class ControladorDueniosTest {
 
     private ControladorDuenios controladorDuenios;
     private TipoDocumento dni;
+    private BaseDatosTestDAO baseDatosTestDAO;
 
     @BeforeEach
     public void setUp() throws SQLException {
         ConexionBD conexionBD = new ConexionBD(ConexionBD.Ambiente.TEST);
-        BaseDatosTestDAO baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
+        baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
 
         baseDatosTestDAO.borrarDatos();
 
@@ -40,6 +43,7 @@ public class ControladorDueniosTest {
         Assertions.assertEquals("30124585", duenio.getNumeroDocumento());
         Assertions.assertEquals("223547710", duenio.getTelefono());
         Assertions.assertTrue( duenio.getIdDuenio() > 0);
+        Assertions.assertTrue(duenio.getActivo());
     }
 
     @Test
@@ -105,5 +109,17 @@ public class ControladorDueniosTest {
         Assertions.assertEquals(duenio.getTipoDocumento(),duenioEncontrado.getTipoDocumento());
         Assertions.assertEquals(duenio.getNumeroDocumento(),duenioEncontrado.getNumeroDocumento());
         Assertions.assertEquals(duenio.getTelefono(),duenioEncontrado.getTelefono());
+    }
+
+    @Test
+    public void alRecuperarUnDuenioInactivoTieneQueEstarInactivo() throws SQLException {
+
+        Duenio duenio = controladorDuenios.registrarDuenio("Cosme","Fulanito", dni,"1245782","234");
+
+        this.baseDatosTestDAO.cambiarEstadoDuenio(duenio.getIdDuenio(),false);
+
+        Duenio duenioBD = controladorDuenios.obtenerDuenioPorDocumento(duenio.getTipoDocumento(),duenio.getNumeroDocumento());
+
+        Assertions.assertFalse(duenioBD.getActivo());
     }
 }

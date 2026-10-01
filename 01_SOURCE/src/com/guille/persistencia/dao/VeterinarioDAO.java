@@ -16,11 +16,11 @@ public class VeterinarioDAO extends Dao{
     }
 
 
-    public List<Veterinario> obtenerVeterinarios() throws SQLException {
+    public List<Veterinario> obtenerVeterinariosActivos() throws SQLException {
 
         List<Veterinario> veterinarios = new ArrayList<>();
 
-        String sql = "SELECT V.*, TD.descripcion_documento FROM veterinarios V INNER JOIN tipos_documentos TD ON V.tipo_documento_veterinario = TD.id_tipo_documento";
+        String sql = "SELECT V.*, TD.descripcion_documento FROM veterinarios V INNER JOIN tipos_documentos TD ON V.tipo_documento_veterinario = TD.id_tipo_documento WHERE V.activo_veterinario = true";
 
 
         try (Connection connection = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultado = statement.executeQuery()){
@@ -35,10 +35,12 @@ public class VeterinarioDAO extends Dao{
                 String telefono = resultado.getString("telefono_veterinario");
                 String matricula = resultado.getString("matricula_veterinario");
                 LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
+                boolean activo = resultado.getBoolean("activo_veterinario");
+
 
                 TipoDocumento tipo = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
-                Veterinario veterinario = new Veterinario(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta,matricula);
+                Veterinario veterinario = new Veterinario(id,nombre,apellido,tipo,numeroDocumento,telefono,fechaAlta,matricula,activo);
 
                 veterinarios.add(veterinario);
             }
@@ -64,8 +66,9 @@ public class VeterinarioDAO extends Dao{
                     String telefono = resultado.getString("telefono_veterinario");
                     String matricula = resultado.getString("matricula_veterinario");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
+                    boolean activo = resultado.getBoolean("activo_veterinario");
 
-                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula);
+                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula,activo);
 
                 }
             }
@@ -94,10 +97,11 @@ public class VeterinarioDAO extends Dao{
                     String descripcionTipoDocumentoST = resultado.getString("descripcion_documento");
                     String numeroDocumento = resultado.getString("numero_documento_veterinario");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_veterinario",LocalDateTime.class);
+                    boolean activo = resultado.getBoolean("activo_veterinario");
 
                     TipoDocumento tipoDocumento = new TipoDocumento(tipoDocumentoST,descripcionTipoDocumentoST);
 
-                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula);
+                    veterinario = new Veterinario(id,nombre,apellido,tipoDocumento,numeroDocumento,telefono,fechaAlta,matricula,activo);
 
                 }
             }
@@ -120,7 +124,7 @@ public class VeterinarioDAO extends Dao{
                 "matricula_veterinario," +
                 "fecha_alta_veterinario)" +
                 "VALUES(?,?,?,?,?,?,?) " +
-                "RETURNING id_veterinario";
+                "RETURNING id_veterinario, activo_veterinario";
 
         try (Connection connection  = this.conexionBD.obtenerConexion(); PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,veterinario.getNombre());
@@ -134,7 +138,9 @@ public class VeterinarioDAO extends Dao{
             try( ResultSet resultado = statement.executeQuery()){
                 if ( resultado.next()){
                     int id = resultado.getInt("id_veterinario");
-                    veterinarioBD = new Veterinario(id,veterinario.getNombre(),veterinario.getApellido(),veterinario.getTipoDocumento(),veterinario.getNumeroDocumento(),veterinario.getTelefono(),veterinario.getFechaAlta(),veterinario.getMatricula());
+                    boolean activo = resultado.getBoolean("activo_veterinario");
+
+                    veterinarioBD = new Veterinario(id,veterinario.getNombre(),veterinario.getApellido(),veterinario.getTipoDocumento(),veterinario.getNumeroDocumento(),veterinario.getTelefono(),veterinario.getFechaAlta(),veterinario.getMatricula(),activo);
                 }
             }
         }
@@ -142,8 +148,8 @@ public class VeterinarioDAO extends Dao{
         return veterinarioBD;
     }
 
-    public boolean existenVeterinarios() throws SQLException{
-        try(Connection connection = this.conexionBD.obtenerConexion();PreparedStatement statement = connection.prepareStatement("SELECT EXISTS(SELECT 1 FROM veterinarios)"); ResultSet resultSet = statement.executeQuery()){
+    public boolean existenVeterinariosActivos() throws SQLException{
+        try(Connection connection = this.conexionBD.obtenerConexion();PreparedStatement statement = connection.prepareStatement("SELECT EXISTS(SELECT 1 FROM veterinarios WHERE activo_veterinario = true)"); ResultSet resultSet = statement.executeQuery()){
             if (resultSet.next())
                 return resultSet.getBoolean(1);
         }

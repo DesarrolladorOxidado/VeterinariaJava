@@ -23,11 +23,12 @@ public class ControladorMascotasTest {
     private ControladorMascotas controladorMascotas;
     private Duenio duenio;
     private TipoMascota perro;
+    private BaseDatosTestDAO baseDatosTestDAO;
 
     @BeforeEach
     public void setUp()throws SQLException {
         ConexionBD conexionBD = new ConexionBD(ConexionBD.Ambiente.TEST);
-        BaseDatosTestDAO baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
+        this.baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
         GestorTransacciones gestorTransacciones = new GestorTransacciones(conexionBD);
 
         baseDatosTestDAO.borrarDatos();
@@ -61,6 +62,7 @@ public class ControladorMascotasTest {
         Assertions.assertEquals( fechaNacimiento,mascota.getFechaNacimiento());
         Assertions.assertEquals(24.3,mascota.getPeso());
         Assertions.assertEquals(duenio.getIdDuenio(),mascota.getIdDuenio());
+        Assertions.assertTrue(mascota.getActivo());
         Assertions.assertNotNull(mascota.getHistoriaClinica());
         Assertions.assertTrue(mascota.getHistoriaClinica().getIdHistoriaClinica() > 0);
     }
@@ -89,4 +91,18 @@ public class ControladorMascotasTest {
         Assertions.assertEquals(mascota.getIdDuenio(),mascotaRecuperada.getIdDuenio());
         Assertions.assertEquals(mascota.getFechaAlta(),mascotaRecuperada.getFechaAlta());
     }
+
+    @Test
+    public void alRecuperarUnaMascotaInactivaTieneQueEstarInactiva() throws SQLException {
+
+        Mascota mascota = controladorMascotas.registrarMascota("Mateo", perro,"Border Collie", FechaHora.parsearFecha("13/07/2022"),24.3,duenio.getIdDuenio());
+
+        this.baseDatosTestDAO.cambiarEstadoMascota(mascota.getIdMascota(),false);
+
+        Mascota mascotaBD = controladorMascotas.obtenerMascotasDeUnDuenio(mascota.getIdDuenio()).get(0);
+
+        Assertions.assertFalse(mascotaBD.getActivo());
+    }
+
+
 }

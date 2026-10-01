@@ -11,6 +11,7 @@ public abstract class Persona {
     private TipoDocumento tipoDocumento;
     private String numeroDocumento;
     private String telefono;
+    private boolean activo;
 
     private final LocalDateTime fechaAlta;
 
@@ -23,9 +24,10 @@ public abstract class Persona {
         this.numeroDocumento = numero_documento;
         this.telefono = telefono;
         this.fechaAlta = FechaHora.ahora();
+        this.activo = true;
     }
 
-    protected Persona(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, LocalDateTime fechaAlta) {
+    protected Persona(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, LocalDateTime fechaAlta, boolean activo) {
 
         this.nombre = nombre;
         this.apellido = apellido;
@@ -33,6 +35,8 @@ public abstract class Persona {
         this.numeroDocumento = numeroDocumento;
         this.telefono = telefono;
         this.fechaAlta = fechaAlta;
+        this.activo = activo;
+
     }
 
     public String getNombre() {
@@ -70,6 +74,8 @@ public abstract class Persona {
         this.telefono = telefono;
     }
 
+    public boolean getActivo(){ return this.activo; }
+
     public LocalDateTime getFechaAlta(){ return this.fechaAlta; }
 
     @Override
@@ -80,6 +86,7 @@ public abstract class Persona {
                 ", tipo_documento = " + tipoDocumento.toString() + '\'' +
                 ", numero_documento = '" + numeroDocumento + '\'' +
                 ", telefono = '" + telefono + '\'' +
-                ", fechaAlta = '" + fechaAlta + "'";
+                ", fechaAlta = '" + fechaAlta + "\'" +
+                ", activo = '" + activo + "'";
     }
 }

@@ -32,7 +32,7 @@ public class MascotaDAO extends Dao{
                 "id_duenio_mascota," +
                 "fecha_alta_mascota)" +
                 "VALUES(?,?,?,?,?,?,?) " +
-                "RETURNING id_mascota";
+                "RETURNING id_mascota, activo_mascota";
 
         try ( PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setString(1,mascota.getNombre());
@@ -46,8 +46,9 @@ public class MascotaDAO extends Dao{
             try( ResultSet resultado = statement.executeQuery()){
                 if ( resultado.next()){
                     int idMascota = resultado.getInt("id_mascota");
+                    boolean activo = resultado.getBoolean("activo_mascota");
 
-                    mascotaBD = new Mascota(idMascota,mascota.getNombre(),mascota.getTipo(),mascota.getRaza(),mascota.getFechaNacimiento(),mascota.getPeso(),mascota.getIdDuenio(),mascota.getFechaAlta(),null);
+                    mascotaBD = new Mascota(idMascota,mascota.getNombre(),mascota.getTipo(),mascota.getRaza(),mascota.getFechaNacimiento(),mascota.getPeso(),mascota.getIdDuenio(),mascota.getFechaAlta(),activo,null);
                 }
             }
         }
@@ -90,6 +91,7 @@ public class MascotaDAO extends Dao{
                 "    M.peso_mascota,\n" +
                 "    M.id_duenio_mascota,\n" +
                 "    M.fecha_alta_mascota,\n" +
+                "    M.activo_mascota, \n"  +
                 "    TM.descripcion_tipo_mascota\n" +
                 "FROM mascotas M \n" +
                 "INNER JOIN tipos_mascotas TM ON M.tipo_mascota = TM.id_tipo_mascota \n"+
@@ -110,9 +112,10 @@ public class MascotaDAO extends Dao{
                     String raza = resultado.getString("raza_mascota");
                     LocalDate fechaNacimiento = resultado.getObject("fecha_nacimiento_mascota", LocalDate.class);
                     double peso = resultado.getDouble("peso_mascota");
+                    boolean activo = resultado.getBoolean("activo_mascota");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_mascota", LocalDateTime.class);
 
-                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenio,fechaAlta,null);
+                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenio,fechaAlta,activo,null);
 
                     mascotas.add(mascota);
                 }

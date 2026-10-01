@@ -19,17 +19,20 @@ public class Mascota {
     private double peso;
     private int idDuenio;
     private HistoriaClinica historiaClinica;
+    private boolean activo;
 
     private final LocalDateTime fechaAlta;
+
 
     public Mascota(String nombre, TipoMascota tipo, int idDuenio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.idDuenio = idDuenio;
         this.fechaAlta = FechaHora.ahora();
+        this.activo = true;
     }
 
-    public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, HistoriaClinica historiaClinica) {
+    public Mascota(int idMascota, String nombre, TipoMascota tipo, String raza, LocalDate fechaNacimiento, double peso, int idDuenio, LocalDateTime fechaAlta, boolean activo, HistoriaClinica historiaClinica) {
         this.idMascota = idMascota;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -38,6 +41,7 @@ public class Mascota {
         this.peso = peso;
         this.idDuenio = idDuenio;
         this.fechaAlta = fechaAlta;
+        this.activo = activo;
         this.historiaClinica = historiaClinica;
     }
 
@@ -98,6 +102,8 @@ public class Mascota {
 
     public LocalDateTime getFechaAlta(){ return this.fechaAlta;}
 
+    public boolean getActivo(){ return this.activo; }
+
     public HistoriaClinica getHistoriaClinica(){ return this.historiaClinica; }
 
     @Override
@@ -111,6 +117,7 @@ public class Mascota {
                 ", peso=" + peso +
                 ", idDuenio = " + idDuenio +
                 ", fechaAlta = " + fechaAlta +
+                ", activo = " + activo +
                 ", historiaClinica=" + historiaClinica +
                 '}';
     }

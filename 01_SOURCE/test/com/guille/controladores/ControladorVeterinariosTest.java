@@ -1,6 +1,7 @@
 package com.guille.controladores;
 
 import com.guille.BaseDatosTestDAO;
+import com.guille.modelos.Duenio;
 import com.guille.modelos.TipoDocumento;
 import com.guille.modelos.Veterinario;
 import com.guille.persistencia.ConexionBD;
@@ -16,11 +17,13 @@ public class ControladorVeterinariosTest {
 
     private ControladorVeterinarios controladorVeterinarios;
     private TipoDocumento dni;
+    private BaseDatosTestDAO baseDatosTestDAO;
+
 
     @BeforeEach
     void setUp() throws SQLException {
         ConexionBD conexionBD = new ConexionBD(ConexionBD.Ambiente.TEST);
-        BaseDatosTestDAO baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
+        baseDatosTestDAO = new BaseDatosTestDAO(conexionBD);
 
         baseDatosTestDAO.borrarDatos();
 
@@ -41,6 +44,7 @@ public class ControladorVeterinariosTest {
         Assertions.assertEquals("30124585", veterinario.getNumeroDocumento());
         Assertions.assertEquals("223547710", veterinario.getTelefono());
         Assertions.assertEquals("12", veterinario.getMatricula());
+        Assertions.assertTrue(veterinario.getActivo());
     }
 
     @Test
@@ -129,5 +133,17 @@ public class ControladorVeterinariosTest {
         Assertions.assertEquals(veterinario.getNumeroDocumento(),veterinarioEncontrado.getNumeroDocumento());
         Assertions.assertEquals(veterinario.getTelefono(),veterinarioEncontrado.getTelefono());
         Assertions.assertEquals(veterinario.getMatricula(),veterinarioEncontrado.getMatricula());
+    }
+
+    @Test
+    public void alRecuperarUnVeterinarioInactivoTieneQueEstarInactivo() throws SQLException {
+
+        Veterinario veterinario = controladorVeterinarios.registrarVeterinario("Nick","Riviera", dni,"5332","234","99");
+
+        this.baseDatosTestDAO.cambiarEstadoVeterinario(veterinario.getIdVeterinario(),false);
+
+        Veterinario veterinarioBD = controladorVeterinarios.obtenerVeterinarioConMatricula(veterinario.getMatricula());
+
+        Assertions.assertFalse(veterinarioBD.getActivo());
     }
 }

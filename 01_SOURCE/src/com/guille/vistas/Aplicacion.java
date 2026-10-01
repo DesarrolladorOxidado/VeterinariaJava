@@ -59,7 +59,7 @@ public class Aplicacion {
 
             List<OpcionesMenuPrincipal> menuPrincipal = new ArrayList<>(List.of(OpcionesMenuPrincipal.values()));
 
-            boolean existenVeterinarios = this.controladores.getControladorVeterinarios().existenVeterinarios();
+            boolean existenVeterinarios = this.controladores.getControladorVeterinarios().existenVeterinariosActivos();
 
             if (!existenVeterinarios)
                 menuPrincipal.remove(OpcionesMenuPrincipal.NUEVA_CONSULTA);
@@ -792,10 +792,21 @@ public class Aplicacion {
         if ( duenio == null )
             return;
 
-        Mascota mascota = seleccionarMascota(duenio);
+        Mascota mascota;
+        do{
+            mascota = seleccionarMascota(duenio);
 
-        if ( mascota == null)
-            return;
+            if ( mascota == null)
+                return;
+
+            if (!mascota.getActivo()){
+                System.out.println("La mascota seleccionada se encuentra inactiva. No es posible trabajar con ella. ¿Desea elegir otra? (s/n)");
+
+                if ( solicitarRespuestaSiNo() != 's')
+                    return;
+            }
+
+        }while ( !mascota.getActivo());
 
         int opcion;
         OpcionesEditarMascota opcionSeleccionada = null;
@@ -1355,7 +1366,7 @@ public class Aplicacion {
     private void mostrarVeterinarios(){
 
         try{
-            List<Veterinario> veterinarios = this.controladores.getControladorVeterinarios().obtenerVeterinarios();
+            List<Veterinario> veterinarios = this.controladores.getControladorVeterinarios().obtenerVeterinariosActivos();
 
             if ( veterinarios.isEmpty() ){
                 System.out.println("No hay veterinarios registrados");
@@ -1375,7 +1386,7 @@ public class Aplicacion {
     private void mostrarDuenios(){
 
         try{
-            List<Duenio> duenios = this.controladores.getControladorDuenios().obtenerDuenios();
+            List<Duenio> duenios = this.controladores.getControladorDuenios().obtenerDueniosActivos();
 
             if ( duenios.isEmpty() ){
                 System.out.println("No hay dueños registrados");
@@ -1420,6 +1431,13 @@ public class Aplicacion {
                     mostrarMascotasDelDuenio(duenio);
                 } else {
                     System.out.println("No hay mascotas registradas para este dueño.");
+
+                    if ( !duenio.getActivo() ){
+                        System.out.println("El dueño no se encuentra activo");
+                        continuar();
+                        return;
+                    }
+
                     System.out.println("¿Desea dar de alta mascotas? (s/n)");
 
                     char rta = solicitarRespuestaSiNo();
@@ -1471,12 +1489,25 @@ public class Aplicacion {
                 return;
             }
 
-            Mascota mascota = seleccionarMascota(duenio);
+            Mascota mascota;
 
-            if (mascota!=null) {
-                registrarConsulta(mascota,veterinario);
-                continuar();
-            }
+            do{
+                mascota = seleccionarMascota(duenio);
+
+                if (mascota == null )
+                    return;
+
+                if ( !mascota.getActivo() ){
+                    System.out.println("La mascota seleccionada se encuentra inactiva. No es posible trabajar con ella. ¿Desea elegir otra? (s/n)");
+
+                    if ( solicitarRespuestaSiNo() != 's')
+                        return;
+                }
+            }while (!mascota.getActivo());
+
+            registrarConsulta(mascota,veterinario);
+            continuar();
+
         }
     }
 
@@ -1623,8 +1654,15 @@ public class Aplicacion {
             return null;
         }
 
-        if ( duenio != null)
+        if ( duenio != null) {
+            if (!duenio.getActivo()) {
+                System.out.println("El dueño no se encuentra activo");
+                mostrarDuenio(duenio);
+                continuar();
+                return null;
+            }
             return duenio;
+        }
 
         System.out.println("No se ha encontrado el dueño con documento: " + tipoDocumentoDuenio.getDescripcionDocumento() + " " + documentoDuenio);
         System.out.println("¿Desea darlo de alta? s/n");
@@ -1655,7 +1693,7 @@ public class Aplicacion {
             System.out.println("\n******POR FAVOR, SELECCIONE UNA MASCOTA: ");
 
             for (Mascota mascota : mascotas) {
-                System.out.println(i + " - " + mascota.getNombre() + " - " + mascota.getTipo());
+                System.out.println(i + " - " + mascota.getNombre() + " - " + mascota.getTipo() + " - " + (mascota.getActivo()?"ACTIVA":"INACTIVA"));
                 i++;
             }
 
@@ -1696,7 +1734,7 @@ public class Aplicacion {
     private Veterinario seleccionarVeterinario(){
 
         try {
-            List<Veterinario> veterinarios = this.controladores.getControladorVeterinarios().obtenerVeterinarios();
+            List<Veterinario> veterinarios = this.controladores.getControladorVeterinarios().obtenerVeterinariosActivos();
             int i = 1;
 
             if (veterinarios.isEmpty()) {
@@ -1748,7 +1786,7 @@ public class Aplicacion {
     private Duenio seleccionarDuenio(){
 
         try {
-            List<Duenio> duenios = this.controladores.getControladorDuenios().obtenerDuenios();
+            List<Duenio> duenios = this.controladores.getControladorDuenios().obtenerDueniosActivos();
             int i = 1;
 
             if (duenios.isEmpty()) {
@@ -2079,6 +2117,7 @@ public class Aplicacion {
         System.out.println("Matricula: " + veterinario.getMatricula());
         System.out.println("Teléfono: " + veterinario.getTelefono());
         System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(veterinario.getFechaAlta()));
+        System.out.println("Activo: " + (veterinario.getActivo() ? "Sí" : "No"));
     }
 
     private void mostrarDuenio(Duenio duenio){
@@ -2087,6 +2126,7 @@ public class Aplicacion {
         System.out.println("Tipo documento: " + duenio.getTipoDocumento().getDescripcionDocumento()+ " - Número: " + duenio.getNumeroDocumento());
         System.out.println("Teléfono: " + duenio.getTelefono());
         System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(duenio.getFechaAlta()));
+        System.out.println("Activo: " + (duenio.getActivo()? "Sí" : "No"));
     }
 
     private void mostrarMascotasDelDuenio(Duenio duenio) {
@@ -2114,6 +2154,7 @@ public class Aplicacion {
         System.out.println("Fecha de nacimiento: " + FechaHora.formatearFecha(mascota.getFechaNacimiento()));
         System.out.println("Peso: " + mascota.getPeso());
         System.out.println("Fecha alta: " + FechaHora.formatearFechaHora(mascota.getFechaAlta()));
+        System.out.println("Activo: " + (mascota.getActivo() ? "Sí" : "No"));
         System.out.println("==============================================");
     }
 

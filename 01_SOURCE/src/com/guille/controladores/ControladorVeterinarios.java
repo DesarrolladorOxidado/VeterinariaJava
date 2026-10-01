@@ -28,8 +28,8 @@ public class ControladorVeterinarios {
         this.veterinarioDAO.actualizarVeterinario(veterinario);
     }
 
-    public List<Veterinario> obtenerVeterinarios() throws SQLException{
-        return this.veterinarioDAO.obtenerVeterinarios();
+    public List<Veterinario> obtenerVeterinariosActivos() throws SQLException{
+        return this.veterinarioDAO.obtenerVeterinariosActivos();
     }
 
     public Veterinario obtenerVeterinarioConMatricula(String matricula) throws SQLException{
@@ -48,7 +48,7 @@ public class ControladorVeterinarios {
         return obtenerVeterinarioConMatricula(matricula) != null;
     }
 
-    public boolean existenVeterinarios() throws SQLException{
-        return this.veterinarioDAO.existenVeterinarios();
+    public boolean existenVeterinariosActivos() throws SQLException{
+        return this.veterinarioDAO.existenVeterinariosActivos();
     }
 }

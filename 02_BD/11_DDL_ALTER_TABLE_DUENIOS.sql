@@ -1,0 +1,2 @@
+ALTER TABLE duenios
+	ADD COLUMN activo_duenio BOOLEAN NOT NULL DEFAULT true

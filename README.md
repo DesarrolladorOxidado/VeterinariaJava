@@ -14,6 +14,7 @@ El proyecto consiste en un sistema de gestión para una veterinaria ejecutado me
 - Incorporar validaciones y manejo de errores.
 - Utilizar Git y GitHub durante todo el desarrollo.
 - Simular el desarrollo y evolución de un proyecto real mediante iteraciones.
+- Evolucionar progresivamente el proyecto hacia Spring Boot.
 
 ## Funcionalidades actuales
 
@@ -27,7 +28,10 @@ Actualmente el sistema permite:
 - Crear automáticamente una historia clínica al registrar una mascota.
 - Consultar la historia clínica y las consultas de una mascota.
 - Mostrar dueños, veterinarios y mascotas registrados.
+- Editar los datos de dueños, veterinarios y mascotas.
 - Persistir la información del sistema en PostgreSQL.
+- Gestionar tipos de documento y tipos de mascota mediante catálogos persistidos en la base de datos.
+- Mantener el estado activo/inactivo de dueños, veterinarios y mascotas como soporte para bajas lógicas.
 - Validar entradas de usuario y controlar entradas inválidas en los principales flujos de la aplicación.
 
 ## Arquitectura
@@ -39,20 +43,24 @@ El proyecto separa las distintas responsabilidades del sistema mediante:
 - `controladores`: coordina los casos de uso de la aplicación.
 - `servicios`: coordina operaciones que requieren múltiples acciones relacionadas dentro de un mismo caso de uso.
 - `persistencia`: contiene la conexión con PostgreSQL, los DAO encargados del acceso a datos y la gestión de transacciones.
-- `configuracion`: contiene la creación y configuración de las dependencias de la aplicación.
+- `configuracion`: contiene la creación y configuración de las dependencias de la aplicación y utilidades compartidas de configuración.
 
 Entre las principales relaciones del dominio se encuentran:
 
-```text
-Duenio → Mascotas
-Mascota → HistoriaClinica
-HistoriaClinica → Consultas
-Consulta → Veterinario
-```
+- `Duenio → Mascotas`
+- `Mascota → HistoriaClinica`
+- `HistoriaClinica → Consultas`
+- `Consulta → Veterinario`
 
 La persistencia se implementa mediante JDBC y el patrón DAO. Los objetos del dominio son reconstruidos a partir de los datos almacenados en PostgreSQL, utilizando la base de datos como fuente de verdad del sistema.
 
+Los tipos de documento y tipos de mascota se administran como catálogos persistidos, evitando mantener sus posibles valores definidos directamente en el código de la aplicación.
+
+Dueños, veterinarios y mascotas cuentan además con un estado activo/inactivo persistido. Esto permite conservar las entidades y sus relaciones históricas sin recurrir a eliminaciones físicas. Las consultas históricas pueden reconstruir entidades inactivas cuando sea necesario, mientras que los flujos operativos restringen las operaciones que requieren entidades activas.
+
 Las operaciones que requieren múltiples escrituras relacionadas utilizan transacciones para mantener la consistencia de los datos. Actualmente se aplican, entre otros casos, al registro de una mascota junto con su historia clínica y al registro de una consulta junto con la actualización de su historia clínica.
+
+El manejo de fechas y horas se encuentra centralizado para mantener criterios uniformes de parseo, formato y precisión temporal compatible con la persistencia en PostgreSQL.
 
 El proyecto cuenta además con ambientes separados para desarrollo y pruebas, permitiendo ejecutar los tests de persistencia sobre una base de datos independiente.
 
@@ -68,13 +76,18 @@ El logging se implementa utilizando SLF4J y Logback. Los errores técnicos y sus
 
 El proyecto utiliza JUnit para probar tanto reglas del dominio como flujos que involucran persistencia.
 
-Actualmente la suite cuenta con 24 tests automatizados.
+Actualmente la suite cuenta con **30 tests automatizados**.
+
+Las pruebas utilizan una base de datos independiente y verifican, entre otros aspectos, el registro, recuperación y actualización de entidades, las operaciones transaccionales y la correcta reconstrucción del estado persistido.
+
+También se comprueba el manejo del estado activo/inactivo de dueños, veterinarios y mascotas, incluyendo el estado activo asignado al registrarlos y la recuperación de entidades previamente marcadas como inactivas en la base de datos.
 
 ## Próximos pasos
 
-- Continuar mejorando las validaciones de datos y entradas de usuario.
-- Incorporar nuevos casos de uso, como la edición de datos registrados.
-- Ampliar la cobertura de pruebas automatizadas a medida que se incorporen nuevas funcionalidades.
+- Realizar una revisión general de la etapa actual del proyecto, incluyendo dominio, controladores, servicios y persistencia.
+- Revisar posibles refactorizaciones y código que haya quedado obsoleto durante la evolución del sistema.
+- Consolidar la versión actual de consola y JDBC como base estable del proyecto.
+- Continuar la evolución del proyecto incorporando Spring Boot.
 
 ## Tecnologías
 
@@ -91,3 +104,5 @@ Actualmente la suite cuenta con 24 tests automatizados.
 ## Estado del proyecto
 
 🚧 En desarrollo.
+
+Actualmente se encuentra finalizando la etapa basada en aplicación de consola y persistencia mediante JDBC, antes de continuar su evolución con Spring Boot.

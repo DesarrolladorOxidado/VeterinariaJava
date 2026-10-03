@@ -1,8 +1,8 @@
 package com.guille.modelos;
 
 public class TipoMascota {
-    private String idTipoMascota;
-    private String descripcionTipoMascota;
+    private final String idTipoMascota;
+    private final String descripcionTipoMascota;
 
     public TipoMascota(String idTipoMascota, String descripcionTipoMascota){
         this.idTipoMascota = idTipoMascota;

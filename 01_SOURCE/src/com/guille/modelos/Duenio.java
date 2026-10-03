@@ -6,12 +6,12 @@ public class Duenio extends Persona {
 
     private int idDuenio;
 
-    public Duenio(String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono) {
-        super(nombre, apellido, tipoDocumento, numero_documento, telefono);
+    public Duenio(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono) {
+        super(nombre, apellido, tipoDocumento, numeroDocumento, telefono);
     }
 
-    public Duenio(int idDuenio, String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono, LocalDateTime fechaAlta, boolean activo) {
-        super(nombre, apellido, tipoDocumento, numero_documento, telefono, fechaAlta, activo);
+    public Duenio(int idDuenio, String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, LocalDateTime fechaAlta, boolean activo) {
+        super(nombre, apellido, tipoDocumento, numeroDocumento, telefono, fechaAlta, activo);
         this.idDuenio = idDuenio;
     }
 

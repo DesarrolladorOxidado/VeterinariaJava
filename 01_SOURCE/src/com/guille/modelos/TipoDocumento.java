@@ -2,8 +2,8 @@ package com.guille.modelos;
 
 public class TipoDocumento {
 
-    private String idTipoDocumento;
-    private String descripcionDocumento;
+    private final String idTipoDocumento;
+    private final String descripcionDocumento;
 
     public TipoDocumento(String idTipoDocumento, String descripcionDocumento){
         this.idTipoDocumento = idTipoDocumento;

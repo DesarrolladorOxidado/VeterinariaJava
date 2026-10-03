@@ -8,8 +8,8 @@ import java.time.Period;
 
 public class Mascota {
 
-    public static int MAXIMA_EDAD = 50;
-    public static double MAXIMO_PESO = 150.0;
+    public static final int MAXIMA_EDAD = 50;
+    public static final double MAXIMO_PESO = 150.0;
 
     private int idMascota;
     private String nombre;
@@ -109,7 +109,7 @@ public class Mascota {
     @Override
     public String toString() {
         return "Mascota{ idMascota = '" + this.idMascota +
-                "nombre='" + nombre + '\'' +
+                ", nombre='" + nombre + '\'' +
                 ", tipo=" + tipo.getIdTipoMascota() + " - " + tipo.getDescripcionTipoMascota() + '\''+
                 ", raza='" + raza + '\'' +
                 ", fecha nacimiento = " + fechaNacimiento +

@@ -9,7 +9,7 @@ import java.util.List;
 public class HistoriaClinica {
 
     private int idHistoriaClinica;
-    private int idMascota;
+    private final int idMascota;
     private final LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
     private final List<Consulta> consultas;
@@ -52,7 +52,7 @@ public class HistoriaClinica {
                 "idHistoriaClinica = " + idHistoriaClinica +
                 ", idMascota = " + idMascota +
                 ", fechaCreacion =" + fechaCreacion +
-                ", fechaActualizacion=" + fechaActualizacion +
+                ", fechaActualizacion =" + fechaActualizacion +
                 ", consultas=" + consultas +
                 '}';
     }

@@ -14,7 +14,7 @@ public class Consulta {
     private int idConsulta;
     //La fecha no se modifica, se establece únicamente al crear la consulta
     private final LocalDateTime fecha;
-    final private String motivo;
+    private final String motivo;
     private String diagnostico;
     private String tratamiento;
     private String observaciones;
@@ -86,14 +86,14 @@ public class Consulta {
 
     @Override
     public String toString() {
-        return "Consulta{ idConsulta= " + this.idConsulta +
-                "fecha=" + fecha +
-                ", motivo='" + motivo + '\'' +
-                ", diagnostico='" + diagnostico + '\'' +
-                ", tratamiento='" + tratamiento + '\'' +
-                ", observaciones='" + observaciones + '\'' +
-                ", veterinario=" + veterinario +
-                ", historia clinica=" + idHistoriaClinica +
+        return "Consulta{ idConsulta = " + this.idConsulta +
+                "fecha =" + fecha +
+                ", motivo ='" + motivo + '\'' +
+                ", diagnostico ='" + diagnostico + '\'' +
+                ", tratamiento ='" + tratamiento + '\'' +
+                ", observaciones ='" + observaciones + '\'' +
+                ", veterinario =" + veterinario +
+                ", historia clinica =" + idHistoriaClinica +
                 '}';
     }
 }

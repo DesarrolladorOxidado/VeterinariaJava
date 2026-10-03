@@ -8,13 +8,13 @@ public class Veterinario extends Persona {
 
     private String matricula;
 
-    public Veterinario(String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono, String matricula) {
-        super(nombre, apellido,tipoDocumento, numero_documento, telefono);
+    public Veterinario(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, String matricula) {
+        super(nombre, apellido,tipoDocumento, numeroDocumento, telefono);
         this.matricula = matricula;
     }
 
-    public Veterinario(int idVeterinario, String nombre, String apellido, TipoDocumento tipoDocumento, String numero_documento, String telefono, LocalDateTime fechaAlta, String matricula, boolean activo) {
-        super(nombre, apellido,tipoDocumento, numero_documento, telefono, fechaAlta, activo);
+    public Veterinario(int idVeterinario, String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento, String telefono, LocalDateTime fechaAlta, String matricula, boolean activo) {
+        super(nombre, apellido,tipoDocumento, numeroDocumento, telefono, fechaAlta, activo);
         this.idVeterinario = idVeterinario;
         this.matricula = matricula;
     }

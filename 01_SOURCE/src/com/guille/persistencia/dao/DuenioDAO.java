@@ -78,7 +78,7 @@ public class DuenioDAO extends Dao {
 
     public Duenio registrarDuenio(Duenio duenio) throws SQLException{
 
-        Duenio duenioBD = null;
+        Duenio duenioBD;
 
         String sql = "INSERT INTO duenios(" +
                 "nombre_duenio," +
@@ -104,6 +104,8 @@ public class DuenioDAO extends Dao {
                     boolean activo = resultado.getBoolean("activo_duenio");
 
                     duenioBD = new Duenio(id,duenio.getNombre(),duenio.getApellido(),duenio.getTipoDocumento(),duenio.getNumeroDocumento(),duenio.getTelefono(),duenio.getFechaAlta(),activo);
+                }else{
+                    throw new SQLException("No se pudo obtener el dueño registrado");
                 }
             }
         }

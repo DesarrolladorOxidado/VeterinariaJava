@@ -13,7 +13,7 @@ public class ConsultaDAO extends Dao{
     }
 
     public Consulta registrarConsulta(Consulta consulta, Connection connection) throws SQLException {
-        Consulta consultaBD = null;
+        Consulta consultaBD;
 
         String sql = "INSERT INTO consultas(fecha_consulta," +
                 "motivo_consulta," +
@@ -39,6 +39,8 @@ public class ConsultaDAO extends Dao{
                     int id = resultado.getInt("id_consulta");
 
                     consultaBD = new Consulta(id,consulta.getFecha(),consulta.getMotivo(),consulta.getDiagnostico(),consulta.getTratamiento(),consulta.getObservaciones(),consulta.getVeterinario(),consulta.getIdHistoriaClinica());
+                }else{
+                    throw new SQLException("No se pudo obtener la consulta registrada.");
                 }
             }
         }

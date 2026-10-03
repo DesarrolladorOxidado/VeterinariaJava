@@ -113,7 +113,7 @@ public class VeterinarioDAO extends Dao{
 
     public Veterinario registrarVeterinario(Veterinario veterinario) throws SQLException{
 
-        Veterinario veterinarioBD = null;
+        Veterinario veterinarioBD;
 
         String sql = "INSERT INTO veterinarios(" +
                 "nombre_veterinario," +
@@ -141,6 +141,8 @@ public class VeterinarioDAO extends Dao{
                     boolean activo = resultado.getBoolean("activo_veterinario");
 
                     veterinarioBD = new Veterinario(id,veterinario.getNombre(),veterinario.getApellido(),veterinario.getTipoDocumento(),veterinario.getNumeroDocumento(),veterinario.getTelefono(),veterinario.getFechaAlta(),veterinario.getMatricula(),activo);
+                }else{
+                    throw new SQLException("No se pudo obtener el veterinario registrado");
                 }
             }
         }

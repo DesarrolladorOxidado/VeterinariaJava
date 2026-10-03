@@ -21,7 +21,7 @@ public class MascotaDAO extends Dao{
 
     public Mascota registrarMascota(Mascota mascota, Connection connection) throws SQLException {
 
-        Mascota mascotaBD = null;
+        Mascota mascotaBD;
 
         String sql = "INSERT INTO mascotas(" +
                 "nombre_mascota," +
@@ -49,6 +49,8 @@ public class MascotaDAO extends Dao{
                     boolean activo = resultado.getBoolean("activo_mascota");
 
                     mascotaBD = new Mascota(idMascota,mascota.getNombre(),mascota.getTipo(),mascota.getRaza(),mascota.getFechaNacimiento(),mascota.getPeso(),mascota.getIdDuenio(),mascota.getFechaAlta(),activo,null);
+                }else{
+                    throw new SQLException("No se pudo obtener la mascota registrada");
                 }
             }
         }
@@ -112,10 +114,11 @@ public class MascotaDAO extends Dao{
                     String raza = resultado.getString("raza_mascota");
                     LocalDate fechaNacimiento = resultado.getObject("fecha_nacimiento_mascota", LocalDate.class);
                     double peso = resultado.getDouble("peso_mascota");
+                    int idDuenioMascota = resultado.getInt("id_duenio_mascota");
                     boolean activo = resultado.getBoolean("activo_mascota");
                     LocalDateTime fechaAlta = resultado.getObject("fecha_alta_mascota", LocalDateTime.class);
 
-                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenio,fechaAlta,activo,null);
+                    Mascota mascota = new Mascota(idMascota,nombre,tipo,raza,fechaNacimiento,peso,idDuenioMascota,fechaAlta,activo,null);
 
                     mascotas.add(mascota);
                 }

@@ -19,7 +19,7 @@ public class HistoriaClinicaDAO extends Dao {
     }
 
     public HistoriaClinica registrarHistoriaClinica(HistoriaClinica historiaClinica, Connection connection) throws SQLException {
-        HistoriaClinica historiaClinicaBD = null;
+        HistoriaClinica historiaClinicaBD;
 
         String sql = "INSERT INTO historias_clinicas(" +
                 "mascota_historia_clinica," +
@@ -38,6 +38,8 @@ public class HistoriaClinicaDAO extends Dao {
                     int id = resultado.getInt("id_historia_clinica");
 
                     historiaClinicaBD = new HistoriaClinica(id,historiaClinica.getIdMascota(),historiaClinica.getFechaCreacion(),historiaClinica.getFechaActualizacion(), Collections.emptyList());
+                }else{
+                    throw new SQLException("No se pudo obtener la historia clínica registrada.");
                 }
             }
         }
@@ -81,11 +83,11 @@ public class HistoriaClinicaDAO extends Dao {
 
                 if ( resultSet.next()){
                     int idHistoriaClinica = resultSet.getInt("id_historia_clinica");
+                    int idMascotaHistoriaClinica = resultSet.getInt("mascota_historia_clinica");
                     LocalDateTime fechaCreacionHistoriaClinica = resultSet.getObject("fecha_creacion_historia_clinica", LocalDateTime.class);
                     LocalDateTime fechaActualizacionHistoriaClinica = resultSet.getObject("fecha_actualizacion_historia_clinica", LocalDateTime.class);
 
                     List<Consulta> consultas = new ArrayList<>();
-
 
                     do{
 
@@ -119,7 +121,7 @@ public class HistoriaClinicaDAO extends Dao {
 
                     }while ( resultSet.next());
 
-                    historiaClinicaBD = new HistoriaClinica(idHistoriaClinica, idMascota, fechaCreacionHistoriaClinica, fechaActualizacionHistoriaClinica, consultas);
+                    historiaClinicaBD = new HistoriaClinica(idHistoriaClinica, idMascotaHistoriaClinica, fechaCreacionHistoriaClinica, fechaActualizacionHistoriaClinica, consultas);
 
                 }
             }

@@ -84,9 +84,6 @@ También se comprueba el manejo del estado activo/inactivo de dueños, veterinar
 
 ## Próximos pasos
 
-- Realizar una revisión general de la etapa actual del proyecto, incluyendo dominio, controladores, servicios y persistencia.
-- Revisar posibles refactorizaciones y código que haya quedado obsoleto durante la evolución del sistema.
-- Consolidar la versión actual de consola y JDBC como base estable del proyecto.
 - Continuar la evolución del proyecto incorporando Spring Boot.
 
 ## Tecnologías
@@ -105,4 +102,4 @@ También se comprueba el manejo del estado activo/inactivo de dueños, veterinar
 
 🚧 En desarrollo.
 
-Actualmente se encuentra finalizando la etapa basada en aplicación de consola y persistencia mediante JDBC, antes de continuar su evolución con Spring Boot.
+La etapa basada en aplicación de consola y persistencia mediante JDBC se encuentra finalizada y consolidada como base estable del proyecto. El próximo paso es continuar su evolución incorporando Spring Boot.
